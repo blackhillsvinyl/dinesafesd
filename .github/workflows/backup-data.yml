@@ -1,0 +1,48 @@
+name: Archive Data to R2
+
+# Monthly off-site archive of the inspection dataset. GitHub already holds
+# full history; this puts a dated copy under a second account (Cloudflare R2)
+# so no single account loss can destroy the data.
+on:
+  schedule:
+    - cron: '0 9 2 * *' # 2nd of the month, 9:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+
+      - name: Create archive
+        run: |
+          STAMP=$(date -u +%Y-%m-%d)
+          tar czf "dinesafesd-data-$STAMP.tar.gz" -C apps/web/public data
+          echo "STAMP=$STAMP" >> "$GITHUB_ENV"
+          ls -la dinesafesd-data-*.tar.gz
+
+      - name: Upload to R2
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          npx wrangler@4 r2 object put \
+            "dinesafesd-backups/dinesafesd-data-$STAMP.tar.gz" \
+            --file "dinesafesd-data-$STAMP.tar.gz" --remote
+
+      - name: Open issue on failure
+        if: failure() && github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue create \
+            --repo "${{ github.repository }}" \
+            --title "Monthly data archive failed ($(date -u +%Y-%m-%d))" \
+            --body "The R2 archive workflow failed. See: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"

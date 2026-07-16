@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.next/
+.expo/
+*.tsbuildinfo
+
+# Turbo
+.turbo/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+
+# Expo
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+play-service-account.json
+
+# Supabase
+supabase/.branches
+supabase/.temp
+
+# Data pipeline
+services/data-pipeline/pdfs/
+services/data-pipeline/cache/
+
+# Local agent/tooling scratch
+.playwright-mcp/
+.superpowers/
+.claude/settings.local.json
+.wrangler/

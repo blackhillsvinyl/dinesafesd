@@ -1,0 +1,22 @@
+{
+  "name": "sd-health-inspect",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "services/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "sync": "turbo run sync --filter=data-pipeline",
+    "sync:incremental": "turbo run sync:incremental --filter=data-pipeline",
+    "sync:daily": "turbo run sync:daily --filter=data-pipeline"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.0"
+  },
+  "packageManager": "npm@10.8.2"
+}
