@@ -37,7 +37,7 @@ GitHub Action (daily) ─► pipeline ─► apps/web/public/data/*.json ─► 
 ## Project Structure
 
 ```
-sd-health-inspect/
+dinesafesd/
 ├── apps/mobile/          # React Native Expo app
 ├── apps/web/             # Web app + legal pages + published data files
 ├── services/data-pipeline/ # Data ingestion (SD DOH + Sioux Falls SWEEPS)
@@ -47,8 +47,8 @@ sd-health-inspect/
 ## Getting Started
 
 ```bash
-git clone <repo-url>
-cd sd-health-inspect
+git clone https://github.com/blackhillsvinyl/dinesafesd.git
+cd dinesafesd
 npm install
 
 # Web app (serves the committed data files)
