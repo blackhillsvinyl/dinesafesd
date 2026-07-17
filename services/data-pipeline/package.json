@@ -13,6 +13,8 @@
     "sync:counties": "tsx src/jobs/sync-counties.ts",
     "sync:sioux-falls": "tsx src/jobs/sync-sioux-falls.ts",
     "backfill:scores": "tsx src/jobs/backfill-scores.ts",
+    "import:nad": "tsx src/jobs/import-nad.ts",
+    "apply:address-points": "tsx src/jobs/apply-address-points.ts",
     "merge:data": "tsx src/jobs/merge-data.ts"
   },
   "dependencies": {

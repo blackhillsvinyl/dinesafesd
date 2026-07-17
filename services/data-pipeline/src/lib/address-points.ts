@@ -2,9 +2,11 @@
  * Authoritative address-point lookup (Tier 0 of the geocode chain).
  *
  * Backed by government rooftop address points committed at
- * src/data/address-points-sd.json.gz — currently the City of Sioux Falls GIS
- * (83k points); the USDOT National Address Database statewide extract merges
- * into the same file when acquired.
+ * src/data/address-points-sd.json.gz — the City of Sioux Falls GIS (83k
+ * points) merged with the USDOT National Address Database SD extract
+ * (jobs/import-nad.ts; adds Union, Todd, Mellette, Tripp, and Gregory
+ * counties plus Minnehaha/Lincoln gap-fills). Re-run the import when a new
+ * NAD release lands, then jobs/apply-address-points.ts to apply upgrades.
  */
 
 import { readFileSync, existsSync } from 'node:fs';
