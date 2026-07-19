@@ -6,7 +6,7 @@ import { fetchIndex } from '../lib/api';
 import { getScoreTheme } from '../scoring';
 import QuickView from '../components/QuickView';
 import StackPicker from '../components/StackPicker';
-import CitySearch from '../components/CitySearch';
+import CitySearch, { buildCityList } from '../components/CitySearch';
 import type { CityEntry } from '../components/CitySearch';
 import type { Restaurant } from '../types';
 
@@ -35,6 +35,36 @@ function toFeatureCollection(restaurants: Restaurant[]): GeoJSON.FeatureCollecti
   };
 }
 
+// One rollup per city (count ≥ 2) — the coarse view is city bubbles, not
+// radius-based cluster blobs, so a town is always exactly one thing to tap.
+// Single-restaurant towns render as the restaurant's own colored dot.
+function toCityCollections(restaurants: Restaurant[]) {
+  const cities = buildCityList(restaurants);
+  const multi = cities.filter((c) => c.count >= 2);
+  const singleCityNames = new Set(
+    cities.filter((c) => c.count === 1).map((c) => c.name.toLowerCase())
+  );
+  const cityFC: GeoJSON.FeatureCollection = {
+    type: 'FeatureCollection',
+    features: multi.map((c) => ({
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [(c.bounds[0][0] + c.bounds[1][0]) / 2, (c.bounds[0][1] + c.bounds[1][1]) / 2],
+      },
+      properties: { city: c.name, count: c.count },
+    })),
+  };
+  // Restaurants that aren't inside a bubbled city (single-restaurant towns
+  // plus records whose city field didn't survive buildCityList's cleanup)
+  const bubbled = new Set(multi.map((c) => c.name.toLowerCase()));
+  const singles = restaurants.filter((r) => {
+    const c = (r.city ?? '').trim().toLowerCase();
+    return !bubbled.has(c) || singleCityNames.has(c);
+  });
+  return { cityFC, singlesFC: toFeatureCollection(singles) };
+}
+
 // Survives SPA navigation (e.g. quick view → full report → back), so the map
 // reopens exactly where the user left it instead of resetting statewide.
 const savedView: {
@@ -48,6 +78,9 @@ export default function MapPage() {
   const mapRef = useRef<maplibregl.Map | null>(null);
   const byId = useRef<Map<string, Restaurant>>(new Map());
   const dataRef = useRef<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
+  const citiesRef = useRef<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
+  const singlesRef = useRef<GeoJSON.FeatureCollection>({ type: 'FeatureCollection', features: [] });
+  const cityBoundsRef = useRef<Map<string, CityEntry>>(new Map());
   const [selected, setSelected] = useState<Restaurant | null>(null);
   const [stack, setStack] = useState<Restaurant[] | null>(null);
   const selectRef = useRef(setSelected);
@@ -67,10 +100,19 @@ export default function MapPage() {
     if (!index) return;
     byId.current = new Map(index.restaurants.map((r) => [r.id, r]));
     dataRef.current = toFeatureCollection(index.restaurants);
-    for (const id of ['restaurants', 'restaurants-fine']) {
+    const { cityFC, singlesFC } = toCityCollections(index.restaurants);
+    citiesRef.current = cityFC;
+    singlesRef.current = singlesFC;
+    cityBoundsRef.current = new Map(
+      buildCityList(index.restaurants).map((c) => [c.name.toLowerCase(), c])
+    );
+    const push = (id: string, data: GeoJSON.FeatureCollection) => {
       const src = mapRef.current?.getSource(id) as maplibregl.GeoJSONSource | undefined;
-      if (src) src.setData(dataRef.current);
-    }
+      if (src) src.setData(data);
+    };
+    push('restaurants-fine', dataRef.current);
+    push('cities', citiesRef.current);
+    push('city-singles', singlesRef.current);
     // Restore the quick view that was open before navigating away
     if (savedView.selectedId) {
       setSelected(byId.current.get(savedView.selectedId) ?? null);
@@ -105,19 +147,26 @@ export default function MapPage() {
     );
 
     map.on('load', () => {
-      // Two cluster passes over the same data:
-      // - coarse (z < 14): regional rollups — held one zoom longer than the
-      //   old z13 handoff so expanding a city cluster doesn't flood the view
-      //   with hundreds of loose dots at once
+      // Two passes over the same data:
+      // - coarse (z < 14): ONE bubble per city — never a sea of cluster
+      //   blobs. Tapping a city zooms to its footprint. Single-restaurant
+      //   towns show as the restaurant's own colored dot. Only at statewide
+      //   zoom do physically-overlapping neighbor towns merge (radius 30,
+      //   through z8) so Lead/Deadwood-style pairs stay tappable.
       // - fine (z ≥ 14): merges dots that would visually collide, so
       //   side-by-side storefronts group until zoom separates them; groups
       //   that no zoom can separate (same address) open a picker on tap.
-      map.addSource('restaurants', {
+      map.addSource('cities', {
         type: 'geojson',
-        data: dataRef.current,
+        data: citiesRef.current,
         cluster: true,
-        clusterRadius: 52,
-        clusterMaxZoom: 13,
+        clusterRadius: 30,
+        clusterMaxZoom: 8,
+        clusterProperties: { total: ['+', ['get', 'count']] },
+      });
+      map.addSource('city-singles', {
+        type: 'geojson',
+        data: singlesRef.current,
       });
       map.addSource('restaurants-fine', {
         type: 'geojson',
@@ -128,12 +177,69 @@ export default function MapPage() {
         clusterMaxZoom: 19,
       });
 
-      // Cluster bubbles — neutral slate (green is reserved for the rating
-      // scale), sized by how many restaurants they hold
+      // City bubbles — neutral slate (green is reserved for the rating
+      // scale), sized by how many restaurants the city holds
       map.addLayer({
-        id: 'clusters',
+        id: 'city-bubble',
         type: 'circle',
-        source: 'restaurants',
+        source: 'cities',
+        maxzoom: 14,
+        filter: ['!', ['has', 'point_count']],
+        paint: {
+          'circle-color': '#334155',
+          'circle-opacity': 0.9,
+          'circle-stroke-color': '#ffffff',
+          'circle-stroke-width': 2,
+          'circle-radius': ['step', ['get', 'count'], 12, 10, 15, 50, 19, 200, 25, 800, 32],
+        },
+      });
+      map.addLayer({
+        id: 'city-count',
+        type: 'symbol',
+        source: 'cities',
+        maxzoom: 14,
+        filter: ['!', ['has', 'point_count']],
+        layout: {
+          'text-field': ['get', 'count'],
+          'text-font': ['Noto Sans Bold'],
+          'text-size': ['step', ['get', 'count'], 11, 100, 13],
+          'text-allow-overlap': true,
+        },
+        paint: { 'text-color': '#ffffff' },
+      });
+      // City name under the bubble once bubbles have separated a bit
+      map.addLayer({
+        id: 'city-name',
+        type: 'symbol',
+        source: 'cities',
+        minzoom: 7,
+        maxzoom: 14,
+        filter: ['!', ['has', 'point_count']],
+        layout: {
+          'text-field': ['get', 'city'],
+          'text-font': ['Noto Sans Regular'],
+          'text-size': 11,
+          'text-anchor': 'top',
+          // Clear the bubble's radius (which steps with count), or the label
+          // collides with its own bubble and gets dropped
+          'text-offset': [
+            'step', ['get', 'count'],
+            ['literal', [0, 1.4]], 10, ['literal', [0, 1.7]], 50, ['literal', [0, 2.1]],
+            200, ['literal', [0, 2.7]], 800, ['literal', [0, 3.3]],
+          ],
+          'text-optional': true,
+        },
+        paint: {
+          'text-color': '#334155',
+          'text-halo-color': '#ffffff',
+          'text-halo-width': 1.4,
+        },
+      });
+      // Statewide-zoom merges of physically-overlapping neighbor towns
+      map.addLayer({
+        id: 'city-merged',
+        type: 'circle',
+        source: 'cities',
         maxzoom: 14,
         filter: ['has', 'point_count'],
         paint: {
@@ -141,30 +247,30 @@ export default function MapPage() {
           'circle-opacity': 0.9,
           'circle-stroke-color': '#ffffff',
           'circle-stroke-width': 2,
-          'circle-radius': ['step', ['get', 'point_count'], 15, 25, 20, 100, 26, 500, 34],
+          'circle-radius': ['step', ['get', 'total'], 13, 50, 19, 200, 25, 800, 32],
         },
       });
       map.addLayer({
-        id: 'cluster-count',
+        id: 'city-merged-count',
         type: 'symbol',
-        source: 'restaurants',
+        source: 'cities',
         maxzoom: 14,
         filter: ['has', 'point_count'],
         layout: {
-          'text-field': ['get', 'point_count_abbreviated'],
+          'text-field': ['get', 'total'],
           'text-font': ['Noto Sans Bold'],
-          'text-size': ['step', ['get', 'point_count'], 12, 100, 14],
+          'text-size': 11,
+          'text-allow-overlap': true,
         },
         paint: { 'text-color': '#ffffff' },
       });
 
-      // Individual restaurants below z14 (rural singles) — colored by tier
+      // Single-restaurant towns below z14 — the restaurant's own colored dot
       map.addLayer({
-        id: 'restaurant-dot',
+        id: 'city-single-dot',
         type: 'circle',
-        source: 'restaurants',
+        source: 'city-singles',
         maxzoom: 14,
-        filter: ['!', ['has', 'point_count']],
         paint: {
           'circle-color': ['get', 'color'],
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, 5, 14, 7],
@@ -245,11 +351,23 @@ export default function MapPage() {
         },
       });
 
-      // Click a coarse cluster → zoom in to expand it
-      map.on('click', 'clusters', (e) => {
-        const f = map.queryRenderedFeatures(e.point, { layers: ['clusters'] })[0];
+      // Click a city bubble → zoom to that city's footprint
+      map.on('click', 'city-bubble', (e) => {
+        const f = map.queryRenderedFeatures(e.point, { layers: ['city-bubble'] })[0];
+        const city = String(f.properties?.city ?? '').toLowerCase();
+        const entry = cityBoundsRef.current.get(city);
+        if (entry) {
+          selectRef.current(null);
+          stackRef.current(null);
+          map.fitBounds(entry.bounds, { padding: 70, maxZoom: 14.5, duration: 900 });
+        }
+      });
+
+      // Click a statewide merge of neighbor towns → zoom until they separate
+      map.on('click', 'city-merged', (e) => {
+        const f = map.queryRenderedFeatures(e.point, { layers: ['city-merged'] })[0];
         const clusterId = f.properties?.cluster_id;
-        const src = map.getSource('restaurants') as maplibregl.GeoJSONSource;
+        const src = map.getSource('cities') as maplibregl.GeoJSONSource;
         src.getClusterExpansionZoom(clusterId).then((zoom) => {
           map.easeTo({ center: (f.geometry as GeoJSON.Point).coordinates as [number, number], zoom });
         });
@@ -280,7 +398,7 @@ export default function MapPage() {
       });
 
       // Click a restaurant → quick view
-      for (const layer of ['restaurant-dot', 'fine-dot']) {
+      for (const layer of ['city-single-dot', 'fine-dot']) {
         map.on('click', layer, (e) => {
           const id = e.features?.[0]?.properties?.id as string | undefined;
           if (id) {
@@ -290,7 +408,7 @@ export default function MapPage() {
         });
       }
 
-      for (const layer of ['clusters', 'restaurant-dot', 'fine-dot', 'fine-cluster']) {
+      for (const layer of ['city-bubble', 'city-merged', 'city-single-dot', 'fine-dot', 'fine-cluster']) {
         map.on('mouseenter', layer, () => { map.getCanvas().style.cursor = 'pointer'; });
         map.on('mouseleave', layer, () => { map.getCanvas().style.cursor = ''; });
       }
@@ -298,7 +416,7 @@ export default function MapPage() {
       // Tapping empty map dismisses the quick view / picker
       map.on('click', (e) => {
         const hits = map.queryRenderedFeatures(e.point, {
-          layers: ['clusters', 'restaurant-dot', 'fine-dot', 'fine-cluster'],
+          layers: ['city-bubble', 'city-merged', 'city-single-dot', 'fine-dot', 'fine-cluster'],
         });
         if (hits.length === 0) {
           selectRef.current(null);
@@ -352,7 +470,7 @@ export default function MapPage() {
           onClose={() => setStack(null)}
         />
       ) : (
-        <div className="map-hint">Tap a dot for a restaurant&apos;s score · tap a cluster to zoom in</div>
+        <div className="map-hint">Tap a city to zoom in · tap a dot for a restaurant&apos;s score</div>
       )}
     </div>
   );

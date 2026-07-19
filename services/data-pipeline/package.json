@@ -15,6 +15,7 @@
     "backfill:scores": "tsx src/jobs/backfill-scores.ts",
     "import:nad": "tsx src/jobs/import-nad.ts",
     "apply:address-points": "tsx src/jobs/apply-address-points.ts",
+    "fix:misplaced": "tsx src/jobs/fix-misplaced.ts",
     "merge:data": "tsx src/jobs/merge-data.ts"
   },
   "dependencies": {
