@@ -4,8 +4,8 @@ name: Archive Data to R2
 # full history; this puts a dated copy under a second account (Cloudflare R2)
 # so no single account loss can destroy the data.
 on:
-  schedule:
-    - cron: '0 9 2 * *' # 2nd of the month, 9:00 UTC
+  # Schedule paused 2026-07-20 (owner request) — manual dispatch only.
+  # To resume, restore: schedule: - cron: '0 9 2 * *' (2nd of the month)
   workflow_dispatch:
 
 permissions:

@@ -1,11 +1,9 @@
 name: Update Inspection Data
 
 on:
-  schedule:
-    # Daily incremental at 6 AM Central Time (12 PM UTC)
-    - cron: '0 12 * * *'
-    # Monthly full backfill on the 1st at 2 AM Central Time (8 AM UTC)
-    - cron: '0 8 1 * *'
+  # Schedules paused 2026-07-20 (owner request) — manual dispatch only.
+  # To resume, restore under `schedule:` — daily was '0 12 * * *' (6 AM
+  # Central incremental), monthly full was '0 8 1 * *' (1st, 2 AM Central).
   workflow_dispatch:
     inputs:
       mode:
