@@ -16,7 +16,7 @@
     "sync:daily": "turbo run sync:daily --filter=data-pipeline"
   },
   "devDependencies": {
-    "turbo": "^2.3.0"
+    "turbo": "^2.10.6"
   },
   "packageManager": "npm@10.8.2"
 }
