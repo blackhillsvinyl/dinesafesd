@@ -4,7 +4,7 @@
   "name": "MADE LLC",
   "address": "221 N Main ST",
   "city": "Avon",
-  "zip": "57572",
+  "zip": "57315",
   "precision": null
  },
  {
@@ -12,7 +12,7 @@
   "name": "CROW BUTTES MERCANTILE",
   "address": "14967 US HWY 85",
   "city": "Belle Fourche",
-  "zip": null,
+  "zip": "57717",
   "precision": "city"
  },
  {
@@ -92,7 +92,7 @@
   "name": "LAKOTA THRIFTY MART ^",
   "address": "822 N MAIN ST",
   "city": "Eagle Butte",
-  "zip": "57301",
+  "zip": "57625",
   "precision": null
  },
  {
@@ -110,14 +110,6 @@
   "city": "Gettysburg",
   "zip": null,
   "precision": "city"
- },
- {
-  "id": "sd_doh_breaking-burrito-1-121-bedrock-cir-harrisburg",
-  "name": "BREAKING BURRITO 1 ~",
-  "address": "121 BEDROCK CIR",
-  "city": "Harrisburg",
-  "zip": null,
-  "precision": null
  },
  {
   "id": "sd_doh_mr-churro-121-bedrock-cir-harrisburg",
@@ -140,7 +132,7 @@
   "name": "WHATS FOR DINNER?",
   "address": "23539 365th AVE",
   "city": "Kimball",
-  "zip": null,
+  "zip": "57355",
   "precision": "city"
  },
  {
@@ -148,7 +140,7 @@
   "name": "GUS STOP III",
   "address": "611 US Hwy 281",
   "city": "Lake Andes",
-  "zip": null,
+  "zip": "57356",
   "precision": null
  },
  {
@@ -156,7 +148,7 @@
   "name": "MCINTOSH CO-OP INC",
   "address": "102 US HWY 12",
   "city": "McIntosh",
-  "zip": null,
+  "zip": "57641",
   "precision": null
  },
  {
@@ -164,7 +156,7 @@
   "name": "THE WAKESIDE BAR AND GRILL LLC",
   "address": "103 Sunset DR",
   "city": "Mina",
-  "zip": null,
+  "zip": "57451",
   "precision": null
  },
  {
@@ -172,7 +164,7 @@
   "name": "BADLANDS BELLY BUSTER~",
   "address": "20950 SD STATE HWY 248",
   "city": "Philip",
-  "zip": null,
+  "zip": "57567",
   "precision": "city"
  },
  {
@@ -188,7 +180,7 @@
   "name": "MARIA`S RESTAURANT",
   "address": "7216 MT RUSHMORE RD",
   "city": "Pringle",
-  "zip": null,
+  "zip": "57773",
   "precision": "street"
  },
  {

@@ -19,6 +19,7 @@ on:
           - test
           - counties
           - backfill-scores
+          - zips
       counties:
         description: 'Comma-separated county names (modes: counties, backfill-scores) — empty backfill-scores runs statewide'
         required: false
@@ -92,6 +93,11 @@ jobs:
               # Downloads/parses report PDFs for stored inspections missing a
               # score (Past Inspections rows carry no score in the grid).
               npm run backfill:scores -- "$COUNTIES"
+              ;;
+            zips)
+              # List-page-only pass attaching the portal's ZIPs to existing
+              # records (no per-establishment requests)
+              npm run harvest:zips
               ;;
             test)
               npm run sync:test
