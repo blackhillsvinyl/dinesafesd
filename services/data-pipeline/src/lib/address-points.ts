@@ -80,7 +80,15 @@ export function candidateKeys(street: string): string[] {
   const rawTokens = street.toUpperCase().replace(/[.,]/g, '').split(/\s+/).filter(Boolean);
   if (rawTokens.length < 2 || !/^\d+[A-Z]?$/.test(rawTokens[0])) return [];
   const num = rawTokens[0].replace(/[A-Z]$/, '');
-  const tokens = rawTokens.slice(1).map((t) => ORDINAL_WORDS[t] ?? DIR_WORDS[t] ?? TYPE_ABBR[t] ?? t);
+  const tokens = rawTokens.slice(1).map((t) => ORDINAL_WORDS[t] ?? TYPE_ABBR[t] ?? t);
+  // A spelled-out direction word is only a directional when it is NOT the
+  // street's own name: "E NORTH ST" keeps NORTH (the street is North St),
+  // while "NORTH MAIN ST" abbreviates to a predir. Rule: map the word only
+  // when the next token exists and is not a street type.
+  for (let i = 0; i < tokens.length; i++) {
+    const d = DIR_WORDS[tokens[i]];
+    if (d && i + 1 < tokens.length && !TYPES.has(tokens[i + 1])) tokens[i] = d;
+  }
 
   let predir = '';
   if (tokens.length > 1 && DIRS.has(tokens[0])) predir = tokens.shift()!;

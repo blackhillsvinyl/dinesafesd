@@ -22,6 +22,7 @@
     "resolve:tail": "tsx src/jobs/resolve-tail.ts",
     "demote:outliers": "tsx src/jobs/demote-outliers.ts",
     "demote:pileups": "tsx src/jobs/demote-pileups.ts",
+    "audit:verified": "tsx src/jobs/audit-verified.ts",
     "repair:cities": "tsx src/jobs/repair-cities.ts",
     "backfill:zips": "tsx src/jobs/backfill-zips.ts",
     "apply:listings": "tsx src/jobs/apply-listing-results.ts",
