@@ -2,6 +2,7 @@ import { Routes, Route, NavLink } from 'react-router-dom';
 import Logo from './components/Logo';
 import MapPage from './pages/MapPage';
 import SearchPage from './pages/SearchPage';
+import LatestPage from './pages/LatestPage';
 import RestaurantPage from './pages/RestaurantPage';
 import AboutPage from './pages/AboutPage';
 import PrivacyPage from './pages/PrivacyPage';
@@ -23,6 +24,7 @@ export default function App() {
             Map
           </NavLink>
           <NavLink to="/search">Search</NavLink>
+          <NavLink to="/latest">Latest</NavLink>
           <NavLink to="/about">About</NavLink>
         </nav>
       </header>
@@ -30,6 +32,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<MapPage />} />
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/latest" element={<LatestPage />} />
           <Route path="/r/:id" element={<RestaurantPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />

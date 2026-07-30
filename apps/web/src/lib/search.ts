@@ -67,7 +67,8 @@ export function buildSearchIndex(restaurants: Restaurant[]): IndexedRestaurant[]
   return restaurants.map((r) => {
     const name = normalize(r.name);
     const city = normalize(r.city ?? '');
-    const address = normalize(r.address ?? '');
+    // ZIP folded into the address text so "57701" or "410 main 57769" work
+    const address = normalize(`${r.address ?? ''} ${r.zip_code ?? ''}`);
     return { restaurant: r, name, city, address, words: `${name} ${city}`.split(' ') };
   });
 }

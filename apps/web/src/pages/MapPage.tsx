@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useQuery } from '@tanstack/react-query';
@@ -9,9 +9,39 @@ import StackPicker from '../components/StackPicker';
 import CitySearch, { buildCityList } from '../components/CitySearch';
 import type { CityEntry } from '../components/CitySearch';
 import { isVerifiedLocation } from '../lib/geo';
+import { CATEGORY_VISUALS } from '../violationCategories';
 import type { Restaurant } from '../types';
 
-const MAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
+const LIGHT_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
+const DARK_STYLE = 'https://tiles.openfreemap.org/styles/dark';
+
+const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
+function useDarkMode(): boolean {
+  return useSyncExternalStore(
+    (cb) => {
+      darkQuery.addEventListener('change', cb);
+      return () => darkQuery.removeEventListener('change', cb);
+    },
+    () => darkQuery.matches
+  );
+}
+
+export interface MapFilters {
+  minScore: 'all' | '90' | '95';
+  noCritical: boolean;
+  excluded: string[]; // violation category keys to exclude
+}
+
+const NO_FILTERS: MapFilters = { minScore: 'all', noCritical: false, excluded: [] };
+
+function passesFilters(r: Restaurant, f: MapFilters): boolean {
+  if (f.minScore !== 'all' && (r.latest_score == null || r.latest_score < Number(f.minScore)))
+    return false;
+  if (f.noCritical && r.has_critical_violations) return false;
+  if (f.excluded.length && r.violation_categories.some((c) => f.excluded.includes(c)))
+    return false;
+  return true;
+}
 const DEFAULT_CENTER: [number, number] = [-100.0, 44.4];
 // South Dakota bounding box, padded generously so towns on the state line
 // (Sioux Falls, North Sioux City, Belle Fourche…) can still be centered on
@@ -102,6 +132,18 @@ export default function MapPage() {
   const cityBoundsRef = useRef<Map<string, CityEntry>>(new Map());
   const [selected, setSelected] = useState<Restaurant | null>(null);
   const [stack, setStack] = useState<Restaurant[] | null>(null);
+  const [filters, setFilters] = useState<MapFilters>(NO_FILTERS);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+  const noticeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dark = useDarkMode();
+  const showNotice = (msg: string) => {
+    setNotice(msg);
+    if (noticeTimer.current) clearTimeout(noticeTimer.current);
+    noticeTimer.current = setTimeout(() => setNotice(null), 6000);
+  };
+  const noticeRef = useRef(showNotice);
+  noticeRef.current = showNotice;
   const selectRef = useRef(setSelected);
   selectRef.current = setSelected;
   const stackRef = useRef(setStack);
@@ -119,7 +161,10 @@ export default function MapPage() {
     if (!index) return;
     // Pins, city bubbles, and city bounds all come from verified locations
     // only — an unverified coordinate must never place anything on the map.
-    const mappable = index.restaurants.filter(isVerifiedLocation);
+    // User filters (score / critical / category exclusions) apply on top.
+    const mappable = index.restaurants
+      .filter(isVerifiedLocation)
+      .filter((r) => passesFilters(r, filters));
     byId.current = new Map(index.restaurants.map((r) => [r.id, r]));
     dataRef.current = toFeatureCollection(mappable);
     const { cityFC, singlesFC, smallDotsFC } = toCityCollections(mappable);
@@ -141,7 +186,7 @@ export default function MapPage() {
     if (savedView.selectedId) {
       setSelected(byId.current.get(savedView.selectedId) ?? null);
     }
-  }, [index]);
+  }, [index, filters, dark]);
 
   // Remember selection (and clear it when closed) across navigation
   useEffect(() => {
@@ -153,7 +198,7 @@ export default function MapPage() {
 
     const map = new maplibregl.Map({
       container: containerRef.current,
-      style: MAP_STYLE,
+      style: dark ? DARK_STYLE : LIGHT_STYLE,
       center: savedView.center,
       zoom: savedView.zoom,
       minZoom: 6,
@@ -165,10 +210,28 @@ export default function MapPage() {
     // Exposed for end-to-end tests (canvas layers aren't DOM-inspectable)
     (window as unknown as { __map: maplibregl.Map }).__map = map;
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
-    map.addControl(
-      new maplibregl.GeolocateControl({ positionOptions: { enableHighAccuracy: false } }),
-      'top-right'
-    );
+    const geolocate = new maplibregl.GeolocateControl({
+      positionOptions: { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
+      fitBoundsOptions: { maxZoom: 15 },
+      showAccuracyCircle: true,
+    });
+    map.addControl(geolocate, 'top-right');
+    // Surface geolocation failures instead of a silently dead button
+    geolocate.on('error', (e: GeolocationPositionError) => {
+      const msg =
+        e?.code === 1
+          ? 'Location permission is blocked — allow location access for this site and try again.'
+          : e?.code === 3
+            ? 'Locating timed out — try again.'
+            : 'Could not determine your location.';
+      noticeRef.current(msg);
+    });
+    geolocate.on('outofmaxbounds', () => {
+      noticeRef.current("You're outside South Dakota — the map stays within the state.");
+    });
+    // Text/halo colors for our labels, tuned per basemap
+    const labelInk = dark ? '#cbd5e1' : '#334155';
+    const labelHalo = dark ? '#0b1120' : '#ffffff';
 
     map.on('load', () => {
       // Two passes over the same data:
@@ -294,8 +357,8 @@ export default function MapPage() {
           'text-optional': true,
         },
         paint: {
-          'text-color': '#334155',
-          'text-halo-color': '#ffffff',
+          'text-color': labelInk,
+          'text-halo-color': labelHalo,
           'text-halo-width': 1.4,
         },
       });
@@ -346,8 +409,8 @@ export default function MapPage() {
           'text-optional': true,
         },
         paint: {
-          'text-color': '#334155',
-          'text-halo-color': '#ffffff',
+          'text-color': labelInk,
+          'text-halo-color': labelHalo,
           'text-halo-width': 1.4,
         },
       });
@@ -397,8 +460,8 @@ export default function MapPage() {
           'text-optional': true,
         },
         paint: {
-          'text-color': '#334155',
-          'text-halo-color': '#ffffff',
+          'text-color': labelInk,
+          'text-halo-color': labelHalo,
           'text-halo-width': 1.4,
         },
       });
@@ -469,8 +532,8 @@ export default function MapPage() {
           'text-optional': true,
         },
         paint: {
-          'text-color': '#334155',
-          'text-halo-color': '#ffffff',
+          'text-color': labelInk,
+          'text-halo-color': labelHalo,
           'text-halo-width': 1.4,
         },
       });
@@ -562,7 +625,7 @@ export default function MapPage() {
       map.remove();
       mapRef.current = null;
     };
-  }, []);
+  }, [dark]);
 
   const flyToCity = (c: CityEntry) => {
     setSelected(null);
@@ -585,6 +648,16 @@ export default function MapPage() {
     }
   };
 
+  const filtering =
+    filters.minScore !== 'all' || filters.noCritical || filters.excluded.length > 0;
+  const toggleCat = (key: string) =>
+    setFilters((f) => ({
+      ...f,
+      excluded: f.excluded.includes(key)
+        ? f.excluded.filter((k) => k !== key)
+        : [...f.excluded, key],
+    }));
+
   return (
     <div className="map-wrap">
       <div ref={containerRef} className="map-container" />
@@ -593,6 +666,66 @@ export default function MapPage() {
         onPick={flyToCity}
         onPickRestaurant={flyToRestaurant}
       />
+      <div className="map-filters">
+        <button
+          className={`mf-toggle${filtering ? ' filtering' : ''}`}
+          onClick={() => setFiltersOpen((v) => !v)}
+          aria-expanded={filtersOpen}
+        >
+          Filters{filtering ? ' ●' : ''}
+        </button>
+        {filtersOpen && (
+          <div className="mf-panel" role="group" aria-label="Map filters">
+            <div>
+              <div className="mf-label">Minimum score</div>
+              <div className="mf-chips">
+                {(['all', '90', '95'] as const).map((k) => (
+                  <button
+                    key={k}
+                    className={`filter-chip${filters.minScore === k ? ' active' : ''}`}
+                    onClick={() => setFilters((f) => ({ ...f, minScore: k }))}
+                  >
+                    {k === 'all' ? 'Any' : `${k}+`}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <div className="mf-label">Violations</div>
+              <div className="mf-chips">
+                <button
+                  className={`filter-chip${filters.noCritical ? ' active' : ''}`}
+                  onClick={() => setFilters((f) => ({ ...f, noCritical: !f.noCritical }))}
+                >
+                  ⚠ Hide critical
+                </button>
+              </div>
+            </div>
+            <div>
+              <div className="mf-label">Hide places with…</div>
+              <div className="mf-chips">
+                {Object.entries(CATEGORY_VISUALS)
+                  .filter(([k]) => k !== 'other')
+                  .map(([key, cat]) => (
+                    <button
+                      key={key}
+                      className={`filter-chip${filters.excluded.includes(key) ? ' active' : ''}`}
+                      onClick={() => toggleCat(key)}
+                    >
+                      {cat.icon} {cat.label}
+                    </button>
+                  ))}
+              </div>
+            </div>
+            {filtering && (
+              <button className="filter-chip" onClick={() => setFilters(NO_FILTERS)}>
+                Reset filters
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+      {notice && <div className="map-notice">{notice}</div>}
       {selected ? (
         <QuickView restaurant={selected} onClose={() => setSelected(null)} />
       ) : stack ? (

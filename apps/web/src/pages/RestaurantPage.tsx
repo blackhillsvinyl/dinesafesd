@@ -94,6 +94,29 @@ export default function RestaurantPage() {
         </div>
       ))}
 
+      <h2>Source data</h2>
+      <p className="small">
+        {restaurant.source === 'sf_sweeps' ? (
+          <>
+            This establishment is inspected by the City of Sioux Falls Health Department. View
+            the official records in the{' '}
+            <a href="https://sweepsdata.siouxfalls.gov/" target="_blank" rel="noopener noreferrer">
+              Sioux Falls SWEEPS database
+            </a>{' '}
+            (search for “{restaurant.name}”).
+          </>
+        ) : (
+          <>
+            This establishment is inspected by the South Dakota Department of Health. View the
+            official records — including original report PDFs — in the{' '}
+            <a href="https://sddoh.safefoodinspection.com/" target="_blank" rel="noopener noreferrer">
+              SD DOH food inspection portal
+            </a>{' '}
+            (search for “{restaurant.name}”).
+          </>
+        )}
+      </p>
+
       <p className="small" style={{ marginTop: 24 }}>
         Data provided by state and local health departments. Inspections are a snapshot in
         time and violations may have been corrected on-site.

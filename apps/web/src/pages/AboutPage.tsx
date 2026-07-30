@@ -41,6 +41,17 @@ export default function AboutPage() {
         program. Data is refreshed daily.
         {lastUpdated && <> Data updated {formatDistanceToNow(lastUpdated, { addSuffix: true })}.</>}
       </p>
+      <p>
+        You can always consult the unadulterated official records directly:{' '}
+        <a href="https://sddoh.safefoodinspection.com/" target="_blank" rel="noopener noreferrer">
+          SD DOH food inspection portal
+        </a>{' '}
+        (statewide) and the{' '}
+        <a href="https://sweepsdata.siouxfalls.gov/" target="_blank" rel="noopener noreferrer">
+          Sioux Falls SWEEPS database
+        </a>{' '}
+        (City of Sioux Falls). Every full report page here links to the matching source.
+      </p>
 
       <h2>Coverage and limitations</h2>
       <ul>
@@ -80,8 +91,12 @@ export default function AboutPage() {
         ))}
       </ul>
 
-      <h2>Get the app</h2>
-      <p>DineSafeSD is available for iPhone and Android — free, no account required.</p>
+      <h2>Apps</h2>
+      <p>
+        DineSafeSD is a free website — no account, no install. Native iPhone and Android apps
+        are in the works; in the meantime the site works great on your phone (add it to your
+        home screen).
+      </p>
 
       <h2>Legal</h2>
       <p>

@@ -87,7 +87,42 @@ export default function CitySearch({ restaurants, onPick, onPickRestaurant }: Pr
   const cities = useMemo(() => buildCityList(restaurants), [restaurants]);
   const searchIndex = useMemo(() => buildSearchIndex(restaurants), [restaurants]);
 
+  // ZIP-code areas, built from verified coordinates only
+  const zips = useMemo(() => {
+    const acc = new Map<string, { lats: number[]; lngs: number[] }>();
+    for (const r of restaurants) {
+      const zip = (r.zip_code ?? '').slice(0, 5);
+      if (!/^\d{5}$/.test(zip)) continue;
+      if (r.geo_precision !== 'rooftop' && r.geo_precision !== 'address') continue;
+      const e = acc.get(zip);
+      if (e) {
+        e.lats.push(r.latitude);
+        e.lngs.push(r.longitude);
+      } else {
+        acc.set(zip, { lats: [r.latitude], lngs: [r.longitude] });
+      }
+    }
+    const entries: CityEntry[] = [];
+    for (const [zip, e] of acc) {
+      const lats = e.lats.sort((a, b) => a - b);
+      const lngs = e.lngs.sort((a, b) => a - b);
+      const pad = 0.004;
+      entries.push({
+        name: zip,
+        count: lats.length,
+        bounds: [
+          [percentile(lngs, 0.05) - pad, percentile(lats, 0.05) - pad],
+          [percentile(lngs, 0.95) + pad, percentile(lats, 0.95) + pad],
+        ],
+      });
+    }
+    return entries;
+  }, [restaurants]);
+
   const q = normalize(query);
+  const zipMatches = /^\d{3,5}$/.test(q)
+    ? zips.filter((z) => z.name.startsWith(q)).slice(0, 3)
+    : [];
   const cityMatches = q
     ? cities.filter((c) => normalize(c.name).includes(q)).slice(0, 3)
     : [];
@@ -115,7 +150,7 @@ export default function CitySearch({ restaurants, onPick, onPickRestaurant }: Pr
         ref={inputRef}
         className="cs-input"
         type="search"
-        placeholder="Search city or restaurant…"
+        placeholder="City, ZIP, address, or restaurant…"
         value={query}
         onChange={(e) => {
           setQuery(e.target.value);
@@ -124,15 +159,22 @@ export default function CitySearch({ restaurants, onPick, onPickRestaurant }: Pr
         onFocus={() => setOpen(true)}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
-            if (cityMatches[0]) pick(cityMatches[0]);
+            if (zipMatches[0]) pick(zipMatches[0]);
+            else if (cityMatches[0]) pick(cityMatches[0]);
             else if (restaurantMatches[0]) pickRestaurant(restaurantMatches[0]);
           }
           if (e.key === 'Escape') close();
         }}
         aria-label="Search city or restaurant"
       />
-      {open && (cityMatches.length > 0 || restaurantMatches.length > 0) && (
+      {open && (zipMatches.length > 0 || cityMatches.length > 0 || restaurantMatches.length > 0) && (
         <div className="cs-list" role="listbox">
+          {zipMatches.map((z) => (
+            <button key={z.name} className="cs-row" onClick={() => pick(z)} role="option" aria-selected={false}>
+              <span className="cs-name">ZIP {z.name}</span>
+              <span className="cs-count">{z.count}</span>
+            </button>
+          ))}
           {cityMatches.map((c) => (
             <button key={c.name} className="cs-row" onClick={() => pick(c)} role="option" aria-selected={false}>
               <span className="cs-name">{c.name}</span>
