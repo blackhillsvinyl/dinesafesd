@@ -20,7 +20,7 @@
   "name": "605 BARBECUE COMPANY LLC",
   "address": "26375 MCHARDY RD",
   "city": "Brandon",
-  "zip": null,
+  "zip": "57005",
   "precision": "street"
  },
  {
@@ -28,7 +28,7 @@
   "name": "THE NORTH 40 BAR & GRILL",
   "address": "320 N MAIN AVE",
   "city": "Bridgewater",
-  "zip": "57104",
+  "zip": "57319",
   "precision": null
  },
  {
@@ -36,7 +36,7 @@
   "name": "COPPER COFFEE & GOODS LLC",
   "address": "16946 SD HWY 34 Union STE 1",
   "city": "Center",
-  "zip": null,
+  "zip": "57787",
   "precision": "street"
  },
  {
@@ -44,7 +44,7 @@
   "name": "THE COOKIE MAMA LLC (SHARED KITCHEN)",
   "address": "16946 SD-34 Union STE 1",
   "city": "Center",
-  "zip": null,
+  "zip": "57787",
   "precision": "street"
  },
  {
@@ -52,7 +52,7 @@
   "name": "EARL OF SANDWICH",
   "address": "372 MAIN ST",
   "city": "Deadwood",
-  "zip": null,
+  "zip": "57732",
   "precision": null
  },
  {
@@ -60,7 +60,7 @@
   "name": "FIRST GOLD HOTEL",
   "address": "270 Main ST",
   "city": "Deadwood",
-  "zip": null,
+  "zip": "57732",
   "precision": null
  },
  {
@@ -68,7 +68,7 @@
   "name": "FLYT STEAKHOUSE BY ALPINE INN",
   "address": "372 MAIN ST",
   "city": "Deadwood",
-  "zip": null,
+  "zip": "57732",
   "precision": null
  },
  {
@@ -76,7 +76,7 @@
   "name": "MADE MARKET",
   "address": "372 MAIN ST",
   "city": "Deadwood",
-  "zip": null,
+  "zip": "57732",
   "precision": null
  },
  {
@@ -84,7 +84,7 @@
   "name": "MARCOS PIZZA 4032",
   "address": "372 MAIN ST",
   "city": "Deadwood",
-  "zip": null,
+  "zip": "57732",
   "precision": null
  },
  {
@@ -100,7 +100,7 @@
   "name": "COUNTRY GIRL CATERING",
   "address": "14596 SD HWY 73",
   "city": "Faith",
-  "zip": null,
+  "zip": "57626",
   "precision": "street"
  },
  {
@@ -108,7 +108,7 @@
   "name": "BROWNS LODGE & HUNTING RANCH",
   "address": "29350 US HWY 212 LOT 72",
   "city": "Gettysburg",
-  "zip": null,
+  "zip": "57442",
   "precision": "city"
  },
  {
@@ -116,7 +116,7 @@
   "name": "MR CHURRO~",
   "address": "121 BEDROCK CIR",
   "city": "Harrisburg",
-  "zip": null,
+  "zip": "57032",
   "precision": null
  },
  {
@@ -124,7 +124,7 @@
   "name": "WILD SIDES",
   "address": "34160 181st ST",
   "city": "Highmore",
-  "zip": null,
+  "zip": "57345",
   "precision": "street"
  },
  {
@@ -172,7 +172,7 @@
   "name": "MAKOCE AGRICULTURE DEVELOPMENT LLC",
   "address": "1751 MAHPIYA MAZA LN",
   "city": "Porcupine",
-  "zip": null,
+  "zip": "57772",
   "precision": null
  },
  {
@@ -182,14 +182,6 @@
   "city": "Pringle",
   "zip": "57773",
   "precision": "street"
- },
- {
-  "id": "sd_doh_big-d-oil-co-65-1951-moon-meadows-dr-rapid-city",
-  "name": "BIG D OIL CO 65",
-  "address": "1951 MOON MEADOWS DR",
-  "city": "Rapid City",
-  "zip": "57701",
-  "precision": null
  },
  {
   "id": "sd_doh_black-hills-blend-5-512-omaha-rapid-city",
@@ -204,7 +196,7 @@
   "name": "CANDYLAND",
   "address": "23835 Mill Iron DR",
   "city": "Rapid City",
-  "zip": null,
+  "zip": "57702",
   "precision": "city"
  },
  {
@@ -212,7 +204,7 @@
   "name": "THE SODA BAR",
   "address": "24035 POMMEL LOOP",
   "city": "Rapid City",
-  "zip": null,
+  "zip": "57701",
   "precision": null
  },
  {
@@ -332,7 +324,7 @@
   "name": "HANNAS TWIST BAKERY",
   "address": "2620 CARMELO CT",
   "city": "Spearfish",
-  "zip": null,
+  "zip": "57783",
   "precision": null
  },
  {
@@ -340,7 +332,7 @@
   "name": "LOBSTER DOGS",
   "address": "2850 HILLSVIEW RD",
   "city": "Spearfish",
-  "zip": null,
+  "zip": "57783",
   "precision": "street"
  },
  {
@@ -348,7 +340,7 @@
   "name": "THE SWITCH%",
   "address": "1190 N AMES APT 11",
   "city": "Spearfish",
-  "zip": null,
+  "zip": "57783",
   "precision": "street"
  }
 ]
