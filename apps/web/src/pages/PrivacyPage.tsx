@@ -57,7 +57,7 @@ export default function PrivacyPage() {
       <h2>Contact</h2>
       <p>
         Questions? Email{' '}
-        <a href="mailto:michael@blackhillsvinyl.com">michael@blackhillsvinyl.com</a>.
+        <a href="mailto:support@dinesafesd.com">support@dinesafesd.com</a>.
       </p>
     </div>
   );

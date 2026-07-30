@@ -1,8 +1,8 @@
 import type { Restaurant } from '../types';
 
-// "Wrong location" reports go straight to the maintainer's inbox with
-// everything needed to reproduce and fix — record id, address, current pin.
-const REPORT_TO = 'michael@blackhillsvinyl.com';
+// "Wrong location" reports carry everything needed to reproduce and fix —
+// record id, address, current pin. support@ forwards privately.
+const REPORT_TO = 'support@dinesafesd.com';
 
 export function locationReportMailto(
   r: Pick<Restaurant, 'id' | 'name' | 'address' | 'city' | 'latitude' | 'longitude'>

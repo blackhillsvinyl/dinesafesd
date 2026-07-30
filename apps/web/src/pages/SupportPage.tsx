@@ -4,7 +4,7 @@ export default function SupportPage() {
       <h1>Support</h1>
       <p>
         Found a problem, have a question, or spotted incorrect data? Email{' '}
-        <a href="mailto:michael@blackhillsvinyl.com">michael@blackhillsvinyl.com</a> and include
+        <a href="mailto:support@dinesafesd.com">support@dinesafesd.com</a> and include
         the restaurant name and city if your question is about a specific listing.
       </p>
 
