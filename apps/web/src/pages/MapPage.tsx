@@ -71,6 +71,9 @@ function toFeatureCollection(restaurants: Restaurant[]): GeoJSON.FeatureCollecti
 // and rural users shouldn't have to dive to z14 to see what's in town.
 const SMALL_CITY_MAX = 6;
 const SMALL_CITY_DOT_ZOOM = 11;
+// Dense cities hand their bubble off to clustered sub-groups here — one
+// "488" bubble for all of Rapid City until z14 hid too much
+const LARGE_CITY_CLUSTER_ZOOM = 12;
 
 // One rollup per city (count ≥ 2) — the coarse view is city bubbles, not
 // radius-based cluster blobs, so a town is always exactly one thing to tap.
@@ -155,6 +158,25 @@ export default function MapPage() {
     staleTime: 1000 * 60 * 60,
   });
 
+  // Push the latest feature data into every map source. Safe to call any
+  // time: no-ops until the style (and thus the sources) actually exists —
+  // the 'idle' listener in the map effect re-runs it after initial load, so
+  // the first data arrival can never race the style and leave a source
+  // empty.
+  const syncSources = (map: maplibregl.Map | null) => {
+    if (!map || !map.isStyleLoaded()) return;
+    const push = (id: string, data: GeoJSON.FeatureCollection) => {
+      const src = map.getSource(id) as maplibregl.GeoJSONSource | undefined;
+      if (src) src.setData(data);
+    };
+    push('restaurants-fine', dataRef.current);
+    push('cities', citiesRef.current);
+    push('city-singles', singlesRef.current);
+    push('city-small-dots', smallDotsRef.current);
+  };
+  const syncRef = useRef(syncSources);
+  syncRef.current = syncSources;
+
   // Keep an id→restaurant lookup + current feature data. Push into the source
   // if it already exists; otherwise the map 'load' handler reads dataRef.
   useEffect(() => {
@@ -174,14 +196,7 @@ export default function MapPage() {
     cityBoundsRef.current = new Map(
       buildCityList(mappable).map((c) => [c.name.toLowerCase(), c])
     );
-    const push = (id: string, data: GeoJSON.FeatureCollection) => {
-      const src = mapRef.current?.getSource(id) as maplibregl.GeoJSONSource | undefined;
-      if (src) src.setData(data);
-    };
-    push('restaurants-fine', dataRef.current);
-    push('cities', citiesRef.current);
-    push('city-singles', singlesRef.current);
-    push('city-small-dots', smallDotsRef.current);
+    syncSources(mapRef.current);
     // Restore the quick view that was open before navigating away
     if (savedView.selectedId) {
       setSelected(byId.current.get(savedView.selectedId) ?? null);
@@ -282,7 +297,7 @@ export default function MapPage() {
         id: 'city-bubble',
         type: 'circle',
         source: 'cities',
-        maxzoom: 14,
+        maxzoom: LARGE_CITY_CLUSTER_ZOOM,
         filter: isLargeCity,
         paint: {
           'circle-color': '#334155',
@@ -310,7 +325,7 @@ export default function MapPage() {
         id: 'city-count',
         type: 'symbol',
         source: 'cities',
-        maxzoom: 14,
+        maxzoom: LARGE_CITY_CLUSTER_ZOOM,
         filter: isLargeCity,
         layout: {
           'text-field': ['get', 'count'],
@@ -340,7 +355,7 @@ export default function MapPage() {
         type: 'symbol',
         source: 'cities',
         minzoom: 7,
-        maxzoom: 14,
+        maxzoom: LARGE_CITY_CLUSTER_ZOOM,
         filter: isLargeCity,
         layout: {
           'text-field': ['get', 'city'],
@@ -420,7 +435,7 @@ export default function MapPage() {
         id: 'city-single-dot',
         type: 'circle',
         source: 'city-singles',
-        maxzoom: 14,
+        maxzoom: LARGE_CITY_CLUSTER_ZOOM,
         paint: {
           'circle-color': ['get', 'color'],
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, 5, 14, 7],
@@ -436,7 +451,7 @@ export default function MapPage() {
         type: 'circle',
         source: 'city-small-dots',
         minzoom: SMALL_CITY_DOT_ZOOM,
-        maxzoom: 14,
+        maxzoom: LARGE_CITY_CLUSTER_ZOOM,
         paint: {
           'circle-color': ['get', 'color'],
           'circle-radius': ['interpolate', ['linear'], ['zoom'], 11, 6, 14, 7],
@@ -449,7 +464,7 @@ export default function MapPage() {
         type: 'symbol',
         source: 'city-small-dots',
         minzoom: SMALL_CITY_DOT_ZOOM + 0.5,
-        maxzoom: 14,
+        maxzoom: LARGE_CITY_CLUSTER_ZOOM,
         layout: {
           'text-field': ['get', 'name'],
           'text-font': ['Noto Sans Regular'],
@@ -471,7 +486,7 @@ export default function MapPage() {
         id: 'fine-dot',
         type: 'circle',
         source: 'restaurants-fine',
-        minzoom: 14,
+        minzoom: LARGE_CITY_CLUSTER_ZOOM,
         filter: ['!', ['has', 'point_count']],
         paint: {
           'circle-color': ['get', 'color'],
@@ -484,7 +499,7 @@ export default function MapPage() {
         id: 'fine-cluster',
         type: 'circle',
         source: 'restaurants-fine',
-        minzoom: 14,
+        minzoom: LARGE_CITY_CLUSTER_ZOOM,
         filter: ['has', 'point_count'],
         paint: {
           'circle-color': '#334155',
@@ -498,7 +513,7 @@ export default function MapPage() {
         id: 'fine-cluster-count',
         type: 'symbol',
         source: 'restaurants-fine',
-        minzoom: 14,
+        minzoom: LARGE_CITY_CLUSTER_ZOOM,
         filter: ['has', 'point_count'],
         layout: {
           'text-field': ['get', 'point_count_abbreviated'],
@@ -516,7 +531,7 @@ export default function MapPage() {
         id: 'restaurant-label',
         type: 'symbol',
         source: 'restaurants-fine',
-        minzoom: 14,
+        minzoom: LARGE_CITY_CLUSTER_ZOOM + 0.5,
         layout: {
           'text-field': [
             'case',
@@ -614,6 +629,11 @@ export default function MapPage() {
       });
     });
 
+    // First-load belt and suspenders: once the style settles, make sure
+    // every source holds the latest data (fixes the initial-load race that
+    // left the fine source empty until a filter toggle).
+    map.once('idle', () => syncRef.current(map));
+
     // Remember the camera so returning from a report resumes this view
     map.on('moveend', () => {
       const c = map.getCenter();
@@ -637,7 +657,7 @@ export default function MapPage() {
     setStack(null);
     setSelected(r);
     if (isVerifiedLocation(r)) {
-      mapRef.current?.flyTo({ center: [r.longitude, r.latitude], zoom: 16, duration: 1200 });
+      mapRef.current?.flyTo({ center: [r.longitude, r.latitude], zoom: 17.2, duration: 1200 });
     } else {
       // No trusted pin to fly to — settle for the city footprint if we have
       // one, and let the quick view carry the details.

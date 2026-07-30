@@ -869,6 +869,25 @@ body {
   text-align: center;
 }
 
+.back-to-top {
+  position: fixed;
+  right: 16px;
+  bottom: calc(20px + env(safe-area-inset-bottom));
+  z-index: 20;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--overlay);
+  backdrop-filter: blur(6px);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25);
+  cursor: pointer;
+}
+
 /* Latest reports feed */
 .feed-day {
   margin: 22px 0 6px;

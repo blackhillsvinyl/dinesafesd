@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { format, parseISO } from 'date-fns';
@@ -16,6 +16,14 @@ export default function LatestPage() {
     queryFn: fetchIndex,
     staleTime: 1000 * 60 * 60,
   });
+
+  // Long feed on a phone needs a way back up
+  const [showTop, setShowTop] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setShowTop(window.scrollY > 600);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const days = useMemo(() => {
     if (!index) return [];
@@ -88,6 +96,15 @@ export default function LatestPage() {
           </div>
         </section>
       ))}
+      {showTop && (
+        <button
+          className="back-to-top"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          aria-label="Back to top"
+        >
+          ↑ Top
+        </button>
+      )}
     </div>
   );
 }
