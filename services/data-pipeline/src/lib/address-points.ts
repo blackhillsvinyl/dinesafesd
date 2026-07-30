@@ -57,6 +57,94 @@ export function parseStreetParts(street: string): StreetParts | null {
   return { num, predir, name, type };
 }
 
+const DIR_WORDS: Record<string, string> = {
+  NORTH: 'N', SOUTH: 'S', EAST: 'E', WEST: 'W',
+  NORTHEAST: 'NE', NORTHWEST: 'NW', SOUTHEAST: 'SE', SOUTHWEST: 'SW',
+};
+const ORDINAL_WORDS: Record<string, string> = {
+  FIRST: '1ST', SECOND: '2ND', THIRD: '3RD', FOURTH: '4TH', FIFTH: '5TH',
+  SIXTH: '6TH', SEVENTH: '7TH', EIGHTH: '8TH', NINTH: '9TH', TENTH: '10TH',
+  ELEVENTH: '11TH', TWELFTH: '12TH',
+};
+
+/**
+ * Generate ordered candidate lookup keys for one street line, covering the
+ * format drift between DOH source addresses and GIS address points:
+ *   - directional between name and type ("CALUMET SW AVE" vs "CALUMET AVE SW")
+ *   - trailing directional folded into the name by the importers
+ *   - highway forms ("US 14 HWY" / "US HWY 14" / "HIGHWAY 14" / "SD HWY 14")
+ *   - spelled ordinals ("SIXTH AVE" vs "6TH AVE")
+ * Keys are [num, predir, name, type] joined with '|', most-specific first.
+ */
+export function candidateKeys(street: string): string[] {
+  const rawTokens = street.toUpperCase().replace(/[.,]/g, '').split(/\s+/).filter(Boolean);
+  if (rawTokens.length < 2 || !/^\d+[A-Z]?$/.test(rawTokens[0])) return [];
+  const num = rawTokens[0].replace(/[A-Z]$/, '');
+  const tokens = rawTokens.slice(1).map((t) => ORDINAL_WORDS[t] ?? DIR_WORDS[t] ?? TYPE_ABBR[t] ?? t);
+
+  let predir = '';
+  if (tokens.length > 1 && DIRS.has(tokens[0])) predir = tokens.shift()!;
+  let postdir = '';
+  if (tokens.length > 1 && DIRS.has(tokens[tokens.length - 1])) postdir = tokens.pop()!;
+  let type = '';
+  if (tokens.length > 1 && TYPES.has(tokens[tokens.length - 1])) {
+    const t = tokens.pop()!;
+    type = TYPE_ABBR[t] ?? t;
+  }
+  let middir = '';
+  if (tokens.length > 1 && DIRS.has(tokens[tokens.length - 1])) middir = tokens.pop()!;
+  const name = tokens.join(' ');
+  if (!name) return [];
+
+  const combos: Array<[string, string, string]> = [];
+  const push = (p: string, n: string, t: string) => combos.push([p, n.replace(/\s+/g, ' ').trim(), t]);
+  const dirs = [...new Set([middir, postdir, predir].filter(Boolean))];
+
+  // As-written first (back-compat with parseStreetParts keying)
+  push(predir, `${name} ${middir}`.trim(), type);
+  push(predir, name, type);
+  // Directional moved: as predir, folded after the type, or dropped
+  for (const d of dirs) {
+    push(d, name, type);
+    push(predir || d, `${name} ${type} ${d === predir ? postdir || middir || '' : d}`.trim(), '');
+    push('', `${name} ${type} ${d}`.trim(), '');
+  }
+  push(predir, `${name} ${type} ${postdir}`.trim(), '');
+  push(predir, name, '');
+  push('', name, type);
+  push('', name, '');
+
+  // Highway permutations
+  const hwyMatch = `${name} ${type}`.match(/\b(?:(US|SD|STATE)\s+)?(?:HWY\s+(\d+[A-Z]?)|(\d+[A-Z]?)\s+HWY)\b/);
+  if (hwyMatch || (type === 'HWY' && /\d/.test(name)) || /\bHWY\b/.test(name)) {
+    const route = (name + ' ' + type).match(/\b(\d+[A-Z]?)\b/)?.[1];
+    if (route) {
+      for (const sys of ['US', 'SD', '']) {
+        const s = sys ? sys + ' ' : '';
+        push(predir, `${s}HWY ${route}`, '');
+        push('', `${s}HWY ${route}`, '');
+        push(predir, `${s}HIGHWAY ${route}`, '');
+        push('', `${s}HIGHWAY ${route}`, '');
+        push(predir, `${s}${route}`, 'HWY');
+        push('', `${s}${route}`, 'HWY');
+        push('', `${s}${route}`, '');
+      }
+    }
+  }
+
+  const seen = new Set<string>();
+  const keys: string[] = [];
+  for (const [p, n, t] of combos) {
+    if (!n) continue;
+    const k = [num, p, n, t].join('|');
+    if (!seen.has(k)) {
+      seen.add(k);
+      keys.push(k);
+    }
+  }
+  return keys;
+}
+
 type LookupValue = [number, number, number | string]; // [lat, lng, zip]
 
 let entries: Record<string, LookupValue> | null = null;
@@ -84,17 +172,9 @@ export interface PointHit {
  * without the directional.
  */
 export function lookupAddressPoint(street: string, zip?: string | null): PointHit | null {
-  const parts = parseStreetParts(street);
-  if (!parts) return null;
   const db = load();
-
-  const candidates = [
-    [parts.num, parts.predir, parts.name, parts.type],
-    [parts.num, parts.predir, parts.name, ''],
-    [parts.num, '', parts.name, parts.type],
-  ];
-  for (const c of candidates) {
-    const hit = db[c.join('|')];
+  for (const key of candidateKeys(street)) {
+    const hit = db[key];
     if (hit) {
       const [lat, lng, hitZip] = hit;
       // If we know the ZIP, it must agree — same street numbers repeat across towns

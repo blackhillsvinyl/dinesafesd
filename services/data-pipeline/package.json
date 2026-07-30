@@ -21,6 +21,7 @@
     "verify:locations": "tsx src/jobs/verify-locations.ts",
     "resolve:tail": "tsx src/jobs/resolve-tail.ts",
     "demote:outliers": "tsx src/jobs/demote-outliers.ts",
+    "repair:cities": "tsx src/jobs/repair-cities.ts",
     "merge:data": "tsx src/jobs/merge-data.ts"
   },
   "dependencies": {

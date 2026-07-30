@@ -25,6 +25,9 @@ export const MULTI_WORD_CITIES = [
   'Eagle Butte', 'Elk Point', 'Tea Area', 'Dakota Dunes',
   'Whitewood', 'Summerset', 'Colonial Pine Hills', 'Wessington Springs',
   'Lake Andes', 'Long Lake', 'Rose Hill', 'Sioux City',
+  'De Smet', 'Lake Norden', 'Lake Preston', 'Lake City',
+  'Big Stone City', 'White River', 'White Lake', 'Mount Vernon',
+  'New Underwood', 'New Effington', 'Fort Thompson', 'Wessington',
 ];
 
 const UNIT_RE = /(?:\b(?:APT|STE|SUITE|UNIT|LOT|TRLR|BLDG|RM|FL|SPC)\b|#)\s*\.?\s*([A-Z0-9-]+)\b\.?/i;
@@ -32,13 +35,15 @@ const UNIT_RE = /(?:\b(?:APT|STE|SUITE|UNIT|LOT|TRLR|BLDG|RM|FL|SPC)\b|#)\s*\.?\
 /** Collapse whitespace and pull unit designators (APT 101, STE B, #4) out. */
 export function normalizeStreet(street: string): { street: string; unit: string | null } {
   let s = street.replace(/\s+/g, ' ').trim();
-  let unit: string | null = null;
-  const m = s.match(UNIT_RE);
-  if (m) {
-    unit = m[0].replace(/\s+/g, ' ').trim();
+  const units: string[] = [];
+  // Source data sometimes stacks designators ("STE 4 UNIT B") — strip them all
+  for (let i = 0; i < 3; i++) {
+    const m = s.match(UNIT_RE);
+    if (!m) break;
+    units.push(m[0].replace(/\s+/g, ' ').trim());
     s = (s.slice(0, m.index) + ' ' + s.slice((m.index ?? 0) + m[0].length)).replace(/\s+/g, ' ').trim();
   }
-  return { street: s, unit };
+  return { street: s, unit: units.length ? units.join(' ') : null };
 }
 
 /**
@@ -117,9 +122,12 @@ export function repairCityStreetSplit(
   city: string,
   knownCities: string[]
 ): { street: string; unit: string | null; city: string } | null {
-  const combined = (street + ' ' + city).replace(/\s+/g, ' ').trim();
-  const split = splitOnCitySuffix(combined, knownCities);
+  // Pull unit designators out BEFORE suffix matching — a unit stuck between
+  // the city's words ("109 4th SW ST De UNIT 1" + "Smet") otherwise hides
+  // the city name from the matcher.
+  const combined = normalizeStreet((street + ' ' + city).replace(/\s+/g, ' ').trim());
+  const split = splitOnCitySuffix(combined.street, knownCities);
   if (!split) return null;
   const norm = normalizeStreet(split.street);
-  return { street: norm.street, unit: norm.unit, city: split.city };
+  return { street: norm.street, unit: norm.unit ?? combined.unit, city: split.city };
 }

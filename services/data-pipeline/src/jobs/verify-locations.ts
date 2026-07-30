@@ -26,7 +26,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { store } from '../lib/store.js';
 import { normalizeStreet } from '../lib/address.js';
-import { parseStreetParts } from '../lib/address-points.js';
+import { parseStreetParts, candidateKeys } from '../lib/address-points.js';
 
 const moduleDir = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.resolve(moduleDir, '../../../../apps/web/public/data');
@@ -92,15 +92,8 @@ const pointDb = (
 interface Hit { lat: number; lng: number; zip: string }
 
 function pointLookup(street: string, zip: string | null, allowEmptyZip: boolean): Hit | null {
-  const parts = parseStreetParts(street);
-  if (!parts) return null;
-  const keys = [
-    [parts.num, parts.predir, parts.name, parts.type],
-    [parts.num, parts.predir, parts.name, ''],
-    [parts.num, '', parts.name, parts.type],
-  ];
-  for (const k of keys) {
-    const hit = pointDb[k.join('|')];
+  for (const k of candidateKeys(street)) {
+    const hit = pointDb[k];
     if (!hit) continue;
     const [lat, lng, hitZip] = hit;
     const z = String(hitZip);
