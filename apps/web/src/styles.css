@@ -635,18 +635,31 @@ body {
   color: var(--faint);
 }
 
-/* Mobile */
+/* Mobile — the header must always fit; the theme toggle is the last nav
+   item and was getting pushed off the right edge of narrow screens */
 @media (max-width: 560px) {
   .header {
-    padding: 9px 14px;
+    padding: 9px 10px;
   }
   .brand-word {
-    font-size: 18px;
+    font-size: 17px;
+  }
+  .nav {
+    gap: 0;
   }
   .nav a {
-    padding: 8px 11px;
+    padding: 8px 7px;
+    font-size: 13.5px;
+  }
+  .theme-toggle {
+    width: 30px;
+    height: 30px;
+    margin-left: 2px;
     font-size: 14px;
   }
+}
+
+@media (max-width: 560px) {
   .quickview {
     left: 8px;
     right: 8px;
@@ -661,6 +674,12 @@ body {
   }
   .page h1 {
     font-size: 23px;
+  }
+}
+
+@media (max-width: 400px) {
+  .brand-word {
+    display: none;
   }
 }
 
@@ -942,6 +961,17 @@ body {
   line-height: 1;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
+}
+
+.save-btn svg {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+
+.save-btns-lg .save-btn svg {
+  width: 19px;
+  height: 19px;
 }
 
 .save-btn.on {

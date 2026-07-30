@@ -43,7 +43,17 @@ export default function SaveButtons({ restaurant: r, size = 'sm' }: Props) {
         aria-pressed={watched}
         title={watched ? 'Watching — you’ll see a badge when a new report lands' : 'Watch'}
       >
-        👁
+        {/* flat single-color eye, matches the glyph heart */}
+        <svg viewBox="0 0 24 24" aria-hidden focusable="false">
+          <path
+            d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinejoin="round"
+          />
+          <circle cx="12" cy="12" r="2.6" fill={watched ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" />
+        </svg>
       </button>
     </span>
   );
