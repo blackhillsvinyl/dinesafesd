@@ -237,10 +237,14 @@ async function main() {
     return { lat: pick.lat, lng: pick.lng };
   }
 
-  // Duplicate names within a city (chains) can't be resolved by name alone
+  // Duplicate names within a city (chains) can't be resolved by name alone.
+  // Trailing store numbers are stripped so "BIG D OIL CO 42" and "...CO 24"
+  // count as one family — matching any of them by name would pile every
+  // store onto the same listing.
+  const nameFamily = (name: string) => normName(name).replace(/(\s+\d+[A-Z]?)+$/, '');
   const nameCityCount = new Map<string, number>();
   for (const r of restaurants) {
-    const nk = `${normName(String(r.name))}|${String(r.city ?? '').trim().toLowerCase()}`;
+    const nk = `${nameFamily(String(r.name))}|${String(r.city ?? '').trim().toLowerCase()}`;
     nameCityCount.set(nk, (nameCityCount.get(nk) ?? 0) + 1);
   }
   function poiHit(name: string, anchor: { lat: number; lng: number }) {
@@ -345,7 +349,7 @@ async function main() {
     // Tier D: the actual listing — unique name match near the anchor
     if (!geo && anchor) {
       const unique =
-        (nameCityCount.get(`${normName(String(r.name))}|${city.toLowerCase()}`) ?? 0) === 1;
+        (nameCityCount.get(`${nameFamily(String(r.name))}|${city.toLowerCase()}`) ?? 0) === 1;
       if (unique) {
         const poi = poiHit(String(r.name), anchor);
         if (poi) {

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useQuery } from '@tanstack/react-query';
@@ -11,21 +11,11 @@ import type { CityEntry } from '../components/CitySearch';
 import { isVerifiedLocation } from '../lib/geo';
 import { CATEGORY_VISUALS } from '../violationCategories';
 import { isFavorite, favoriteCount, useSavedVersion } from '../lib/saved';
+import { useEffectiveDark } from '../lib/theme';
 import type { Restaurant } from '../types';
 
 const LIGHT_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
 const DARK_STYLE = 'https://tiles.openfreemap.org/styles/dark';
-
-const darkQuery = window.matchMedia('(prefers-color-scheme: dark)');
-function useDarkMode(): boolean {
-  return useSyncExternalStore(
-    (cb) => {
-      darkQuery.addEventListener('change', cb);
-      return () => darkQuery.removeEventListener('change', cb);
-    },
-    () => darkQuery.matches
-  );
-}
 
 export interface MapFilters {
   minScore: 'all' | '90' | '95';
@@ -131,7 +121,7 @@ export default function MapPage() {
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
   const noticeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const dark = useDarkMode();
+  const dark = useEffectiveDark();
   const savedVersion = useSavedVersion();
   const showNotice = (msg: string) => {
     setNotice(msg);

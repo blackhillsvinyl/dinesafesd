@@ -20,8 +20,10 @@
   color-scheme: light dark;
 }
 
+/* Dark palette applies when the OS asks for it (unless the user forced
+   light) or when the user forced dark — the toggle sets data-theme. */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --green: #4ade80;
     --ink: #e2e8f0;
     --muted: #94a3b8;
@@ -35,20 +37,53 @@
     --overlay: rgba(13, 21, 38, 0.93);
     --overlay-border: rgba(56, 74, 110, 0.6);
     --body: #cbd5e1;
+    color-scheme: dark;
   }
 }
 
+:root[data-theme='dark'] {
+    --green: #4ade80;
+    --ink: #e2e8f0;
+    --muted: #94a3b8;
+    --faint: #64748b;
+    --bg: #0b1120;
+    --card: #101a2e;
+    --border: #24324d;
+    --hover: #1a2740;
+    --green-soft: #10251a;
+    --chip-bg: #16223a;
+    --overlay: rgba(13, 21, 38, 0.93);
+    --overlay-border: rgba(56, 74, 110, 0.6);
+    --body: #cbd5e1;
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+}
+
 @media (prefers-color-scheme: dark) {
-  .qv-critical {
+  :root:not([data-theme='light']) .qv-critical {
     color: #f87171;
     background: #2b1214;
   }
-  .qv-cta {
+  :root:not([data-theme='light']) .qv-cta {
     color: #052e16 !important;
   }
-  .qv-cta:hover {
+  :root:not([data-theme='light']) .qv-cta:hover {
     background: #86efac;
   }
+}
+
+:root[data-theme='dark'] .qv-critical {
+  color: #f87171;
+  background: #2b1214;
+}
+:root[data-theme='dark'] .qv-cta {
+  color: #052e16 !important;
+}
+:root[data-theme='dark'] .qv-cta:hover {
+  background: #86efac;
 }
 
 html,
@@ -130,6 +165,24 @@ body {
 .main {
   flex: 1;
   min-height: 0;
+}
+
+.theme-toggle {
+  margin-left: 6px;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--card);
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.theme-toggle:hover {
+  background: var(--hover);
 }
 
 /* Map */
@@ -941,9 +994,12 @@ body {
 }
 
 @media (prefers-color-scheme: dark) {
-  .new-report-badge {
+  :root:not([data-theme='light']) .new-report-badge {
     color: #052e16;
   }
+}
+:root[data-theme='dark'] .new-report-badge {
+  color: #052e16;
 }
 
 .back-to-top {

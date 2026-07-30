@@ -48,6 +48,46 @@
   "precision": "street"
  },
  {
+  "id": "sd_doh_earl-of-sandwich-372-main-st-deadwood",
+  "name": "EARL OF SANDWICH",
+  "address": "372 MAIN ST",
+  "city": "Deadwood",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_first-gold-hotel-270-main-st-deadwood",
+  "name": "FIRST GOLD HOTEL",
+  "address": "270 Main ST",
+  "city": "Deadwood",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_flyt-steakhouse-by-alpine-inn-372-main-st-deadwood",
+  "name": "FLYT STEAKHOUSE BY ALPINE INN",
+  "address": "372 MAIN ST",
+  "city": "Deadwood",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_made-market-372-main-st-deadwood",
+  "name": "MADE MARKET",
+  "address": "372 MAIN ST",
+  "city": "Deadwood",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_marcos-pizza-4032-372-main-st-deadwood",
+  "name": "MARCOS PIZZA 4032",
+  "address": "372 MAIN ST",
+  "city": "Deadwood",
+  "zip": null,
+  "precision": null
+ },
+ {
   "id": "sd_doh_lakota-thrifty-mart-822-n-main-st-eagle-butte",
   "name": "LAKOTA THRIFTY MART ^",
   "address": "822 N MAIN ST",
@@ -70,6 +110,22 @@
   "city": "Gettysburg",
   "zip": null,
   "precision": "city"
+ },
+ {
+  "id": "sd_doh_breaking-burrito-1-121-bedrock-cir-harrisburg",
+  "name": "BREAKING BURRITO 1 ~",
+  "address": "121 BEDROCK CIR",
+  "city": "Harrisburg",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_mr-churro-121-bedrock-cir-harrisburg",
+  "name": "MR CHURRO~",
+  "address": "121 BEDROCK CIR",
+  "city": "Harrisburg",
+  "zip": null,
+  "precision": null
  },
  {
   "id": "sd_doh_wild-sides-34160-181st-st-highmore",
@@ -136,6 +192,22 @@
   "precision": "street"
  },
  {
+  "id": "sd_doh_big-d-oil-co-65-1951-moon-meadows-dr-rapid-city",
+  "name": "BIG D OIL CO 65",
+  "address": "1951 MOON MEADOWS DR",
+  "city": "Rapid City",
+  "zip": "57701",
+  "precision": null
+ },
+ {
+  "id": "sd_doh_black-hills-blend-5-512-omaha-rapid-city",
+  "name": "BLACK HILLS BLEND - 5",
+  "address": "512 OMAHA",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": null
+ },
+ {
   "id": "sd_doh_candyland-23835-mill-iron-dr-rapid-city",
   "name": "CANDYLAND",
   "address": "23835 Mill Iron DR",
@@ -184,6 +256,22 @@
   "precision": "city"
  },
  {
+  "id": "sf_sweeps_5279",
+  "name": "DOKMAI STICKY RICE LLC",
+  "address": "5000 W EMPIRE MALL PL",
+  "city": "Sioux Falls",
+  "zip": "57106",
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_5312",
+  "name": "EL BURRITO",
+  "address": "5000 W EMPIRE MALL PL",
+  "city": "Sioux Falls",
+  "zip": "57106",
+  "precision": null
+ },
+ {
   "id": "sf_sweeps_435",
   "name": "FABIAN SEAFOOD",
   "address": "PO BOX 3636",
@@ -229,6 +317,14 @@
   "address": "206 S HWY 86",
   "city": "Sioux Falls",
   "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_5037",
+  "name": "STIR FRY EXPRESS",
+  "address": "5000 W Empire Pl",
+  "city": "Sioux Falls",
+  "zip": "57106",
   "precision": null
  },
  {

@@ -145,6 +145,16 @@ async function main() {
   }
 
   const byId = new Map(restaurants.map((r) => [String(r.id), r]));
+
+  // Chain guard: strip trailing store numbers so "BIG D OIL CO 42" and
+  // "...CO 24" are one family — name search must never place a family with
+  // multiple stores in the same city (it piles them all on one listing).
+  const nameFamily = (name: string) => normName(name).replace(/(\s+\d+[A-Z]?)+$/, '');
+  const familyCityCount = new Map<string, number>();
+  for (const r of restaurants) {
+    const nk = `${nameFamily(String(r.name))}|${String(r.city ?? '').trim().toLowerCase()}`;
+    familyCityCount.set(nk, (familyCityCount.get(nk) ?? 0) + 1);
+  }
   const tiers: Record<string, number> = {};
   const still: Unresolved[] = [];
   let done = 0;
@@ -186,11 +196,17 @@ async function main() {
       }
     }
 
-    // E2: the actual listing by name
+    // E2: the actual listing by name — only for names that are unique in
+    // their city (chain families are skipped: name search can't tell store
+    // #42 from #24 and would stack them on one listing), and only when every
+    // acceptable hit agrees on the location
     if (!geo && anchor) {
       const clean = normName(u.name);
-      if (clean.length >= 4) {
+      const unique =
+        (familyCityCount.get(`${nameFamily(u.name)}|${u.city.toLowerCase()}`) ?? 0) === 1;
+      if (clean.length >= 4 && unique) {
         const hits = await nominatim({ q: `${u.name}, ${u.city}, South Dakota` });
+        const ok: Array<{ lat: number; lng: number; num: string | null }> = [];
         for (const h of hits) {
           if (!GOOD_CLASSES.has(String(h.class ?? ''))) continue;
           const lat = parseFloat(String(h.lat));
@@ -204,9 +220,18 @@ async function main() {
             !clean.startsWith(hitName + ' ')
           )
             continue;
-          geo = { lat, lng };
+          const addr = (h.address ?? {}) as Record<string, string>;
+          ok.push({ lat, lng, num: addr.house_number ?? null });
+        }
+        // Prefer a hit whose house number matches our address
+        const numMatch = wantNum ? ok.find((h) => h.num === wantNum) : undefined;
+        const agree =
+          ok.length > 0 &&
+          ok.every((h) => kmBetween(h.lat, h.lng, ok[0].lat, ok[0].lng) < 0.3);
+        const pick = numMatch ?? (agree ? ok[0] : undefined);
+        if (pick) {
+          geo = { lat: pick.lat, lng: pick.lng };
           how = 'E2-nominatim-listing';
-          break;
         }
       }
     }
