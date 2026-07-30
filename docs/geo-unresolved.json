@@ -1,0 +1,3466 @@
+[
+ {
+  "id": "sd_doh_3m-eurest-dining-610-country-rd-19-aberdeen",
+  "name": "3M EUREST  DINING",
+  "address": "610 COUNTRY RD 19",
+  "city": "Aberdeen",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_airport-cafe-6167-jobee-ave-aberdeen",
+  "name": "AIRPORT CAFE",
+  "address": "6167 JOBEE AVE",
+  "city": "Aberdeen",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_allevity-entertainment-130-centennial-st-aberdeen",
+  "name": "ALLEVITY ENTERTAINMENT",
+  "address": "130 CENTENNIAL ST",
+  "city": "Aberdeen",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_big-fella-s-5759-e-hwy-12-aberdeen",
+  "name": "BIG FELLA`S",
+  "address": "5759 E Hwy 12",
+  "city": "Aberdeen",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_brown-county-speedway-400-24th-nw-ave-aberdeen",
+  "name": "BROWN COUNTY SPEEDWAY",
+  "address": "400 24th NW AVE",
+  "city": "Aberdeen",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_island-flavor-llc-15-sw-sixth-ave-aberdeen",
+  "name": "ISLAND FLAVOR LLC",
+  "address": "15 SW SIXTH AVE",
+  "city": "Aberdeen",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_kountry-kakes-and-more-llc-12949-386th-ave-aberdeen",
+  "name": "KOUNTRY KAKES AND MORE LLC",
+  "address": "12949 386th AVE",
+  "city": "Aberdeen",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_ktb3-llc-400-24th-nw-ave-aberdeen",
+  "name": "KTB3 LLC~",
+  "address": "400 24th NW AVE",
+  "city": "Aberdeen",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_matchbox-recreation-center-110-centennial-st-aberdeen",
+  "name": "MATCHBOX RECREATION CENTER",
+  "address": "110 CENTENNIAL ST",
+  "city": "Aberdeen",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_richmond-oasis-12845-382nd-ave-aberdeen",
+  "name": "RICHMOND OASIS",
+  "address": "12845 382nd AVE",
+  "city": "Aberdeen",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_rolling-hills-golf-club-llc-546-palmer-cr-aberdeen",
+  "name": "ROLLING HILLS GOLF CLUB LLC ~",
+  "address": "546 Palmer Cr",
+  "city": "Aberdeen",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_stacy-j-gossman-5759-hwy-12-e-aberdeen",
+  "name": "STACY J GOSSMAN",
+  "address": "5759 HWY 12 E",
+  "city": "Aberdeen",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_thunder-road-mini-golf-wylie-park-aberdeen",
+  "name": "THUNDER ROAD MINI-GOLF ~",
+  "address": "Wylie PARK",
+  "city": "Aberdeen",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_tropical-smoothie-cafe-3408-7th-se-ave-aberdeen",
+  "name": "TROPICAL SMOOTHIE CAFE",
+  "address": "3408 7th SE AVE",
+  "city": "Aberdeen",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_millies-diner-306-n-sully-agar",
+  "name": "MILLIES DINER",
+  "address": "306 N SULLY",
+  "city": "Agar",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_sportsman-bar-grill-119-w-main-akaska",
+  "name": "SPORTSMAN BAR GRILL",
+  "address": "119 W MAIN",
+  "city": "Akaska",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_alcester-community-center-307-e-6th-st-alcester",
+  "name": "ALCESTER COMMUNITY CENTER",
+  "address": "307 E 6th ST",
+  "city": "Alcester",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_alcester-quickstop-609-sd-hwy-11-alcester",
+  "name": "ALCESTER QUICKSTOP",
+  "address": "609 SD Hwy 11",
+  "city": "Alcester",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_friendlys-fuel-stop-1046-1151-spruce-st-alexandria",
+  "name": "FRIENDLYS FUEL STOP 1046",
+  "address": "1151 SPRUCE ST",
+  "city": "Alexandria",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_todds-tavern-503-front-st-amherst",
+  "name": "TODDS TAVERN",
+  "address": "503 Front ST",
+  "city": "Amherst",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_momos-cheesecakes-smocones-204-s-1st-st-andover",
+  "name": "MOMOS CHEESECAKES & SMOCONES",
+  "address": "204 S 1st ST",
+  "city": "Andover",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_feldy-s-ice-cream-157-sw-lake-dr-arlington",
+  "name": "FELDY'S ICE CREAM",
+  "address": "157 SW LAKE DR",
+  "city": "Arlington",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_feldys-ice-cream-157-sw-lake-dr-arlington",
+  "name": "FELDYS ICE CREAM~",
+  "address": "157 SW LAKE DR",
+  "city": "Arlington",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_feldys-ice-cream-19569-hwy-81-arlington",
+  "name": "FELDYS ICE CREAM~",
+  "address": "19569 HWY 81",
+  "city": "Arlington",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_hurleys-motorboat-beach-bar-19556-us-hwy-81-arlington",
+  "name": "HURLEYS MOTORBOAT BEACH BAR",
+  "address": "19556 US HWY 81",
+  "city": "Arlington",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_maynards-of-arlington-202-s-hwy-81-arlington",
+  "name": "MAYNARDS OF ARLINGTON ^",
+  "address": "202 S HWY 81",
+  "city": "Arlington",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_the-cardinal-tap-105-main-s-ave-arlington",
+  "name": "THE CARDINAL TAP",
+  "address": "105 MAIN S AVE",
+  "city": "Arlington",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_k-s-qwik-stop-701-barddock-st-armour",
+  "name": "K'S QWIK STOP",
+  "address": "701 BARDDOCK ST",
+  "city": "Armour",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_cf-bar-grill-5-w-main-st-ashton",
+  "name": "CF BAR & GRILL",
+  "address": "5 W MAIN ST",
+  "city": "Ashton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_j-k-creations-136-n-3rd-ave-ashton",
+  "name": "J & K CREATIONS",
+  "address": "136 N 3rd AVE",
+  "city": "Ashton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_tokyo-sushi-steakhouse-3315-6th-ave-ste-68-aberdeen",
+  "name": "TOKYO SUSHI & STEAKHOUSE",
+  "address": "3315 6th",
+  "city": "AVE STE 68 Aberdeen",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_sdsu-quantity-food-lab-1060-companile-ave-unit-2275a-brookings",
+  "name": "SDSU QUANTITY FOOD LAB",
+  "address": "1060 Companile",
+  "city": "AVE UNIT 2275A Brookings",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_a-1-gas-and-go-220-w-hwy-50-avon",
+  "name": "A-1 GAS AND GO",
+  "address": "220 W Hwy 50",
+  "city": "Avon",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_circle-k-2746530-47155-250th-baltic",
+  "name": "CIRCLE K 2746530",
+  "address": "47155 250th",
+  "city": "Baltic",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_belle-fourche-lodge-859-s-stanley-st-belle-fourche",
+  "name": "BELLE FOURCHE LODGE 859",
+  "address": "S Stanley ST",
+  "city": "Belle Fourche",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_branding-iron-steakhouse-and-saloon-19079-s-hwy-85-belle-fourche",
+  "name": "Branding Iron Steakhouse and Saloon",
+  "address": "19079 S Hwy 85",
+  "city": "Belle Fourche",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_crow-buttes-mercantile-14967-us-hwy-85-belle-fourche",
+  "name": "CROW BUTTES MERCANTILE",
+  "address": "14967 US HWY 85",
+  "city": "Belle Fourche",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_bridges-at-beresford-golf-course-601-7th-st-beresford",
+  "name": "BRIDGES AT BERESFORD GOLF COURSE",
+  "address": "601 7th ST",
+  "city": "Beresford",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_maria-s-mexican-restaurant-201-nw-13th-st-ste-1-beresford",
+  "name": "MARIA'S MEXICAN RESTAURANT",
+  "address": "201 NW 13th ST STE 1",
+  "city": "Beresford",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_brunchies-7211-blackhawk-rd-ste-2-black-hawk",
+  "name": "BRUNCHIES",
+  "address": "7211 BLACKHAWK RD STE 2",
+  "city": "Black Hawk",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_fancy-coffee-8092-stagestop-rd-black-hawk",
+  "name": "FANCY COFFEE",
+  "address": "8092 STAGESTOP RD",
+  "city": "Black Hawk",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_neighbors-grub-and-pub-7280-freedon-ln-black-hawk",
+  "name": "NEIGHBORS GRUB AND PUB",
+  "address": "7280 FREEDON LN",
+  "city": "Black Hawk",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_perky-cups-7431-captain-soelzer-st-black-hawk",
+  "name": "PERKY CUPS",
+  "address": "7431 CAPTAIN SOELZER ST",
+  "city": "BLACK HAWK",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_the-hilltop-truckstop-19865-us-hwy-83-blunt",
+  "name": "THE HILLTOP TRUCKSTOP",
+  "address": "19865 US HWY 83",
+  "city": "Blunt",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_teepee-cafe-402-us-hwy-18-bonesteel",
+  "name": "TEEPEE CAFE",
+  "address": "402 US HWY 18",
+  "city": "Bonesteel",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_belle-star-22-box-elder-rd-box-elder",
+  "name": "BELLE STAR",
+  "address": "22 BOX ELDER RD",
+  "city": "Box Elder",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_hangar-pub-114-box-elder-w-rd-box-elder",
+  "name": "HANGAR PUB",
+  "address": "114 Box Elder W RD",
+  "city": "Box Elder",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_lagsdins-by-old-school-sliders-600-antietam-dr-box-elder",
+  "name": "LAGSDINS BY OLD SCHOOL SLIDERS",
+  "address": "600 Antietam DR",
+  "city": "Box Elder",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_malissas-frybread-llc-322-black-elk-ct-box-elder",
+  "name": "MALISSAS FRYBREAD LLC",
+  "address": "322 BLACK ELK CT",
+  "city": "Box Elder",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_605-barbecue-company-llc-26375-mchardy-rd-brandon",
+  "name": "605 BARBECUE COMPANY LLC",
+  "address": "26375 MCHARDY RD",
+  "city": "Brandon",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_arbys-8703-501-n-split-rock-blvd-brandon",
+  "name": "ARBYS #8703",
+  "address": "501 N SPLIT ROCK BLVD",
+  "city": "Brandon",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_bergies-freeze-dried-801-n-9th-ave-bldg-3-ste-b-brandon",
+  "name": "BERGIES FREEZE DRIED",
+  "address": "801 N 9th AVE STE B BLDG 3",
+  "city": "Brandon",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_jimmy-johns-1313-e-ash-pl-brandon",
+  "name": "JIMMY JOHNS",
+  "address": "1313 E ASH PL",
+  "city": "Brandon",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_m-i-nuts-company-300-e-linden-st-brandon",
+  "name": "M.I. NUTS COMPANY",
+  "address": "300 E LINDEN ST",
+  "city": "Brandon",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_mos-concessions-123-linden-st-brandon",
+  "name": "MOS CONCESSIONS ~",
+  "address": "123 LINDEN ST",
+  "city": "Brandon",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_taco-johns-101-split-rock-blvd-brandon",
+  "name": "TACO JOHNS",
+  "address": "101 SPLIT ROCK BLVD",
+  "city": "Brandon",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_the-riviera-by-roccos-26665-481st-ave-brandon",
+  "name": "THE RIVIERA BY ROCCOS",
+  "address": "26665 481st AVE",
+  "city": "Brandon",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_three-rivers-post-4726-vfw-321-s-main-st-brandon",
+  "name": "THREE RIVERS POST 4726 VFW",
+  "address": "321 S Main ST",
+  "city": "Brandon",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_caseys-4599-2425-aspen-e-blvd-brandon",
+  "name": "CASEYS #4599",
+  "address": "2425 ASPEN E BLVD",
+  "city": "BRANDON",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_potters-station-350-e-sd-hwy-262-bridgewater",
+  "name": "POTTERS STATION",
+  "address": "350 E SD HWY 262",
+  "city": "Bridgewater",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_bakers-622-main-st-britton",
+  "name": "BAKERS",
+  "address": "622 MAIN ST",
+  "city": "Britton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_flowers-by-anita-609-main-st-britton",
+  "name": "FLOWERS BY ANITA",
+  "address": "609 MAIN ST",
+  "city": "Britton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_vfw-post-3507-718-main-st-britton",
+  "name": "VFW POST 3507",
+  "address": "718 Main ST",
+  "city": "Britton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_brookings-little-caesars-2508-wilbert-ct-brookings",
+  "name": "BROOKINGS LITTLE CAESARS",
+  "address": "2508 Wilbert CT",
+  "city": "Brookings",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_hissho-sushi-mein-bowl-sdsu-1451-stadium-rd-brookings",
+  "name": "HISSHO SUSHI & MEIN BOWL @ SDSU",
+  "address": "1451 STADIUM RD",
+  "city": "Brookings",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_homestead-meats-2508-wilbert-ct-ste-c-brookings",
+  "name": "HOMESTEAD MEATS",
+  "address": "2508 WILBERT CT STE C",
+  "city": "Brookings",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_midwest-fresh-catering-201-daktronics-dr-brookings",
+  "name": "MIDWEST FRESH CATERING",
+  "address": "201 DAKTRONICS DR",
+  "city": "Brookings",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_sdsu-resident-dining-temp-yeager-hall-1137-campanile-ave-brookings",
+  "name": "SDSU RESIDENT DINING (TEMP) YEAGER HALL",
+  "address": "1137 CAMPANILE AVE",
+  "city": "Brookings",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_sdsu-sodexo-catering-dykhouse-1396-stadium-rd-brookings",
+  "name": "SDSU SODEXO - CATERING- DYKHOUSE",
+  "address": "1396 STADIUM RD",
+  "city": "Brookings",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_sdsu-sodexo-hansen-hall-jacks-c-store-hansen-hall-11th-brookings",
+  "name": "SDSU SODEXO - HANSEN HALL JACKS C STORE",
+  "address": "HANSEN HALL 11TH",
+  "city": "Brookings",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_sdsu-sodexo-sjac-sjac-16th-ave-brookings",
+  "name": "SDSU SODEXO -SJAC",
+  "address": "SJAC 16TH AVE",
+  "city": "Brookings",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_sdsu-sodexo-campus-dairy-bar-1111-rotunda-ln-brookings",
+  "name": "SDSU SODEXO- CAMPUS DAIRY BAR",
+  "address": "1111 ROTUNDA LN",
+  "city": "Brookings",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_sdsu-sodexo-food-cart-1396-stadium-rd-brookings",
+  "name": "SDSU SODEXO- FOOD CART~",
+  "address": "1396 STADIUM RD",
+  "city": "Brookings",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_sdsu-sodexo-student-union-coffee-qdoba-simple-servings-seasons-slices-student-union-rm-73-brookings",
+  "name": "SDSU SODEXO-STUDENT UNION COFFEE/QDOBA/SIMPLE SERVINGS/SEASONS/SLICES",
+  "address": "STUDENT UNION RM 73",
+  "city": "Brookings",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_the-ridge-919-jay-st-bruce",
+  "name": "THE RIDGE",
+  "address": "919 JAY ST",
+  "city": "Bruce",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_wagon-wheel-resort-1000-oakwood-shoreline-dr-bruce",
+  "name": "WAGON WHEEL RESORT",
+  "address": "1000 Oakwood Shoreline DR",
+  "city": "Bruce",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_farmers-union-coop-oil-704-e-6th-ave-bryant",
+  "name": "FARMERS UNION COOP OIL",
+  "address": "704 E 6th AVE",
+  "city": "Bryant",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_kirst-confections-cafe-llc-108-w-main-st-bryant",
+  "name": "KIRST CONFECTIONS & CAFE LLC",
+  "address": "108 W MAIN ST",
+  "city": "Bryant",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_rollin-in-the-dough-210-main-st-buffalo",
+  "name": "ROLLIN IN THE DOUGH",
+  "address": "210 MAIN ST",
+  "city": "Buffalo",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_ts-corner-bar-cafe-llc-112-n-main-st-camp-crook",
+  "name": "TS CORNER BAR & CAFE LLC",
+  "address": "112 N MAIN ST",
+  "city": "Camp Crook",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_lake-time-steakhouse-bait-shop-26176-451th-ave-canistota",
+  "name": "LAKE TIME STEAKHOUSE & BAIT SHOP",
+  "address": "26176 451th AVE",
+  "city": "Canistota",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_hunters-den-42774-244th-st-canova",
+  "name": "HUNTERS DEN",
+  "address": "42774 244th ST",
+  "city": "CANOVA",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_noids-gaming-parlour-109-main-ave-ste-a-canton",
+  "name": "NOIDS GAMING PARLOUR",
+  "address": "109 MAIN AVE STE A",
+  "city": "Canton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_carpenter-cafe-524-415th-ave-carpenter",
+  "name": "CARPENTER CAFE",
+  "address": "524 415th AVE",
+  "city": "Carpenter",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_castlewood-community-golf-course-411-e-cemetery-rd-castlewood",
+  "name": "CASTLEWOOD COMMUNITY GOLF COURSE",
+  "address": "411 E Cemetery RD",
+  "city": "Castlewood",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_restoration-coffee-hwy-81-hwy-22-castlewood",
+  "name": "RESTORATION COFFEE",
+  "address": "HWY 81 & HWY 22",
+  "city": "Castlewood",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_ships-inn-103-105-main-st-castlewood",
+  "name": "SHIPS INN",
+  "address": "103-105 MAIN ST",
+  "city": "Castlewood",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_copper-coffee-goods-llc-16946-sd-hwy-34-ste-1-union-center",
+  "name": "COPPER COFFEE & GOODS LLC",
+  "address": "16946 SD HWY 34 Union STE 1",
+  "city": "Center",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_the-cookie-mama-llc-shared-kitchen-16946-sd-34-ste-1-union-center",
+  "name": "THE COOKIE MAMA LLC (SHARED KITCHEN)",
+  "address": "16946 SD-34 Union STE 1",
+  "city": "Center",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_bloomers-flowers-and-cakes-132-us-hwy-14a-central-city",
+  "name": "BLOOMERS FLOWERS AND CAKES",
+  "address": "132 US HWY 14A",
+  "city": "Central City",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_pizza-lab-124-hwy-14-a-central-city",
+  "name": "PIZZA LAB",
+  "address": "124 Hwy 14 A",
+  "city": "Central City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_nugget-convenience-128-hwy-14a-central-city",
+  "name": "NUGGET CONVENIENCE",
+  "address": "128 HWY 14A",
+  "city": "CENTRAL CITY",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_smokin-jays-saloon-144-us-hwy-14a-central-city",
+  "name": "SMOKIN JAYS SALOON~",
+  "address": "144 US HWY 14A",
+  "city": "CENTRAL CITY",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_bean-box-espresso-309-n-courtland-ave-chamberlain",
+  "name": "BEAN BOX ESPRESSO",
+  "address": "309 N COURTLAND AVE",
+  "city": "Chamberlain",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_thunderstik-lodge-24931-thunderstik-rd-chamberlain",
+  "name": "THUNDERSTIK LODGE",
+  "address": "24931 THUNDERSTIK RD",
+  "city": "Chamberlain",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_chelsea-bar-2007-s-main-st-chelsea",
+  "name": "CHELSEA BAR",
+  "address": "2007 S MAIN ST",
+  "city": "Chelsea",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_hef-s-bar-grill-405-e-fourth-st-chester",
+  "name": "HEF'S BAR & GRILL",
+  "address": "405 E FOURTH ST",
+  "city": "Chester",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_als-on-demand-909-st-joseph-st-100-rapid-city",
+  "name": "ALS ON DEMAND",
+  "address": "909 ST JOSEPH ST #100 Rapid",
+  "city": "City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_baymont-inn-and-suites-food-4040-cheyenne-blvd-ste-a-rapid-city",
+  "name": "BAYMONT INN AND SUITES -  FOOD",
+  "address": "4040 Cheyenne BLVD STE A Rapid",
+  "city": "City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_muddy-crepes-llc-2200-n-maple-ave-unit-606-rapid-city",
+  "name": "MUDDY CREPES LLC",
+  "address": "2200 N MAPLE AVE UNIT 606 Rapid",
+  "city": "City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_new-asian-express-2200-n-maple-ave-unit-608-rapid-city",
+  "name": "NEW ASIAN EXPRESS",
+  "address": "2200 N MAPLE AVE UNIT 608 Rapid",
+  "city": "City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_ziggi-s-coffee-1001-e-north-st-ste-1-rapid-city",
+  "name": "ZIGGI'S COFFEE",
+  "address": "1001 E NORTH ST STE 1 Rapid",
+  "city": "City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_deanos-steakhouse-and-lounge-330-main-claire-city",
+  "name": "DEANOS STEAKHOUSE AND LOUNGE",
+  "address": "330 MAIN",
+  "city": "Claire City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_corner-diner-100-n-commerical-st-clark",
+  "name": "CORNER DINER",
+  "address": "100 N Commerical ST",
+  "city": "Clark",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_dakota-butcher-clark-99-s-coml-st-clark",
+  "name": "DAKOTA BUTCHER - CLARK",
+  "address": "99 S Coml ST",
+  "city": "Clark",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_classic-convenience-inc-126-e-3rd-st-colman",
+  "name": "CLASSIC CONVENIENCE INC",
+  "address": "126 E 3rd ST",
+  "city": "Colman",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_south-dakota-cannabis-company-817-prospect-st-colman",
+  "name": "SOUTH DAKOTA CANNABIS COMPANY=",
+  "address": "817 PROSPECT ST",
+  "city": "Colman",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_thayer-waters-post-146-main-street-colome",
+  "name": "THAYER WATERS POST 146",
+  "address": "Main Street",
+  "city": "Colome",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_krazy-moo-s-40580-156th-st-conde",
+  "name": "KRAZY MOO'S~",
+  "address": "40580 156th ST",
+  "city": "Conde",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_the-wharf-13689-lage-st-corona",
+  "name": "THE WHARF",
+  "address": "13689 Lage ST",
+  "city": "Corona",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_caseys-retail-company-4471-801-south-west-ave-crooks",
+  "name": "CASEYS RETAIL COMPANY #4471",
+  "address": "801 SOUTH WEST AVE",
+  "city": "Crooks",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_lunch-thyme-407-west-ave-crooks",
+  "name": "LUNCH THYME",
+  "address": "407 West AVE",
+  "city": "Crooks",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_roskens-dakota-pizza-204-main-e-st-crooks",
+  "name": "ROSKENS DAKOTA PIZZA",
+  "address": "204 MAIN E ST",
+  "city": "Crooks",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_calamity-jane-512-mount-rushmore-dr-custer",
+  "name": "CALAMITY JANE",
+  "address": "512 MOUNT RUSHMORE DR",
+  "city": "Custer",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_extreme-sports-simulator-750-w-mount-rushmore-rd-ste-2-custer",
+  "name": "EXTREME SPORTS SIMULATOR",
+  "address": "750 W MOUNT RUSHMORE RD STE 2",
+  "city": "Custer",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_bolton-ranch-outfitters-llc-32723-299-st-dallas",
+  "name": "BOLTON RANCH OUTFITTERS LLC",
+  "address": "32723 299 ST",
+  "city": "Dallas",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_codys-bar-and-grill-408-service-rd-dallas",
+  "name": "CODYS BAR AND GRILL",
+  "address": "408 SERVICE RD",
+  "city": "Dallas",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_frank-days-400-service-rd-hwy-18-dallas",
+  "name": "FRANK DAYS",
+  "address": "400 Service Rd Hwy 18",
+  "city": "Dallas",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_snack-shack-llc-214-calumet-ne-ave-de-smet",
+  "name": "SNACK SHACK LLC",
+  "address": "214 CALUMET NE AVE",
+  "city": "De Smet",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_385-21372-us-385-hwy-deadwood",
+  "name": "385",
+  "address": "21372 US 385 HWY",
+  "city": "Deadwood",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_alpine-outpost-385-22493-us-hwy-385-deadwood",
+  "name": "ALPINE OUTPOST 385",
+  "address": "22493 US HWY 385",
+  "city": "Deadwood",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_catering-by-dave-llc-15-days-of-76-dr-deadwood",
+  "name": "CATERING BY DAVE LLC",
+  "address": "15 DAYS OF 76 DR",
+  "city": "Deadwood",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_custer-crossing-family-campground-22036-us-hwy-385-deadwood",
+  "name": "CUSTER CROSSING FAMILY CAMPGROUND",
+  "address": "22036 US HWY 385",
+  "city": "Deadwood",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_goldstar-concessions-70-76th-dr-deadwood",
+  "name": "GOLDSTAR CONCESSIONS",
+  "address": "70 76th DR",
+  "city": "Deadwood",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_mystic-hills-hideaway-21766-custer-pead-rd-deadwood",
+  "name": "MYSTIC HILLS HIDEAWAY",
+  "address": "21766 CUSTER PEAD RD",
+  "city": "Deadwood",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_steel-wheel-trading-post-campground-21399-us-hwy-385-deadwood",
+  "name": "STEEL WHEEL TRADING POST / CAMPGROUND ^",
+  "address": "21399 US HWY 385",
+  "city": "Deadwood",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_sugar-shack-22495-hwy-385-deadwood",
+  "name": "SUGAR SHACK",
+  "address": "22495 HWY 385",
+  "city": "Deadwood",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_three-cousins-pizza-27-deadwood-st-deadwood",
+  "name": "THREE COUSINS PIZZA",
+  "address": "27 DEADWOOD ST",
+  "city": "Deadwood",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_roaming-grounds-507-n-hwy-77-ste-b-dell-rapids",
+  "name": "ROAMING GROUNDS",
+  "address": "507 N HWY 77 STE B",
+  "city": "Dell Rapids",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_greeny-s-food-201-n-humphrey-dr-doland",
+  "name": "GREENY`S FOOD",
+  "address": "201 N Humphrey DR",
+  "city": "Doland",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_the-refuge-bar-grill-207-humphreys-n-dr-doland",
+  "name": "THE REFUGE BAR & GRILL",
+  "address": "207 HUMPHREYS N DR",
+  "city": "Doland",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_bad-river-bucks-and-birds-27619-herman-ranch-draper",
+  "name": "BAD RIVER BUCKS AND BIRDS",
+  "address": "27619 Herman Ranch",
+  "city": "Draper",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_farmers-union-oil-co-hwy-212-po-box-70-dupree",
+  "name": "FARMERS UNION OIL CO",
+  "address": "Hwy 212 PO BOX 70",
+  "city": "Dupree",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_eagle-butte-coop-association-hwy-212-eagle-butte",
+  "name": "EAGLE BUTTE COOP ASSOCIATION",
+  "address": "Hwy 212",
+  "city": "Eagle Butte",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_eagle-stop-taco-johns-mexpress-24327-us-hwy-212-eagle-butte",
+  "name": "EAGLE STOP TACO JOHNS MEXPRESS",
+  "address": "24327 US HWY 212",
+  "city": "Eagle Butte",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_club-eden-322-broadway-eden",
+  "name": "CLUB EDEN",
+  "address": "322 BROADWAY",
+  "city": "Eden",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_eden-five-and-dime-314-broadway-eden",
+  "name": "EDEN FIVE AND DIME",
+  "address": "314 Broadway",
+  "city": "Eden",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_egan-blue-jays-llc-407-bill-davis-st-hwy-34-egan",
+  "name": "EGAN BLUE JAYS LLC",
+  "address": "407 Bill Davis St Hwy 34",
+  "city": "Egan",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_total-stop-food-store-9113-380-sd-hwy-262-emery",
+  "name": "TOTAL STOP FOOD STORE 9113 ^",
+  "address": "380 SD Hwy 262",
+  "city": "Emery",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_frosty-flamingo-1108-e-ave-eureka",
+  "name": "FROSTY FLAMINGO~",
+  "address": "1108 E AVE",
+  "city": "Eureka",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_frosty-flamingo-1108-east-ave-eureka",
+  "name": "FROSTY FLAMINGO~",
+  "address": "1108 EAST AVE",
+  "city": "Eureka",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_country-girl-catering-14596-sd-hwy-73-faith",
+  "name": "COUNTRY GIRL CATERING",
+  "address": "14596 SD HWY 73",
+  "city": "Faith",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_farmers-union-oil-507-w-1st-st-faith",
+  "name": "FARMERS UNION OIL",
+  "address": "507 W 1st ST",
+  "city": "Faith",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_lynn-s-dakotamart-prairie-oasis-mall-faith",
+  "name": "LYNN`S DAKOTAMART ^",
+  "address": "Prairie Oasis MALL",
+  "city": "Faith",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_m-and-d-food-shop-105-1st-st-faith",
+  "name": "M AND D FOOD SHOP",
+  "address": "105 1st ST",
+  "city": "Faith",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_getcha-coffee-llc-sf-2116-s-minnesota-ave-ste-10-sioux-falls",
+  "name": "GETCHA COFFEE? LLC-SF",
+  "address": "2116 S MINNESOTA AVE STE 10 Sioux",
+  "city": "Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_kountry-kitchen-sf-2601-n-career-ave-ste-279-sioux-falls",
+  "name": "KOUNTRY KITCHEN -SF",
+  "address": "2601 N CAREER AVE STE 279 Sioux",
+  "city": "Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_grizzly-meats-600-s-veterans-st-flandreau",
+  "name": "GRIZZLY MEATS^",
+  "address": "600 S VETERANS ST",
+  "city": "Flandreau",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_dry-lake-park-rec-10-highway-20-florence",
+  "name": "DRY LAKE PARK & REC",
+  "address": "HIGHWAY 20 #10",
+  "city": "Florence",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_dry-lake-park-rec-10-hwy-20-florence",
+  "name": "DRY LAKE PARK & REC",
+  "address": "HWY 20 #10",
+  "city": "Florence",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_sidetrack-bar-and-grill-811-2nd-st-florence",
+  "name": "SIDETRACK BAR AND GRILL",
+  "address": "811 2nd ST",
+  "city": "Florence",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_big-toms-at-ft-pierre-sale-barn-804-sale-barn-rd-fort-pierre",
+  "name": "BIG TOMS AT FT PIERRE SALE BARN",
+  "address": "804 SALE BARN RD",
+  "city": "Fort Pierre",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_cool-spot-205-n-1st-st-fort-pierre",
+  "name": "COOL SPOT",
+  "address": "205 N 1st ST",
+  "city": "Fort Pierre",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_dakotamart-fort-pierre-210-n-1st-st-fort-pierre",
+  "name": "DAKOTAMART-FORT PIERRE ^",
+  "address": "210 N 1st ST",
+  "city": "Fort Pierre",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_camrose-canning-16950-400th-ave-frankfort",
+  "name": "CAMROSE CANNING",
+  "address": "16950 400th AVE",
+  "city": "Frankfort",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_bobs-steakhouse-29336-us-hwy-212-gettysburg",
+  "name": "BOBS STEAKHOUSE",
+  "address": "29336 US HWY 212",
+  "city": "Gettysburg",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_browns-lodge-hunting-ranch-29350-us-hwy-212-lot-72-gettysburg",
+  "name": "BROWNS LODGE & HUNTING RANCH",
+  "address": "29350 US HWY 212 LOT 72",
+  "city": "Gettysburg",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_the-helland-bakery-711-w-garfield-rd-gettysburg",
+  "name": "THE HELLAND BAKERY",
+  "address": "711 W GARFIELD RD",
+  "city": "Gettysburg",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_american-legion-club-223-main-st-gregory",
+  "name": "AMERICAN LEGION CLUB",
+  "address": "223 Main ST",
+  "city": "Gregory",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_g-f-buche-co-w-hwy-18-gregory",
+  "name": "G F BUCHE CO ^",
+  "address": "W Hwy 18",
+  "city": "Gregory",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_hilltop-theatre-hwy-18-gregory",
+  "name": "HILLTOP THEATRE",
+  "address": "HWY 18",
+  "city": "Gregory",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_stukel-s-birds-and-bucks-33965-287th-st-gregory",
+  "name": "STUKEL`S BIRDS AND BUCKS",
+  "address": "33965 287th ST",
+  "city": "Gregory",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_udderly-delicious-33427-303rd-st-gregory",
+  "name": "UDDERLY DELICIOUS~",
+  "address": "33427 303rd ST",
+  "city": "Gregory",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_air-madness-llc-310-industrial-rd-harrisburg",
+  "name": "AIR MADNESS LLC",
+  "address": "310 INDUSTRIAL RD",
+  "city": "Harrisburg",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_dominos-pizza-251-n-cliff-ave-harrisburg",
+  "name": "DOMINOS PIZZA",
+  "address": "251 N CLIFF AVE",
+  "city": "Harrisburg",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_the-meadow-barn-1690-willow-w-st-harrisburg",
+  "name": "THE MEADOW BARN",
+  "address": "1690 Willow W ST",
+  "city": "Harrisburg",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_union-social-300-industrial-rd-harrisburg",
+  "name": "UNION SOCIAL",
+  "address": "300 INDUSTRIAL RD",
+  "city": "Harrisburg",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_coffee-cup-fuel-stop-10-caribou-coffee-1001-s-western-ave-hartford",
+  "name": "COFFEE CUP FUEL STOP #10 / CARIBOU COFFEE",
+  "address": "1001 S Western AVE",
+  "city": "Hartford",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_subway-of-hartford-410-e-hwy-38-hartford",
+  "name": "SUBWAY OF HARTFORD",
+  "address": "410 E Hwy 38",
+  "city": "Hartford",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_12-gauge-lodge-11011-12-gauge-pl-hecla",
+  "name": "12 GAUGE LODGE",
+  "address": "11011 12 Gauge PL",
+  "city": "Hecla",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_flatland-flyways-lodge-39939-106th-st-hecla",
+  "name": "FLATLAND FLYWAYS LODGE",
+  "address": "39939 106th ST",
+  "city": "Hecla",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_herreid-health-variety-106-n-main-herreid",
+  "name": "HERREID HEALTH & VARIETY",
+  "address": "106 N MAIN",
+  "city": "Herreid",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_herreid-super-stop-1108-n-main-st-herreid",
+  "name": "HERREID SUPER STOP",
+  "address": "1108 N Main ST",
+  "city": "Herreid",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_patsy-s-cafe-3-0-1202-main-st-herreid",
+  "name": "PATSY'S CAFE 3.0",
+  "address": "1202 MAIN ST",
+  "city": "Herreid",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_bob-s-south-dakota-hunting-service-llc-34880-hwy-18-herrick",
+  "name": "BOB`S SOUTH DAKOTA HUNTING SERVICE LLC",
+  "address": "34880 Hwy 18",
+  "city": "Herrick",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_hall-oil-and-gas-co-100-us-hwy-14-and-47-highmore",
+  "name": "HALL OIL AND GAS CO",
+  "address": "100 US Hwy 14 and 47",
+  "city": "Highmore",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_wild-sides-34160-181st-st-highmore",
+  "name": "WILD SIDES",
+  "address": "34160 181st ST",
+  "city": "Highmore",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_dairy-twist-12647-s-hwy-16-hill-city",
+  "name": "DAIRY TWIST ~",
+  "address": "12647 S HWY 16",
+  "city": "Hill City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_silver-dollar-saloon-24090-hwy-385-hill-city",
+  "name": "SILVER DOLLAR SALOON",
+  "address": "24090 Hwy 385",
+  "city": "Hill City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_k-bar-s-lodge-434-old-hill-city-rd-keystone",
+  "name": "K BAR S LODGE",
+  "address": "434 Old",
+  "city": "Hill City RD  Keystone",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_city-liquor-store-101-w-main-st-hosmer",
+  "name": "CITY LIQUOR STORE",
+  "address": "101 W Main ST",
+  "city": "Hosmer",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_allen-ranch-13065-fall-river-rd-hot-springs",
+  "name": "ALLEN RANCH",
+  "address": "13065 Fall River Rd",
+  "city": "Hot Springs",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_angostura-den-28041-highway-385-hot-springs",
+  "name": "ANGOSTURA DEN",
+  "address": "28041 HIGHWAY 385",
+  "city": "Hot Springs",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_big-bats-900-jensen-hwy-hot-springs",
+  "name": "BIG BATS",
+  "address": "900 JENSEN HWY",
+  "city": "Hot Springs",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_buffalo-dreamer-restaurant-shared-kitchen-13006-fall-river-rd-hot-springs",
+  "name": "BUFFALO DREAMER RESTAURANT-SHARED KITCHEN",
+  "address": "13006 FALL RIVER RD",
+  "city": "Hot Springs",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_daus-coffee-house-2075-el-paso-aly-hot-springs",
+  "name": "DAUS COFFEE HOUSE",
+  "address": "2075 EL PASO ALY",
+  "city": "Hot Springs",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_jalapenos-grill-llc-1648-hwy-18-bypass-hot-springs",
+  "name": "JALAPENOS GRILL LLC",
+  "address": "1648 HWY 18 BYPASS",
+  "city": "Hot Springs",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_olifants-house-13006-fall-river-rd-hot-springs",
+  "name": "OLIFANTS HOUSE",
+  "address": "13006 FALL RIVER RD",
+  "city": "Hot Springs",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_rodeo-grounds-27631-hwy-79-hot-springs",
+  "name": "RODEO GROUNDS",
+  "address": "27631 HWY 79",
+  "city": "Hot Springs",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_scobi-black-hills-kombucha-713-main-st-hot-springs",
+  "name": "SCOBI BLACK HILLS KOMBUCHA",
+  "address": "713 MAIN ST",
+  "city": "Hot Springs",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_stay-usa-cafe-1403-hwy-18-bypass-hot-springs",
+  "name": "STAY USA CAFE",
+  "address": "1403 HWY 18 BYPASS",
+  "city": "Hot Springs",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_stay-usa-hotels-suites-1401-hwy-18-bypass-hot-springs",
+  "name": "STAY USA HOTELS SUITES",
+  "address": "1401 HWY 18 BYPASS",
+  "city": "Hot Springs",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_subway-restaurant-hot-springs-733-s-jensen-hwy-hot-springs",
+  "name": "SUBWAY RESTAURANT - HOT SPRINGS",
+  "address": "733 S Jensen Hwy",
+  "city": "Hot Springs",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_the-mountain-goat-1100-n-river-st-hot-springs",
+  "name": "THE MOUNTAIN GOAT",
+  "address": "1100 N RIVER ST",
+  "city": "Hot Springs",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_the-space-108-n-chigaco-st-hot-springs",
+  "name": "THE SPACE",
+  "address": "108 N CHIGACO ST",
+  "city": "Hot Springs",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_hoven-municipal-liquor-store-main-st-hoven",
+  "name": "HOVEN MUNICIPAL LIQUOR STORE",
+  "address": "Main ST",
+  "city": "Hoven",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_dawson-corner-pantry-105-e-hwy-34-howard",
+  "name": "DAWSON CORNER PANTRY",
+  "address": "105 E HWY 34",
+  "city": "Howard",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_express-takini-ltm-19105-sd-hwy-34-e-cherry-rd-howes",
+  "name": "EXPRESS - TAKINI LTM",
+  "address": "19105 SD HWY 34 - E CHERRY RD",
+  "city": "Howes",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_big-j-roadhouse-211-stofferahn-rd-humboldt",
+  "name": "BIG J ROADHOUSE",
+  "address": "211 Stofferahn RD",
+  "city": "Humboldt",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_kunhart-softball-concession-5th-and-ordway-huron",
+  "name": "KUNHART SOFTBALL CONCESSION",
+  "address": "5th and Ordway",
+  "city": "Huron",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_magness-cafe-105-custer-se-ave-huron",
+  "name": "MAGNESS CAFE",
+  "address": "105 Custer SE AVE",
+  "city": "Huron",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_badlands-interior-hotel-and-campground-900-sd-hwy-377-interior",
+  "name": "BADLANDS INTERIOR HOTEL AND CAMPGROUND",
+  "address": "900 SD HWY 377",
+  "city": "Interior",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_buffalo-station-5-e-us-hwy-12-ipswich",
+  "name": "BUFFALO STATION",
+  "address": "5 E US HWY 12",
+  "city": "Ipswich",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_corner-tavern-120-w-main-st-irene",
+  "name": "CORNER TAVERN",
+  "address": "120 W MAIN ST",
+  "city": "Irene",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_joey-s-210-e-neosho-iroquois",
+  "name": "JOEY'S",
+  "address": "210 E NEOSHO",
+  "city": "Iroquois",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_locken-oil-101-n-main-isabel",
+  "name": "LOCKEN OIL",
+  "address": "101 N Main",
+  "city": "Isabel",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_red-earth-table-421-n-main-isabel",
+  "name": "RED EARTH TABLE",
+  "address": "421 N MAIN",
+  "city": "Isabel",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_the-branding-iron-bar-grill-117-n-main-st-isabel",
+  "name": "THE BRANDING IRON BAR & GRILL",
+  "address": "117 N MAIN ST",
+  "city": "Isabel",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_the-occidental-general-store-206-main-st-isabel",
+  "name": "THE OCCIDENTAL GENERAL STORE",
+  "address": "206 MAIN ST",
+  "city": "Isabel",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_choice-cut-i-29-and-hwy-105-jefferson",
+  "name": "CHOICE CUT",
+  "address": "I 29 and Hwy 105",
+  "city": "Jefferson",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_discount-fuel-inc-511-sd-and-hwy-73-kadoka",
+  "name": "DISCOUNT FUEL INC",
+  "address": "511 SD and Hwy 73",
+  "city": "Kadoka",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_605-restaurant-and-bar-900-s-hwy-273-kennebec",
+  "name": "605 RESTAURANT AND BAR",
+  "address": "900 S HWY 273",
+  "city": "Kennebec",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_cruizzers-110-b-winter-st-keystone",
+  "name": "CRUIZZERS ~",
+  "address": "110 B Winter ST",
+  "city": "Keystone",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_dairy-queen-804-hwy-16a-keystone",
+  "name": "DAIRY QUEEN ~",
+  "address": "804 Hwy 16A",
+  "city": "Keystone",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_farmboy-kitchen-804-hwy-16a-15-keystone",
+  "name": "FARMBOY KITCHEN",
+  "address": "804 HWY 16A #15",
+  "city": "Keystone",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_fat-sams-home-cookin-434-us-16-a-keystone",
+  "name": "FAT SAMS HOME COOKIN~",
+  "address": "434 US 16-A",
+  "city": "Keystone",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_grapes-and-grinds-609-hwy-16-a-keystone",
+  "name": "GRAPES AND GRINDS ~",
+  "address": "609 Hwy 16-A",
+  "city": "Keystone",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_halley-s-west-804-hwy-16a-store-1-keystone",
+  "name": "HALLEY'S WEST ~",
+  "address": "804 Hwy 16A Store #1",
+  "city": "Keystone",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_xanterra-parks-and-resorts-hwy-244-keystone",
+  "name": "XANTERRA PARKS AND RESORTS",
+  "address": "Hwy 244",
+  "city": "Keystone",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_frosty-king-738-s-main-sts-kimball",
+  "name": "FROSTY KING~",
+  "address": "738 S MAIN STS",
+  "city": "Kimball",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_horseshoe-k-ranch-23539-365th-ave-kimball",
+  "name": "HORSESHOE K RANCH",
+  "address": "23539 365th AVE",
+  "city": "Kimball",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_whats-for-dinner-23539-365th-ave-kimball",
+  "name": "WHATS FOR DINNER?",
+  "address": "23539 365th AVE",
+  "city": "Kimball",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_jeffreys-101-w-st-marys-st-kranzburg",
+  "name": "JEFFREYS",
+  "address": "101 W St. MARYS ST",
+  "city": "Kranzburg",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_gus-stop-iii-611-us-hwy-281-lake-andes",
+  "name": "GUS STOP III",
+  "address": "611 US Hwy 281",
+  "city": "Lake Andes",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_pump-r-niks-511-hwy-50-lake-andes",
+  "name": "PUMP R NIKS",
+  "address": "511 HWY 50",
+  "city": "Lake Andes",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_wade-n-around-727-us-hwy-281-lake-andes",
+  "name": "WADE N AROUND",
+  "address": "727 US HWY 281",
+  "city": "Lake Andes",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_roy-view-country-club-116750-roykota-dr-lake-city",
+  "name": "ROY VIEW COUNTRY CLUB",
+  "address": "116750 ROYKOTA DR",
+  "city": "Lake City",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_boars-nest-roadhouse-11275-hwy-14a-lead",
+  "name": "BOARS NEST ROADHOUSE",
+  "address": "11275 HWY 14A",
+  "city": "Lead",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_charqueterie-21868-stage-stop-ln-lead",
+  "name": "CHARQUETERIE",
+  "address": "21868 STAGE STOP LN",
+  "city": "Lead",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_nevada-gulch-restaurant-11187-nevada-gluch-rd-lead",
+  "name": "NEVADA GULCH RESTAURANT",
+  "address": "11187 Nevada Gluch RD",
+  "city": "Lead",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_trails-head-lodge-22075-us-85-lead",
+  "name": "TRAILS HEAD LODGE",
+  "address": "22075 US 85",
+  "city": "Lead",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_al-s-grill-701-1-2-1st-e-ave-lemmon",
+  "name": "AL'S GRILL",
+  "address": "701 1/2 1st E AVE",
+  "city": "Lemmon",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_sweets-meats-20680-111th-st-lemmon",
+  "name": "SWEETS & MEATS",
+  "address": "20680 111th ST",
+  "city": "Lemmon",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_ten-45-grocery-and-cafe-11493-363rd-leola",
+  "name": "TEN-45 GROCERY AND CAFE ^",
+  "address": "11493 363rd",
+  "city": "Leola",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_sdsu-sodexo-chick-fil-a-erberts-gerberts-1421-student-union-ln-rm-73-brookings",
+  "name": "SDSU SODEXO- CHICK-FIL-A/ ERBERTS & GERBERTS",
+  "address": "1421 STUDENT UNION",
+  "city": "LN RM 73 Brookings",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_dsu-field-house-sodexo-1302-n-washington-ave-madison",
+  "name": "DSU-FIELD HOUSE-SODEXO",
+  "address": "1302 N WASHINGTON AVE",
+  "city": "Madison",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_jmp-design-and-catering-llc-45081-sd-highway-34-madison",
+  "name": "JMP DESIGN AND CATERING LLC",
+  "address": "45081 SD HIGHWAY 34",
+  "city": "Madison",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_the-point-bar-and-grille-llc-23491-johnson-point-rd-madison",
+  "name": "THE POINT BAR AND GRILLE LLC",
+  "address": "23491 JOHNSON POINT RD",
+  "city": "Madison",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_boomdocks-bar-grill-20906-us-hwy-18-martin",
+  "name": "BOOMDOCKS BAR & GRILL",
+  "address": "20906 US Hwy 18",
+  "city": "Martin",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_dairy-queen-grill-and-chill-201-bennett-ave-martin",
+  "name": "DAIRY QUEEN GRILL AND CHILL",
+  "address": "201 Bennett AVE",
+  "city": "Martin",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_dakotamart-201-w-bennett-ave-martin",
+  "name": "DAKOTAMART ^",
+  "address": "201 W BENNETT AVE",
+  "city": "Martin",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_martin-livestock-llc-504-e-bennett-martin",
+  "name": "MARTIN LIVESTOCK LLC",
+  "address": "504 E BENNETT",
+  "city": "Martin",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_souls-204-e-state-st-martin",
+  "name": "SOULS",
+  "address": "204 E STATE ST",
+  "city": "Martin",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_marvin-bar-14-church-st-marvin",
+  "name": "MARVIN BAR",
+  "address": "14 CHURCH ST",
+  "city": "Marvin",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_just-the-tip-114-may-st-unit-a-lead",
+  "name": "JUST THE TIP",
+  "address": "114",
+  "city": "MAY ST UNIT A Lead",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_the-pink-chutte-llc-321-main-st-mcintosh",
+  "name": "THE PINK CHUTTE LLC",
+  "address": "321 MAIN ST",
+  "city": "McIntosh",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_dairy-bar-e-hwy-18-menno",
+  "name": "DAIRY BAR",
+  "address": "E Hwy 18",
+  "city": "Menno",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_roosters-bar-and-grill-221-s-fifth-st-menno",
+  "name": "ROOSTERS BAR AND GRILL",
+  "address": "221 S FIFTH ST",
+  "city": "Menno",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_total-stop-convenience-store-9616-551-hwy-18-menno",
+  "name": "TOTAL STOP CONVENIENCE STORE  #9616 ^",
+  "address": "551 Hwy 18",
+  "city": "Menno",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_cedar-creek-gardens-llc-25580-249th-st-midland",
+  "name": "CEDAR CREEK GARDENS LLC",
+  "address": "25580 249th ST",
+  "city": "Midland",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_dairy-queen-1502-n-broadway-ave-miller",
+  "name": "DAIRY QUEEN",
+  "address": "1502 N Broadway AVE",
+  "city": "Miller",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_miller-central-speedway-1300-3rd-ave-miller",
+  "name": "MILLER CENTRAL SPEEDWAY",
+  "address": "1300 3rd AVE",
+  "city": "Miller",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_the-m-station-800-nesbitt-dr-mina",
+  "name": "THE M STATION",
+  "address": "800 Nesbitt DR",
+  "city": "Mina",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_buche-foods-hwy-18-mission",
+  "name": "BUCHE FOODS ^",
+  "address": "Hwy 18",
+  "city": "Mission",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_gus-stop-e-hwy-18-mission",
+  "name": "GUS STOP",
+  "address": "E Hwy 18",
+  "city": "Mission",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_b-g-milkyway-422-s-sandborn-blvd-mitchell",
+  "name": "B&G MILKYWAY",
+  "address": "422 S SANDBORN BLVD",
+  "city": "Mitchell",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_barn-cafe-1801-e-spruce-st-mitchell",
+  "name": "BARN CAFE",
+  "address": "1801 E SPRUCE ST",
+  "city": "Mitchell",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_dwu-fresh-ideas-122-w-university-ave-mitchell",
+  "name": "DWU - FRESH IDEAS",
+  "address": "122 W UNIVERSITY AVE",
+  "city": "Mitchell",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_hot-shots-espresso-mobile-322-e-havens-mitchell",
+  "name": "HOT SHOTS ESPRESSO MOBILE",
+  "address": "322 E HAVENS",
+  "city": "Mitchell",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_hot-shots-espresso-north-1920-n-sandborn-mitchell",
+  "name": "HOT SHOTS ESPRESSO NORTH",
+  "address": "1920 N SANDBORN",
+  "city": "Mitchell",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_james-valley-ctr-big-daddy-d-s-300-w-1st-st-mitchell",
+  "name": "JAMES VALLEY CTR/BIG DADDY D'S",
+  "address": "300 W 1st ST",
+  "city": "Mitchell",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_mitchell-technical-college-1800-e-spruce-st-mitchell",
+  "name": "MITCHELL TECHNICAL COLLEGE",
+  "address": "1800 E Spruce St",
+  "city": "Mitchell",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_myas-teriyaki-502-n-sandborn-blvd-mitchell",
+  "name": "MYAS TERIYAKI",
+  "address": "502 N SANDBORN BLVD",
+  "city": "Mitchell",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_bridge-city-marina-and-resort-12940-288th-rd-mobridge",
+  "name": "BRIDGE CITY MARINA AND RESORT",
+  "address": "12940 288th RD",
+  "city": "Mobridge",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_mobridge-lodge-1685-shor-acres-mobridge",
+  "name": "MOBRIDGE LODGE 1685",
+  "address": "Shor Acres",
+  "city": "Mobridge",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_s-r-s-american-legion-clubhouse-120-n-main-st-mobridge",
+  "name": "S&R'S AMERICAN LEGION CLUBHOUSE",
+  "address": "120 N MAIN ST",
+  "city": "Mobridge",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_the-depot-pit-stop-519-airport-rd-mobridge",
+  "name": "THE DEPOT PIT STOP",
+  "address": "519 AIRPORT RD",
+  "city": "Mobridge",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_the-depot-restaurant-519-airport-rd-mobridge",
+  "name": "THE DEPOT RESTAURANT",
+  "address": "519 AIRPORT RD",
+  "city": "Mobridge",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_calicos-125-s-main-st-mound-city",
+  "name": "CALICOS",
+  "address": "125 S Main ST",
+  "city": "Mound City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_mc83-198-main-st-mound-city",
+  "name": "MC83",
+  "address": "198 MAIN ST",
+  "city": "Mound City",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_sugar-coated-23900-270-ave-murdo",
+  "name": "SUGAR COATED",
+  "address": "23900 270 AVE",
+  "city": "Murdo",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_mountain-mudd-espresso-2200-n-maple-ave-ste-609-rapid-city",
+  "name": "MOUNTAIN MUDD ESPRESSO",
+  "address": "2200",
+  "city": "N MAPLE AVE STE 609 Rapid City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_brandin-iron-restaurant-12730-guest-ranch-loop-nemo",
+  "name": "BRANDIN IRON RESTAURANT",
+  "address": "12730 GUEST RANCH LOOP",
+  "city": "Nemo",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_moe-s-bar-and-grill-415-south-ave-new-underwood",
+  "name": "MOE`S BAR AND GRILL",
+  "address": "415 South AVE",
+  "city": "New Underwood",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_blue-line-diner-e-hwy-212-newell",
+  "name": "BLUE LINE DINER",
+  "address": "E Hwy 212",
+  "city": "Newell",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_newell-golf-club-12963-orman-rd-newell",
+  "name": "NEWELL GOLF CLUB",
+  "address": "12963 Orman RD",
+  "city": "Newell",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_sioux-city-freeze-dried-co-100-s-sodrac-dr-ste-136-north-sioux-city",
+  "name": "SIOUX CITY FREEZE DRIED CO",
+  "address": "100 S SODRAC DR STE 136",
+  "city": "North Sioux City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_triple-7-skillet-spirits-431-w-4th-oelrichs",
+  "name": "TRIPLE 7 SKILLET & SPIRITS",
+  "address": "431 W 4th",
+  "city": "Oelrichs",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_paul-nelson-farm-17364-316th-ave-onida",
+  "name": "PAUL NELSON FARM",
+  "address": "17364 316th AVE",
+  "city": "Onida",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_badlands-belly-buster-20950-sd-state-hwy-248-philip",
+  "name": "BADLANDS BELLY BUSTER~",
+  "address": "20950 SD STATE HWY 248",
+  "city": "Philip",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_badlands-trading-post-21290-sd-hwy-240-philip",
+  "name": "BADLANDS TRADING POST",
+  "address": "21290 SD HWY 240",
+  "city": "Philip",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_harvest-sandwich-co-409-n-larimar-ave-philip",
+  "name": "HARVEST SANDWICH CO",
+  "address": "409 N LARIMAR AVE",
+  "city": "Philip",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_lake-waggoner-golf-course-22271-lake-waggoner-rd-philip",
+  "name": "LAKE WAGGONER GOLF COURSE",
+  "address": "22271 Lake Waggoner RD",
+  "city": "Philip",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_rock-roll-lanes-inc-123-us-hwy-14-philip",
+  "name": "ROCK & ROLL LANES INC",
+  "address": "123 US Hwy 14",
+  "city": "Philip",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_patas-azules-8079-steamboat-rd-piedmont",
+  "name": "PATAS AZULES",
+  "address": "8079 STEAMBOAT RD",
+  "city": "Piedmont",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_wings-n-thangs-14911-w-hills-view-dr-piedmont",
+  "name": "WINGS N THANGS~",
+  "address": "14911 W HILLS VIEW DR",
+  "city": "Piedmont",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_1-stop-travel-center-29265-us-14-hwy-pierre",
+  "name": "1 STOP TRAVEL CENTER",
+  "address": "29265 US 14 HWY",
+  "city": "Pierre",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_cheyenne-ridge-outfitters-and-lodge-inc-101-ridge-rd-pierre",
+  "name": "CHEYENNE RIDGE OUTFITTERS AND LODGE INC",
+  "address": "101 Ridge RD",
+  "city": "Pierre",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_dakota-sky-lodge-19602-landing-ave-pierre",
+  "name": "DAKOTA SKY LODGE ~",
+  "address": "19602 LANDING AVE",
+  "city": "Pierre",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_oahe-softball-association-south-buchanan-pierre",
+  "name": "OAHE SOFTBALL ASSOCIATION",
+  "address": "South Buchanan",
+  "city": "Pierre",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_pike-haven-resort-27645-pike-haven-pl-pierre",
+  "name": "PIKE HAVEN RESORT",
+  "address": "27645 Pike Haven PL",
+  "city": "Pierre",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_south-dakota-dci-let-1302-w-hwy-14-ste-5-pierre",
+  "name": "SOUTH DAKOTA DCI / LET",
+  "address": "1302 W HWY 14 STE 5",
+  "city": "Pierre",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_sunset-lodge-28181-182nd-st-pierre",
+  "name": "SUNSET LODGE ~",
+  "address": "28181 182nd ST",
+  "city": "Pierre",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_west-prairie-resort-28354-182nd-st-pierre",
+  "name": "WEST PRAIRIE RESORT",
+  "address": "28354 182nd ST",
+  "city": "Pierre",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_buche-foods-560-1st-pine-ridge",
+  "name": "BUCHE FOODS ^",
+  "address": "560 1st",
+  "city": "Pine Ridge",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_johna-s-catering-service-100-w-7th-plankinton",
+  "name": "JOHNA`S CATERING SERVICE",
+  "address": "100 W 7th",
+  "city": "Plankinton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_stockmens-cafe-hwy-44-platte",
+  "name": "STOCKMENS CAFE",
+  "address": "Hwy 44",
+  "city": "Platte",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_makoce-agriculture-development-llc-1751-mahpiya-maza-ln-porcupine",
+  "name": "MAKOCE AGRICULTURE DEVELOPMENT LLC",
+  "address": "1751 MAHPIYA MAZA LN",
+  "city": "Porcupine",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_maria-s-restaurant-7216-mt-rushmore-rd-pringle",
+  "name": "MARIA`S RESTAURANT",
+  "address": "7216 MT RUSHMORE RD",
+  "city": "Pringle",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_7-brew-coffee-509-n-campbell-st-rapid-city",
+  "name": "7 BREW COFFEE",
+  "address": "509 N CAMPBELL ST",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_black-hills-sports-inc-2721-ploof-dr-rapid-city",
+  "name": "BLACK HILLS SPORTS INC ~",
+  "address": "2721 PLOOF DR",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_candyland-23835-mill-iron-dr-rapid-city",
+  "name": "CANDYLAND",
+  "address": "23835 Mill Iron DR",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_catrachos-latin-cuisine-restaurant-544-century-rd-ste-101-102-rapid-city",
+  "name": "CATRACHOS LATIN CUISINE RESTAURANT",
+  "address": "544 CENTURY RD STE 101 & 102",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_country-store-at-three-forks-23820-highway-385-rapid-city",
+  "name": "COUNTRY STORE AT THREE FORKS",
+  "address": "23820 HIGHWAY 385",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_crossmark-sams-club-6565-925-elgin-st-rapid-city",
+  "name": "CROSSMARK (SAMS CLUB 6565)",
+  "address": "925 ELGIN ST",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_hart-ranch-golf-course-23645-club-house-dr-rapid-city",
+  "name": "HART RANCH GOLF COURSE",
+  "address": "23645 Club House DR",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_htr-black-hills-13752-hwy-16-rapid-city",
+  "name": "HTR BLACK HILLS ~",
+  "address": "13752 HWY 16",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_jump-n-slide-adventure-park-840-e-centre-st-ste-a-b-rapid-city",
+  "name": "JUMP N SLIDE ADVENTURE PARK",
+  "address": "840 E CENTRE ST STE A&B",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_jump-n-slide-enterprise-llc-2-840-e-centre-st-ste-a-b-rapid-city",
+  "name": "JUMP N SLIDE ENTERPRISE LLC - 2",
+  "address": "840 E CENTRE ST STE A&B",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_mostly-chocolates-mc-coffeehouse-7201-mt-rushmore-rd-ste-500-rapid-city",
+  "name": "MOSTLY CHOCOLATES & MC COFFEEHOUSE",
+  "address": "7201 MT RUSHMORE RD STE 500",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_salt-block-burgers-brews-7201-mt-rushmore-rd-unit-600-rapid-city",
+  "name": "SALT BLOCK BURGERS & BREWS",
+  "address": "7201 MT RUSHMORE RD UNIT 600",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_sunny-lemons-cookies-708-st-joe-rapid-city",
+  "name": "SUNNY LEMONS COOKIES",
+  "address": "708 ST JOE",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_the-moontime-grill-12310-w-hwy-44-rapid-city",
+  "name": "THE MOONTIME GRILL",
+  "address": "12310 W HWY 44",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_the-soda-bar-24035-pommel-loop-rapid-city",
+  "name": "THE SODA BAR",
+  "address": "24035 POMMEL LOOP",
+  "city": "Rapid City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_blume-foods-llc-17207-391-ave-redfield",
+  "name": "BLUME FOODS LLC",
+  "address": "17207 391 AVE",
+  "city": "Redfield",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_wild-roots-general-store-608-n-main-st-redfield",
+  "name": "WILD ROOTS GENERAL STORE",
+  "address": "608 N MAIN ST",
+  "city": "Redfield",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_monarch-lounge-and-steakhouse-main-st-renner",
+  "name": "MONARCH LOUNGE AND STEAKHOUSE",
+  "address": "Main ST",
+  "city": "Renner",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_anderson-baking-company-34682-145-st-roscoe",
+  "name": "ANDERSON BAKING COMPANY",
+  "address": "34682 145 ST",
+  "city": "Roscoe",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_paulhamus-store-dba-paul-mart-200-legion-ave-rosebud",
+  "name": "PAULHAMUS STORE, DBA PAUL MART",
+  "address": "200 Legion AVE",
+  "city": "Rosebud",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_with-the-wind-winery-vineyard-10722-lake-rd-rosholt",
+  "name": "WITH THE WIND WINERY & VINEYARD",
+  "address": "10722 LAKE RD",
+  "city": "Rosholt",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_jimmy-j-s-519-s-main-roslyn",
+  "name": "JIMMY J'S",
+  "address": "519 S MAIN",
+  "city": "Roslyn",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_willies-bar-and-grill-121-n-commercial-ave-saint-lawrence",
+  "name": "WILLIES BAR AND GRILL",
+  "address": "121 N Commercial AVE",
+  "city": "Saint Lawrence",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_st-onge-bar-201-sd-hwy-34-saint-onge",
+  "name": "ST ONGE BAR",
+  "address": "201 SD HWY 34",
+  "city": "Saint Onge",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_st-onge-livestock-cafe-11693-salebarn-rd-saint-onge",
+  "name": "ST ONGE LIVESTOCK CAFE",
+  "address": "11693 SALEBARN RD",
+  "city": "Saint Onge",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_dakota-maid-llc-2011-hwy-12-and-83-selby",
+  "name": "DAKOTA MAID LLC",
+  "address": "2011 Hwy 12 and 83",
+  "city": "Selby",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_time-out-restaurant-5000-us-12-selby",
+  "name": "TIME OUT RESTAURANT",
+  "address": "5000 US-12",
+  "city": "Selby",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_4076",
+  "name": "A & A SEAFOOD SALES",
+  "address": "33679 DUFF RD",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_5368",
+  "name": "ACTIVE GENERATIONS- SIMPLY GOOD",
+  "address": "5500 E ACTIVE GENERATIONS PL",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_4353",
+  "name": "BREAKING BURRITO (MOBILE)",
+  "address": "121 BEDROCK CIR",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_2562",
+  "name": "CORNUCOPIA (THE)",
+  "address": "3681 IBEX AVE",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_5406",
+  "name": "CROWDED TABLE FARMS",
+  "address": "44559 279TH ST",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_dakota-mushrooms-and-microgreens-27063-s-tallgrass-ave-ste-4-sioux-falls",
+  "name": "DAKOTA MUSHROOMS AND MICROGREENS",
+  "address": "27063 S TALLGRASS AVE STE 4",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sf_sweeps_5279",
+  "name": "DOKMAI STICKY RICE LLC",
+  "address": "5000 W EMPIRE MALL PL",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_5312",
+  "name": "EL BURRITO",
+  "address": "5000 W EMPIRE MALL PL",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_435",
+  "name": "FABIAN SEAFOOD",
+  "address": "PO BOX 3636",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_3092",
+  "name": "HANISCH FARMS (MOBILE)",
+  "address": "25534 457TH AVE",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sf_sweeps_4743",
+  "name": "JENSEN PRODUCE",
+  "address": "21324 479TH AVE",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sf_sweeps_4844",
+  "name": "LEWIS DRUG #17",
+  "address": "5860 E MADISON ST",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_5124",
+  "name": "LODGE BAR & GRILL THE",
+  "address": "810 N PHILLIPS AVE",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_4861",
+  "name": "MR CHURRO (MOBILE)",
+  "address": "121 BEDROCK CIR",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_4159",
+  "name": "PRO SERVICES VENDING (GARAGE)",
+  "address": "1004 S CHARLOTTE AVE",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_5208",
+  "name": "REDMOND PRIME CUTS (MOBILE)",
+  "address": "25271 475TH AVE",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sf_sweeps_4782",
+  "name": "SCAPEGOAT/ ALIBI",
+  "address": "7400 E OAK GROVE TR",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_5148",
+  "name": "SIMPLY SWEET CHEESECAKE-MOBILE",
+  "address": "206 S HWY 86",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_5037",
+  "name": "STIR FRY EXPRESS",
+  "address": "500 W EMPIRE PLACE",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sf_sweeps_4604",
+  "name": "SUNNYS CONCESSIONS LLC",
+  "address": "3400 N HERCULES AVE",
+  "city": "Sioux Falls",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_stockmens-cafe-1020-3rd-w-ave-sisseton",
+  "name": "STOCKMENS CAFE",
+  "address": "1020 3rd W AVE",
+  "city": "Sisseton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_valley-view-country-club-inc-11916-swenumson-dr-sisseton",
+  "name": "VALLEY VIEW COUNTRY CLUB INC",
+  "address": "11916 SWENUMSON DR",
+  "city": "Sisseton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_desmet-mercantile-coffeehouse-109-4th-sw-st-unit-1-de-smet",
+  "name": "DESMET MERCANTILE & COFFEEHOUSE",
+  "address": "109 4th SW ST De UNIT 1",
+  "city": "Smet",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_meyers-recreation-111-n-main-st-south-shore",
+  "name": "MEYERS RECREATION",
+  "address": "111 N Main ST",
+  "city": "South Shore",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_a-w-restaurants-2525-1st-ave-spearfish",
+  "name": "A&W RESTAURANTS",
+  "address": "2525 1ST AVE",
+  "city": "Spearfish",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_asian-eatstreet-llc-2429-clear-spring-rd-103-spearfish",
+  "name": "ASIAN EATSTREET LLC",
+  "address": "2429 CLEAR SPRING RD #103",
+  "city": "Spearfish",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_bella-luce-707-n-fifth-st-spearfish",
+  "name": "BELLA LUCE",
+  "address": "707 N FIFTH ST",
+  "city": "Spearfish",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_chateau-at-rim-rock-10900-rim-rock-pl-spearfish",
+  "name": "CHATEAU AT RIM ROCK",
+  "address": "10900 RIM ROCK PL",
+  "city": "Spearfish",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_elkhorn-ridge-travel-center-6764-colordado-loop-spearfish",
+  "name": "ELKHORN RIDGE TRAVEL CENTER",
+  "address": "6764 COLORDADO LOOP",
+  "city": "Spearfish",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_hannas-twist-bakery-2620-carmelo-ct-spearfish",
+  "name": "HANNAS TWIST BAKERY",
+  "address": "2620 CARMELO CT",
+  "city": "Spearfish",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_lobster-dogs-2850-hillsview-rd-spearfish",
+  "name": "LOBSTER DOGS",
+  "address": "2850 HILLSVIEW RD",
+  "city": "Spearfish",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_miller-creek-pub-6845-saint-onge-rd-spearfish",
+  "name": "MILLER CREEK PUB",
+  "address": "6845 SAINT ONGE RD",
+  "city": "Spearfish",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_sunrise-buzz-2535-e-colordado-blvd-spearfish",
+  "name": "SUNRISE BUZZ",
+  "address": "2535 E COLORDADO BLVD",
+  "city": "Spearfish",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_wonders-llc-2050-w-main-st-ste-5-rapid-city",
+  "name": "WONDERS LLC",
+  "address": "2050 W Main",
+  "city": "ST STE 5 Rapid City",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_jimmy-johns-3307-7th-ave-sw-ste-101-aberdeen",
+  "name": "JIMMY JOHNS",
+  "address": "3307 7th Ave SW",
+  "city": "STE 101 Aberdeen",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_biancas-restaurant-1000-18th-ste-30-huron",
+  "name": "BIANCAS RESTAURANT",
+  "address": "1000 18th",
+  "city": "STE 30 Huron",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_arbys-8484-2882-dickson-dr-sturgis",
+  "name": "ARBYS 8484",
+  "address": "2882 DICKSON DR",
+  "city": "Sturgis",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_common-cents-food-store-120-2421-s-junction-ave-sturgis",
+  "name": "COMMON CENTS FOOD STORE #120",
+  "address": "2421 S Junction AVE",
+  "city": "Sturgis",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_mending-hands-llc-shared-kitchen-20445-79-hwy-sturgis",
+  "name": "MENDING HANDS LLC-SHARED KITCHEN",
+  "address": "20445 79 HWY",
+  "city": "Sturgis",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_sturcrazy-llc-1150-moose-dr-sturgis",
+  "name": "STURCRAZY LLC",
+  "address": "1150 MOOSE DR",
+  "city": "Sturgis",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_tammys-rev-it-up-3rd-location-12988-sd-34-sturgis",
+  "name": "TAMMYS REV IT UP (3RD LOCATION)",
+  "address": "12988 SD 34",
+  "city": "Sturgis",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_jr-s-rhodehouse-bbq-pit-7201-infinity-dr-3-summerset",
+  "name": "JR'S RHODEHOUSE BBQ PIT",
+  "address": "7201 INFINITY DR # 3",
+  "city": "Summerset",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_pizza-hut-of-summerset-8051-stagestop-rd-summerset",
+  "name": "PIZZA HUT OF SUMMERSET",
+  "address": "8051 Stagestop RD",
+  "city": "Summerset",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_run-wild-7078-infinity-dr-summerset",
+  "name": "RUN WILD",
+  "address": "7078 Infinity Dr",
+  "city": "Summerset",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_the-vault-79-2nd-sw-st-ste-104-huron",
+  "name": "THE VAULT",
+  "address": "79 2ND",
+  "city": "SW ST STE 104 Huron",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_caseys-3944-2100-n-bakker-landing-tea",
+  "name": "CASEYS #3944",
+  "address": "2100 N BAKKER LANDING",
+  "city": "Tea",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_get-n-go-17-815-heritage-pkwy-tea",
+  "name": "GET N GO 17",
+  "address": "815 Heritage PKWY",
+  "city": "Tea",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_makers-market-102-e-venture-pl-tea",
+  "name": "MAKERS MARKET",
+  "address": "102 E VENTURE PL",
+  "city": "Tea",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_one-stop-101-w-1st-st-tea",
+  "name": "ONE STOP",
+  "address": "101 W 1st ST",
+  "city": "Tea",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_wholly-balls-llc-2012-venture-st-ste-2-tea",
+  "name": "WHOLLY BALLS LLC",
+  "address": "2012 VENTURE ST STE 2",
+  "city": "Tea",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_punkies-223-e-st-timber-lake",
+  "name": "PUNKIES",
+  "address": "223 E ST",
+  "city": "Timber Lake",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_save-your-fork-bakery-deubrook-school-shared-kitchen-695-pallisades-ave-toronto",
+  "name": "SAVE YOUR FORK BAKERY (DEUBROOK SCHOOL SHARED KITCHEN)",
+  "address": "695 PALLISADES AVE",
+  "city": "Toronto",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_the-dugout-108-w-2nd-st-tripp",
+  "name": "THE DUGOUT",
+  "address": "108 W 2nd ST",
+  "city": "Tripp",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_country-drive-in-200-w-sd-hwy-50-tyndall",
+  "name": "COUNTRY DRIVE IN",
+  "address": "200 W SD HWY 50",
+  "city": "Tyndall",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_country-store-and-cafe-209-roseander-ave-vale",
+  "name": "COUNTRY STORE AND CAFE",
+  "address": "209 Roseander AVE",
+  "city": "Vale",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_homestead-terroir-kitchen-26685-486th-ave-valley-springs",
+  "name": "HOMESTEAD TERROIR KITCHEN",
+  "address": "26685 486TH AVE",
+  "city": "Valley Springs",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_against-the-wind-grill-llc-44146-101st-st-veblen",
+  "name": "AGAINST THE WIND GRILL LLC~",
+  "address": "44146 101st ST",
+  "city": "Veblen",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_pub-605-llc-202-s-main-st-veblen",
+  "name": "PUB 605 LLC",
+  "address": "202 S MAIN ST",
+  "city": "Veblen",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_karlis-kitchen-llc-2883-corral-ln-vermillion",
+  "name": "KARLIS KITCHEN LLC",
+  "address": "2883 CORRAL LN",
+  "city": "Vermillion",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_mulberry-pie-wood-fired-pizza-31274-saginaw-ave-vermillion",
+  "name": "MULBERRY PIE WOOD FIRED PIZZA",
+  "address": "31274 SAGINAW AVE",
+  "city": "Vermillion",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_vermillion-nutrition-14b-w-main-st-vermillion",
+  "name": "VERMILLION NUTRITION",
+  "address": "14B W MAIN ST",
+  "city": "Vermillion",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_sodak-natural-foods-24073-sd-hwy-53-vivian",
+  "name": "SODAK NATURAL FOODS",
+  "address": "24073 SD HWY 53",
+  "city": "Vivian",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_little-prairie-coffee-company-cart-4-21935-461st-ave-volga",
+  "name": "LITTLE PRAIRIE COFFEE COMPANY - CART 4",
+  "address": "21935 461ST AVE",
+  "city": "Volga",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_kaverns-300-lincoln-volin",
+  "name": "KAVERNS",
+  "address": "300 Lincoln",
+  "city": "Volin",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_grind-house-46-109-e-hwy-46-wagner",
+  "name": "GRIND HOUSE 46",
+  "address": "109 E HWY 46",
+  "city": "Wagner",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_ks-qwik-stop-100-w-sd-hwy-50-wagner",
+  "name": "KS QWIK STOP",
+  "address": "100 W SD HWY 50",
+  "city": "Wagner",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_pad-71-39648-us-hwy-46-wagner",
+  "name": "PAD 71",
+  "address": "39648 US HWY 46",
+  "city": "Wagner",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_red-day-coffee-co-119-s-main-wagner",
+  "name": "RED DAY COFFEE CO",
+  "address": "119 S MAIN",
+  "city": "Wagner",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_taco-johns-401-sd-hwy-46-wagner",
+  "name": "TACO JOHNS",
+  "address": "401 SD HWY 46",
+  "city": "Wagner",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_two-spurs-steakhouse-610-w-hwy-46-wagner",
+  "name": "TWO SPURS STEAKHOUSE",
+  "address": "610 W Hwy 46",
+  "city": "Wagner",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_bj-s-country-store-wall-218-s-boulevard-wall",
+  "name": "BJ'S COUNTRY STORE WALL",
+  "address": "218 S BOULEVARD",
+  "city": "Wall",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_dairy-queen-110-blvd-wall",
+  "name": "DAIRY QUEEN",
+  "address": "110 BLVD",
+  "city": "Wall",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_red-rock-mobile-506-glen-st-wall",
+  "name": "RED ROCK MOBILE ~",
+  "address": "506 Glen St",
+  "city": "Wall",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_stompin-grounds-coffee-house-112-south-blvd-wall",
+  "name": "STOMPIN GROUNDS COFFEE HOUSE",
+  "address": "112 SOUTH BLVD",
+  "city": "Wall",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_buche-s-gus-stop-wanblee-222-sd-hwy-44-wanblee",
+  "name": "BUCHE'S GUS STOP-WANBLEE ^",
+  "address": "222 SD HWY 44",
+  "city": "Wanblee",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_brendas-tumbleweed-cafe-22870-us-hwy-12-watauga",
+  "name": "BRENDAS TUMBLEWEED CAFE",
+  "address": "22870 US HWY 12",
+  "city": "Watauga",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_bbq-pit-stop-17375-458th-se-ave-watertown",
+  "name": "BBQ PIT STOP",
+  "address": "17375 458th SE AVE",
+  "city": "Watertown",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_china-wok-2645-10th-se-ave-watertown",
+  "name": "CHINA WOK",
+  "address": "2645 10th SE AVE",
+  "city": "Watertown",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_codington-county-jail-14-first-ave-watertown",
+  "name": "CODINGTON COUNTY JAIL",
+  "address": "14 FIRST AVE",
+  "city": "Watertown",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_drip-coffee-baked-goods-928-11th-se-st-watertown",
+  "name": "DRIP COFFEE & BAKED GOODS",
+  "address": "928 11TH SE ST",
+  "city": "Watertown",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_prairie-lakes-ice-arena-3015-1st-ne-ave-watertown",
+  "name": "PRAIRIE LAKES ICE ARENA~",
+  "address": "3015 1st NE AVE",
+  "city": "Watertown",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_raise-the-bar-llc-806-jensen-ave-watertown",
+  "name": "RAISE THE BAR LLC",
+  "address": "806 JENSEN AVE",
+  "city": "Watertown",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_tacos-el-primo-45730-czech-dr-watertown",
+  "name": "TACOS EL PRIMO",
+  "address": "45730 CZECH DR",
+  "city": "Watertown",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_the-commons-2527-prairie-park-se-trl-watertown",
+  "name": "THE COMMONS",
+  "address": "2527 PRAIRIE PARK SE TRL",
+  "city": "Watertown",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_bitter-lake-lodge-14307-448th-ave-waubay",
+  "name": "BITTER LAKE LODGE",
+  "address": "14307 448th AVE",
+  "city": "Waubay",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_the-purple-cow-30-e-hwy-12-waubay",
+  "name": "THE PURPLE COW ^",
+  "address": "30 E Hwy 12",
+  "city": "Waubay",
+  "zip": null,
+  "precision": "city"
+ },
+ {
+  "id": "sd_doh_cenex-convenience-store-hwy-25-and-12-webster",
+  "name": "CENEX CONVENIENCE STORE",
+  "address": "Hwy 25 and 12",
+  "city": "Webster",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_lakes-bar-grill-19a-golf-dr-wentworth",
+  "name": "LAKES BAR & GRILL",
+  "address": "19A GOLF DR",
+  "city": "Wentworth",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_dakota-natural-solutions-industries-llc-185-brook-e-st-wessington",
+  "name": "DAKOTA NATURAL SOLUTIONS INDUSTRIES LLC =",
+  "address": "185 BROOK E ST",
+  "city": "Wessington",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_farmers-union-oil-co-490-cook-st-wessington",
+  "name": "FARMERS UNION OIL CO",
+  "address": "490 Cook ST",
+  "city": "Wessington",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_shed-18-25-brown-county-10-westport",
+  "name": "SHED 18",
+  "address": "25 BROWN COUNTY 10",
+  "city": "Westport",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_the-corner-gas-and-goodies-20402-478th-ave-sd-hwy-30-white",
+  "name": "THE CORNER GAS AND GOODIES",
+  "address": "20402 478th Ave SD Hwy 30",
+  "city": "White",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_shop-416-412-garfield-ave-willow-lake",
+  "name": "SHOP 416",
+  "address": "412 GARFIELD AVE",
+  "city": "Willow Lake",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_smoots-grill-n-chill-302-sd-hwy-28-willow-lake",
+  "name": "SMOOTS GRILL N CHILL",
+  "address": "302 SD HWY 28",
+  "city": "Willow Lake",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_jurgens-c-store-604-sd-highway-15-wilmot",
+  "name": "JURGENS C STORE",
+  "address": "604 SD HIGHWAY 15",
+  "city": "Wilmot",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_the-grind-coffee-shop-cafe-713-main-st-1-wilmot",
+  "name": "THE GRIND COFFEE SHOP & CAFE",
+  "address": "713 MAIN ST 1",
+  "city": "Wilmot",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_holiday-inn-express-1360-e-hwy-44-winner",
+  "name": "HOLIDAY INN EXPRESS",
+  "address": "1360 E Hwy 44",
+  "city": "Winner",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_taco-johns-1140-e-fifth-st-winner",
+  "name": "TACO JOHNS",
+  "address": "1140 E FIFTH ST",
+  "city": "Winner",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_605-cannabis-28190-interstate-ave-worthing",
+  "name": "605 CANNABIS =",
+  "address": "28190 INTERSTATE AVE",
+  "city": "Worthing",
+  "zip": null,
+  "precision": "street"
+ },
+ {
+  "id": "sd_doh_great-life-at-fox-run-600-w-27th-st-yankton",
+  "name": "GREAT LIFE AT FOX RUN",
+  "address": "600 W 27th ST",
+  "city": "Yankton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_groovy-treez-1112-east-side-dr-yankton",
+  "name": "GROOVY TREEZ=",
+  "address": "1112 EAST SIDE DR",
+  "city": "Yankton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_happy-flower-3302-e-hwy-50-yankton",
+  "name": "HAPPY FLOWER=",
+  "address": "3302 E HWY 50",
+  "city": "Yankton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_karttrax-family-fun-park-4908-w-8th-st-yankton",
+  "name": "KARTTRAX FAMILY FUN PARK",
+  "address": "4908 W 8th ST",
+  "city": "Yankton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_levee-street-steak-lounge-104-capitol-st-yankton",
+  "name": "LEVEE STREET STEAK & LOUNGE",
+  "address": "104 CAPITOL ST",
+  "city": "Yankton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_mudslingers-drive-thru-coffee-4015-w-8th-st-yankton",
+  "name": "MUDSLINGERS DRIVE-THRU COFFEE",
+  "address": "4015 W 8th ST",
+  "city": "Yankton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_taco-johns-yankton-1014-broadway-st-yankton",
+  "name": "TACO JOHNS YANKTON",
+  "address": "1014 Broadway ST",
+  "city": "Yankton",
+  "zip": null,
+  "precision": null
+ },
+ {
+  "id": "sd_doh_the-mint-318-douglass-yankton",
+  "name": "THE MINT",
+  "address": "318 Douglass",
+  "city": "Yankton",
+  "zip": null,
+  "precision": null
+ }
+]

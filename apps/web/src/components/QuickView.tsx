@@ -75,8 +75,8 @@ export default function QuickView({ restaurant: r, onClose }: Props) {
         <div className="qv-critical">⚠ Critical violations found on latest inspection</div>
       )}
 
-      {r.geo_precision === 'city' && (
-        <div className="qv-approx">Map location is approximate — this address isn&apos;t mappable yet</div>
+      {r.geo_precision !== 'rooftop' && r.geo_precision !== 'address' && (
+        <div className="qv-approx">Not shown on the map yet — we haven&apos;t verified this exact location</div>
       )}
 
       <Link to={`/r/${encodeURIComponent(r.id)}`} className="qv-cta">

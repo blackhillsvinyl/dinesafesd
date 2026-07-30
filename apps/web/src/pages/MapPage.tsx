@@ -8,6 +8,7 @@ import QuickView from '../components/QuickView';
 import StackPicker from '../components/StackPicker';
 import CitySearch, { buildCityList } from '../components/CitySearch';
 import type { CityEntry } from '../components/CitySearch';
+import { isVerifiedLocation } from '../lib/geo';
 import type { Restaurant } from '../types';
 
 const MAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
@@ -98,13 +99,16 @@ export default function MapPage() {
   // if it already exists; otherwise the map 'load' handler reads dataRef.
   useEffect(() => {
     if (!index) return;
+    // Pins, city bubbles, and city bounds all come from verified locations
+    // only — an unverified coordinate must never place anything on the map.
+    const mappable = index.restaurants.filter(isVerifiedLocation);
     byId.current = new Map(index.restaurants.map((r) => [r.id, r]));
-    dataRef.current = toFeatureCollection(index.restaurants);
-    const { cityFC, singlesFC } = toCityCollections(index.restaurants);
+    dataRef.current = toFeatureCollection(mappable);
+    const { cityFC, singlesFC } = toCityCollections(mappable);
     citiesRef.current = cityFC;
     singlesRef.current = singlesFC;
     cityBoundsRef.current = new Map(
-      buildCityList(index.restaurants).map((c) => [c.name.toLowerCase(), c])
+      buildCityList(mappable).map((c) => [c.name.toLowerCase(), c])
     );
     const push = (id: string, data: GeoJSON.FeatureCollection) => {
       const src = mapRef.current?.getSource(id) as maplibregl.GeoJSONSource | undefined;
@@ -447,7 +451,16 @@ export default function MapPage() {
   const flyToRestaurant = (r: Restaurant) => {
     setStack(null);
     setSelected(r);
-    mapRef.current?.flyTo({ center: [r.longitude, r.latitude], zoom: 16, duration: 1200 });
+    if (isVerifiedLocation(r)) {
+      mapRef.current?.flyTo({ center: [r.longitude, r.latitude], zoom: 16, duration: 1200 });
+    } else {
+      // No trusted pin to fly to — settle for the city footprint if we have
+      // one, and let the quick view carry the details.
+      const entry = cityBoundsRef.current.get((r.city ?? '').trim().toLowerCase());
+      if (entry) {
+        mapRef.current?.fitBounds(entry.bounds, { padding: 70, maxZoom: 14.5, duration: 1200 });
+      }
+    }
   };
 
   return (

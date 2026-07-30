@@ -1,0 +1,355 @@
+[
+ {
+  "name": "aurora",
+  "url": "https://gis.districtiii.org/server/rest/services/AURORA_COUNTY_WEB_LAYERS/MapServer/9",
+  "zipField": "ZIP_CODE",
+  "mode": "fields",
+  "numField": "STR_NUM",
+  "streetFields": [
+   "PRE_DIR",
+   "STR_NAME",
+   "STR_TYPE",
+   "POST_DIR"
+  ]
+ },
+ {
+  "name": "beadle",
+  "url": "https://www.1stdistrict.org/arcgis/rest/services/Beadle/beadleparcels/MapServer/0",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "PROPERTY_A"
+ },
+ {
+  "name": "bennett",
+  "url": "https://gis.districtiii.org/server/rest/services/BENNETT_COUNTY_WEB_LAYERS/MapServer/4",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "SITE_ADDRESS"
+ },
+ {
+  "name": "bon_homme",
+  "url": "https://gis.districtiii.org/server/rest/services/BON_HOMME_COUNTY_WEB_LAYERS2/MapServer/10",
+  "zipField": null,
+  "mode": "numPlusCombined",
+  "numField": "HOUSE_NUMBER",
+  "combinedField": "DLVRY_ADD"
+ },
+ {
+  "name": "brule",
+  "url": "https://gis.districtiii.org/server/rest/services/BRULE_COUNTY_WEB_LAYERS/MapServer/12",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "TC_SITE_ADDRESS"
+ },
+ {
+  "name": "buffalo",
+  "url": "https://gis.districtiii.org/server/rest/services/BUFFALO_COUNTY_WEB_LAYERS/MapServer/18",
+  "zipField": "ZIP_CODE",
+  "mode": "fields",
+  "numField": "STREETNUM",
+  "streetFields": [
+   "PREDIR",
+   "PRETYPE",
+   "CORE",
+   "STTYPE",
+   "SUFDIR"
+  ]
+ },
+ {
+  "name": "butte",
+  "url": "https://gis.districtiii.org/server/rest/services/BUTTE_COUNTY_WEB_LAYERS2/MapServer/3",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "PROP_LOCATION"
+ },
+ {
+  "name": "campbell",
+  "url": "https://gis.districtiii.org/server/rest/services/CAMPBELL_COUNTY_WEB_LAYERS/MapServer/22",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "SITE_ADDRESS"
+ },
+ {
+  "name": "charles_mix",
+  "url": "https://gis.districtiii.org/server/rest/services/CHARLES_MIX_WEB_LAYERS2/MapServer/40",
+  "zipField": null,
+  "mode": "fields",
+  "numField": "HOUSE__",
+  "streetFields": [
+   "PRE_DIR",
+   "STREET_NAME"
+  ]
+ },
+ {
+  "name": "codington",
+  "url": "https://www.1stdistrict.org/arcgis/rest/services/Codington/codingtonparcels/MapServer/10",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "PROP_STREE"
+ },
+ {
+  "name": "davison",
+  "url": "https://gis.districtiii.org/server/rest/services/DAVISON_COUNTY_WEB_LAYERS1/MapServer/17",
+  "zipField": "ZIP_CODE",
+  "mode": "fields",
+  "numField": "STR_NUM",
+  "streetFields": [
+   "PRE_DIR",
+   "STR_NAME",
+   "STR_TYPE",
+   "POST_DIR"
+  ]
+ },
+ {
+  "name": "day",
+  "url": "https://gis.districtiii.org/server/rest/services/DAY_COUNTY_WEB_LAYERS/MapServer/7",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "TC_SITE_ADDRESS"
+ },
+ {
+  "name": "deuel",
+  "url": "https://www.1stdistrict.org/arcgis/rest/services/Deuel/deuelmapnet/FeatureServer/4",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "PROP_STREE"
+ },
+ {
+  "name": "douglas",
+  "url": "https://gis.districtiii.org/server/rest/services/DOUGLAS_COUNTY_WEB_LAYERS/MapServer/3",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "CAMA_SITE_ADDRESS"
+ },
+ {
+  "name": "edmunds",
+  "url": "https://www.1stdistrict.org/arcgis/rest/services/Edmunds/edmundsmapnet/FeatureServer/1",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "PROPERTY_A"
+ },
+ {
+  "name": "fall_river",
+  "url": "https://services7.arcgis.com/yz1kSnCgtG9EeKZN/ArcGIS/rest/services/ParcelID_FRC_proj_view/FeatureServer/0",
+  "zipField": null,
+  "mode": "fields",
+  "numField": "House_Numb",
+  "streetFields": [
+   "Address"
+  ]
+ },
+ {
+  "name": "faulk",
+  "url": "https://gis.districtiii.org/server/rest/services/FAULK_COUNTY_WEB_LAYERS/MapServer/3",
+  "zipField": "ZIP",
+  "mode": "fields",
+  "numField": "HOUSENUM",
+  "streetFields": [
+   "STREET"
+  ]
+ },
+ {
+  "name": "grant",
+  "url": "https://www.1stdistrict.org/arcgis/rest/services/Grant/grantmapnet/FeatureServer/2",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "ADDRESS"
+ },
+ {
+  "name": "hand",
+  "url": "https://www.1stdistrict.org/arcgis/rest/services/Hand/handmapnet/FeatureServer/4",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "PROPERTY_A"
+ },
+ {
+  "name": "hanson",
+  "url": "https://gis.districtiii.org/server/rest/services/HANSON_COUNTY_WEB_LAYERS/MapServer/32",
+  "zipField": "ZIP_CODE",
+  "mode": "fields",
+  "numField": "STR_NUM",
+  "streetFields": [
+   "PRE_DIR",
+   "STR_NAME",
+   "STR_TYPE",
+   "POST_DIR"
+  ]
+ },
+ {
+  "name": "hughes",
+  "url": "https://gis.districtiii.org/server/rest/services/HUGHES_COUNTY_WEB_LAYERS/MapServer/29",
+  "zipField": "ZIP_CODE",
+  "mode": "fields",
+  "numField": "STR_NUM",
+  "streetFields": [
+   "PRE_DIR",
+   "STR_NAME",
+   "STR_TYPE",
+   "POST_DIR"
+  ]
+ },
+ {
+  "name": "hutchinson",
+  "url": "https://gis.districtiii.org/server/rest/services/HUTCHINSON_COUNTY_WEB_LAYERS2/MapServer/16",
+  "mode": "combined",
+  "combinedField": "ADDRESS",
+  "zipField": null
+ },
+ {
+  "name": "jerauld",
+  "url": "https://gis.districtiii.org/server/rest/services/JERAULD_COUNTY_WEB_LAYERS/MapServer/5",
+  "zipField": "ZIP_CODE",
+  "mode": "combined",
+  "combinedField": "E911_ADD"
+ },
+ {
+  "name": "jones",
+  "url": "https://gis.districtiii.org/server/rest/services/JONES_COUNTY_WEB_LAYERS/MapServer/9",
+  "zipField": "ZIP_CODE",
+  "mode": "fields",
+  "numField": "HSE_NUM",
+  "streetFields": [
+   "PRE_DIR",
+   "STR_NAME",
+   "STR_TYPE",
+   "POST_DIR"
+  ]
+ },
+ {
+  "name": "kingsbury",
+  "url": "https://www.1stdistrict.org/arcgis/rest/services/Kingsbury/kingsburymapnet/FeatureServer/3",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "PROP_STREE"
+ },
+ {
+  "name": "lawrence",
+  "url": "https://www.1stdistrict.org/arcgis/rest/services/Lawrence/lawrencemapnet/FeatureServer/1",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "SITUS"
+ },
+ {
+  "name": "lyman",
+  "url": "https://gis.districtiii.org/server/rest/services/LYMAN_COUNTY_WEB_LAYERS/MapServer/3",
+  "mode": "fields",
+  "numField": "STR_NUM",
+  "streetFields": [
+   "PRE_DIR",
+   "STR_NAME",
+   "STR_TYPE",
+   "POST_DIR"
+  ],
+  "zipField": "ZIP_CODE"
+ },
+ {
+  "name": "marshall",
+  "url": "https://gis.districtiii.org/server/rest/services/MARSHALL_COUNTY_WEB_LAYERS/MapServer/14",
+  "zipField": "ZIPCODE",
+  "mode": "fields",
+  "numField": "HOUSENUMBE",
+  "streetFields": [
+   "PRE_DIR",
+   "PRE_TYPE",
+   "STREET_NAME",
+   "STREET_TYPE",
+   "SUF_DIR"
+  ]
+ },
+ {
+  "name": "mcpherson",
+  "url": "https://gis.districtiii.org/server/rest/services/MCPHERSON_COUNTY_WEB_LAYERS/MapServer/2",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "SITE_ADDRESS"
+ },
+ {
+  "name": "miner",
+  "url": "https://www.1stdistrict.org/arcgis/rest/services/Miner/minermapnet/FeatureServer/15",
+  "zipField": "ZIPCODE",
+  "mode": "combined",
+  "combinedField": "ADDRESS"
+ },
+ {
+  "name": "potter",
+  "url": "https://gis.districtiii.org/server/rest/services/POTTER_COUNTY_WEB_LAYERS/MapServer/2",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "CAMA_SITE_ADDRESS"
+ },
+ {
+  "name": "roberts",
+  "url": "https://www.1stdistrict.org/arcgis/rest/services/Roberts/robertsmapnet/MapServer/2",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "PROPERTY_A"
+ },
+ {
+  "name": "sanborn",
+  "url": "https://gis.districtiii.org/server/rest/services/SANBORN_COUNTY_WEB_LAYERS/MapServer/13",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "CAMA_SITE_ADDRESS"
+ },
+ {
+  "name": "stanley",
+  "url": "https://gis.districtiii.org/server/rest/services/STANLEY_COUNTY_WEB_LAYERS/MapServer/2",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "CAMA_SITE_ADDRESS"
+ },
+ {
+  "name": "sully",
+  "url": "https://gis.districtiii.org/server/rest/services/SULLY_COUNTY_WEB_LAYERS/MapServer/29",
+  "zipField": "ZIP_CODE",
+  "mode": "fields",
+  "numField": "HSE_NUM",
+  "streetFields": [
+   "PRE_DIR",
+   "STR_NAME",
+   "STR_TYPE",
+   "POST_DIR"
+  ]
+ },
+ {
+  "name": "turner",
+  "url": "https://gis.districtiii.org/server/rest/services/TURNER_COUNTY_LAYERS/MapServer/4",
+  "zipField": null,
+  "mode": "combined",
+  "combinedField": "SITE_ADDRESS"
+ },
+ {
+  "name": "yankton",
+  "url": "https://services3.arcgis.com/aVepqWph7Jkj1aWl/ArcGIS/rest/services/E911_AddressPts/FeatureServer/0",
+  "zipField": "ZIP_CODE",
+  "mode": "fields",
+  "numField": "STR_NUM",
+  "streetFields": [
+   "PRE_DIR",
+   "STR_NAME",
+   "STR_TYPE",
+   "POST_DIR"
+  ]
+ },
+ {
+  "name": "ziebach",
+  "url": "https://gis.districtiii.org/server/rest/services/ZIEBACH_WEB_LAYERS/MapServer/24",
+  "zipField": null,
+  "mode": "numPlusCombined",
+  "numField": "LABEL",
+  "combinedField": "DLVRY_ADD"
+ },
+ {
+  "name": "tripp_todd",
+  "url": "https://gis.districtiii.org/server/rest/services/TRIPP_TODD_WEB_LAYERS/MapServer/0",
+  "mode": "fields",
+  "numField": "STR_NUM",
+  "streetFields": [
+   "PRE_DIR",
+   "STR_NAME",
+   "STR_TYPE",
+   "POST_DIR"
+  ],
+  "zipField": "ZIP_CODE"
+ }
+]

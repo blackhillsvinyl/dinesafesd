@@ -14,8 +14,13 @@
     "sync:sioux-falls": "tsx src/jobs/sync-sioux-falls.ts",
     "backfill:scores": "tsx src/jobs/backfill-scores.ts",
     "import:nad": "tsx src/jobs/import-nad.ts",
+    "import:pennington": "tsx src/jobs/import-pennington.ts",
+    "import:counties": "tsx src/jobs/import-county-points.ts",
     "apply:address-points": "tsx src/jobs/apply-address-points.ts",
     "fix:misplaced": "tsx src/jobs/fix-misplaced.ts",
+    "verify:locations": "tsx src/jobs/verify-locations.ts",
+    "resolve:tail": "tsx src/jobs/resolve-tail.ts",
+    "demote:outliers": "tsx src/jobs/demote-outliers.ts",
     "merge:data": "tsx src/jobs/merge-data.ts"
   },
   "dependencies": {

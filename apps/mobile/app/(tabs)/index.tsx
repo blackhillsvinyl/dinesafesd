@@ -111,7 +111,11 @@ export default function MapScreen() {
   // Limit markers on map for performance — show all in the list
   // Limit markers based on zoom level to prevent overlap
   const markerLimit = zoomLevel >= 14 ? 200 : zoomLevel >= 12 ? 100 : zoomLevel >= 10 ? 50 : 25;
-  const mapMarkers = displayed?.slice(0, markerLimit) ?? [];
+  // Only verified locations get a pin — unverified coordinates stay list-only
+  const mapMarkers =
+    displayed
+      ?.filter((r) => r.geo_precision === 'rooftop' || r.geo_precision === 'address')
+      .slice(0, markerLimit) ?? [];
 
   useEffect(() => {
     (async () => {
