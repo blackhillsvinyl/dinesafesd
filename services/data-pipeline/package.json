@@ -23,6 +23,7 @@
     "demote:outliers": "tsx src/jobs/demote-outliers.ts",
     "repair:cities": "tsx src/jobs/repair-cities.ts",
     "backfill:zips": "tsx src/jobs/backfill-zips.ts",
+    "apply:listings": "tsx src/jobs/apply-listing-results.ts",
     "merge:data": "tsx src/jobs/merge-data.ts"
   },
   "dependencies": {
