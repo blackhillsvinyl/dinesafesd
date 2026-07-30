@@ -142,13 +142,20 @@ export function candidateKeys(street: string): string[] {
 
   const seen = new Set<string>();
   const keys: string[] = [];
-  for (const [p, n, t] of combos) {
-    if (!n) continue;
+  const push2 = (p: string, n: string, t: string) => {
     const k = [num, p, n, t].join('|');
     if (!seen.has(k)) {
       seen.add(k);
       keys.push(k);
     }
+  };
+  for (const [p, n, t] of combos) {
+    if (!n) continue;
+    push2(p, n, t);
+    // Spacing drift: "LACROSSE" vs "LA CROSSE", "ST CHARLES" vs "STCHARLES"
+    if (n.includes(' ')) push2(p, n.replace(/\s+/g, ''), t);
+    const m = n.match(/^(LA|LE|DE|DEL|EL|MC|MAC|ST|SAN|VAN)([A-Z]{3,}.*)$/);
+    if (m && !n.includes(' ')) push2(p, `${m[1]} ${m[2]}`, t);
   }
   return keys;
 }

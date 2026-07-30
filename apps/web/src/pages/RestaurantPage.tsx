@@ -5,6 +5,7 @@ import { format, parseISO } from 'date-fns';
 import { fetchRestaurant } from '../lib/api';
 import { getScoreTheme } from '../scoring';
 import { markSeen } from '../lib/saved';
+import { locationReportMailto } from '../lib/report';
 import SaveButtons from '../components/SaveButtons';
 import type { RestaurantDetail, Inspection, Violation } from '../types';
 
@@ -126,6 +127,11 @@ export default function RestaurantPage() {
             (search for “{restaurant.name}”).
           </>
         )}
+      </p>
+
+      <p className="small">
+        <a href={locationReportMailto(restaurant)}>Is this place pinned at the wrong spot on the map? Tell us</a> —
+        confirmed reports are fixed in the next data update.
       </p>
 
       <p className="small" style={{ marginTop: 24 }}>

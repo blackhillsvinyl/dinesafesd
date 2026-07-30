@@ -23,6 +23,7 @@
     "demote:outliers": "tsx src/jobs/demote-outliers.ts",
     "demote:pileups": "tsx src/jobs/demote-pileups.ts",
     "audit:verified": "tsx src/jobs/audit-verified.ts",
+    "crosscheck:listings": "tsx src/jobs/crosscheck-listings.ts",
     "repair:cities": "tsx src/jobs/repair-cities.ts",
     "backfill:zips": "tsx src/jobs/backfill-zips.ts",
     "harvest:zips": "tsx src/jobs/harvest-zips.ts",

@@ -4,6 +4,7 @@ import { getScoreTheme } from '../scoring';
 import { categoryVisual } from '../violationCategories';
 import TrendCue from './TrendCue';
 import SaveButtons from './SaveButtons';
+import { locationReportMailto } from '../lib/report';
 import type { Restaurant } from '../types';
 
 interface Props {
@@ -86,6 +87,9 @@ export default function QuickView({ restaurant: r, onClose }: Props) {
       <Link to={`/r/${encodeURIComponent(r.id)}`} className="qv-cta">
         View Full Report →
       </Link>
+      <a className="report-loc" href={locationReportMailto(r)}>
+        Wrong spot on the map? Tell us
+      </a>
     </div>
   );
 }
