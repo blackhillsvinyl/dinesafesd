@@ -3,7 +3,7 @@ import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useQuery } from '@tanstack/react-query';
 import { fetchIndex } from '../lib/api';
-import { getScoreTheme } from '../scoring';
+import { getScoreTheme, TIERS } from '../scoring';
 import QuickView from '../components/QuickView';
 import StackPicker from '../components/StackPicker';
 import CitySearch, { buildCityList } from '../components/CitySearch';
@@ -59,6 +59,7 @@ function toFeatureCollection(restaurants: Restaurant[]): GeoJSON.FeatureCollecti
         id: r.id,
         name: r.name,
         color: getScoreTheme(r.latest_score).markerColor,
+        tier: scoreTier(r.latest_score),
       },
     })),
   };
@@ -67,6 +68,62 @@ function toFeatureCollection(restaurants: Restaurant[]): GeoJSON.FeatureCollecti
 // One uniform clustered view at every zoom: cluster counts only ever
 // reflect the points inside them (viewport-true), and groups split
 // progressively with each zoom step — no hard city-rollup thresholds.
+
+// Score tier index for cluster aggregation: 0..3 = TIERS order (96+, 90+,
+// 83+, 76+), 4 = below 76, 5 = unscored. Matches TIER_COLORS below.
+function scoreTier(score: number | null): number {
+  if (score == null) return 5;
+  for (let i = 0; i < TIERS.length; i++) {
+    if (score >= TIERS[i].min) return i;
+  }
+  return 5;
+}
+const TIER_COLORS = [...TIERS.map((t) => t.theme.markerColor), '#94a3b8'];
+
+// SVG donut for a cluster: ring segments proportional to each score tier's
+// share (best -> worst), count in the hole. Replaces the flat gray circle.
+function donutElement(counts: number[], total: number, dark: boolean): HTMLDivElement {
+  const r = total >= 500 ? 30 : total >= 100 ? 25 : total >= 10 ? 20 : 16;
+  const ring = Math.max(5, Math.round(r * 0.3));
+  const r0 = r - ring;
+  const w = r * 2;
+  let angle = -Math.PI / 2; // start at 12 o'clock
+  const segs: string[] = [];
+  for (let i = 0; i < counts.length; i++) {
+    if (!counts[i]) continue;
+    const frac = counts[i] / total;
+    const a0 = angle;
+    const a1 = angle + frac * 2 * Math.PI;
+    angle = a1;
+    if (frac >= 0.999) {
+      segs.push(
+        `<circle cx="${r}" cy="${r}" r="${(r + r0) / 2}" fill="none" stroke="${TIER_COLORS[i]}" stroke-width="${ring}"/>`
+      );
+      continue;
+    }
+    const mid = (r + r0) / 2;
+    const x0 = r + mid * Math.cos(a0);
+    const y0 = r + mid * Math.sin(a0);
+    const x1 = r + mid * Math.cos(a1);
+    const y1 = r + mid * Math.sin(a1);
+    const large = a1 - a0 > Math.PI ? 1 : 0;
+    segs.push(
+      `<path d="M ${x0.toFixed(2)} ${y0.toFixed(2)} A ${mid} ${mid} 0 ${large} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}" fill="none" stroke="${TIER_COLORS[i]}" stroke-width="${ring}"/>`
+    );
+  }
+  const bg = dark ? '#101a2e' : '#ffffff';
+  const ink = dark ? '#e2e8f0' : '#0f172a';
+  const fontSize = total >= 1000 ? 11 : total >= 100 ? 12 : 12;
+  const label = total >= 1000 ? `${(total / 1000).toFixed(1)}k` : String(total);
+  const el = document.createElement('div');
+  el.innerHTML =
+    `<svg width="${w}" height="${w}" viewBox="0 0 ${w} ${w}" style="display:block;cursor:pointer">` +
+    `<circle cx="${r}" cy="${r}" r="${r0 + 1}" fill="${bg}"/>` +
+    segs.join('') +
+    `<text x="${r}" y="${r}" text-anchor="middle" dominant-baseline="central" font-size="${fontSize}" font-weight="700" fill="${ink}" font-family="-apple-system,Segoe UI,Roboto,sans-serif">${label}</text>` +
+    `</svg>`;
+  return el;
+}
 
 // Survives SPA navigation (e.g. quick view → full report → back), so the map
 // reopens exactly where the user left it instead of resetting statewide.
@@ -195,6 +252,8 @@ export default function MapPage() {
       // true (a cluster only counts the points inside it) and split
       // progressively as you zoom; same-address stacks that never separate
       // open a picker on tap.
+      const tierCounter = (i: number): maplibregl.ExpressionSpecification =>
+        ['+', ['case', ['==', ['get', 'tier'], i], 1, 0]] as unknown as maplibregl.ExpressionSpecification;
       map.addSource('restaurants-fine', {
         type: 'geojson',
         data: dataRef.current,
@@ -202,6 +261,10 @@ export default function MapPage() {
         cluster: true,
         clusterRadius: 35,
         clusterMaxZoom: 19,
+        clusterProperties: {
+          t0: tierCounter(0), t1: tierCounter(1), t2: tierCounter(2),
+          t3: tierCounter(3), t4: tierCounter(4), t5: tierCounter(5),
+        },
       });
       // Text/halo colors for our labels, tuned per basemap
       const labelInk = dark ? '#cbd5e1' : '#334155';
@@ -219,33 +282,6 @@ export default function MapPage() {
           'circle-stroke-width': 2,
         },
       });
-      map.addLayer({
-        id: 'fine-cluster',
-        type: 'circle',
-        source: 'restaurants-fine',
-        filter: ['has', 'point_count'],
-        paint: {
-          'circle-color': '#334155',
-          'circle-opacity': 0.9,
-          'circle-stroke-color': '#ffffff',
-          'circle-stroke-width': 2,
-          'circle-radius': ['step', ['get', 'point_count'], 12, 10, 15, 100, 20, 500, 26],
-        },
-      });
-      map.addLayer({
-        id: 'fine-cluster-count',
-        type: 'symbol',
-        source: 'restaurants-fine',
-        filter: ['has', 'point_count'],
-        layout: {
-          'text-field': ['get', 'point_count_abbreviated'],
-          'text-font': ['Noto Sans Bold'],
-          'text-size': ['step', ['get', 'point_count'], 10, 100, 12],
-          'text-allow-overlap': true,
-        },
-        paint: { 'text-color': '#ffffff' },
-      });
-
       // Names once zoomed in enough for points to separate — no need to tap
       // a blank dot to find out what it is. (City names come from the
       // basemap at every zoom.)
@@ -271,28 +307,68 @@ export default function MapPage() {
         },
       });
 
-      // Click a fine cluster → zoom if that separates it, else picker list
-      map.on('click', 'fine-cluster', (e) => {
-        const f = map.queryRenderedFeatures(e.point, { layers: ['fine-cluster'] })[0];
-        const clusterId = f.properties?.cluster_id;
-        const src = map.getSource('restaurants-fine') as maplibregl.GeoJSONSource;
-        src.getClusterExpansionZoom(clusterId).then((zoom) => {
-          // Only zoom when it would actually change the view AND split the
-          // cluster — otherwise list the members.
-          if (zoom <= map.getMaxZoom() && zoom > map.getZoom() + 0.05) {
-            map.easeTo({ center: (f.geometry as GeoJSON.Point).coordinates as [number, number], zoom });
-          } else {
-            src.getClusterLeaves(clusterId, 100, 0).then((leaves) => {
-              const group = leaves
-                .map((l) => byId.current.get((l.properties as { id?: string })?.id ?? ''))
-                .filter((r): r is Restaurant => !!r);
-              if (group.length) {
-                selectRef.current(null);
-                stackRef.current(group);
-              }
+      // Clusters render as DOM donut markers (score-tier spectrum ring).
+      // Pool keyed by cluster_id; synced on every render while the source
+      // has loaded tiles.
+      const markerPool = new Map<number, maplibregl.Marker>();
+      const src = () => map.getSource('restaurants-fine') as maplibregl.GeoJSONSource;
+      const clusterClick = (clusterId: number, coords: [number, number]) => {
+        src()
+          .getClusterExpansionZoom(clusterId)
+          .then((zoom) => {
+            if (zoom <= map.getMaxZoom() && zoom > map.getZoom() + 0.05) {
+              map.easeTo({ center: coords, zoom });
+            } else {
+              src()
+                .getClusterLeaves(clusterId, 100, 0)
+                .then((leaves) => {
+                  const group = leaves
+                    .map((l) => byId.current.get((l.properties as { id?: string })?.id ?? ''))
+                    .filter((rr): rr is Restaurant => !!rr);
+                  if (group.length) {
+                    selectRef.current(null);
+                    stackRef.current(group);
+                  }
+                });
+            }
+          });
+      };
+      const updateClusterMarkers = () => {
+        if (!map.getSource('restaurants-fine')) return;
+        const feats = map.querySourceFeatures('restaurants-fine', {
+          filter: ['has', 'point_count'],
+        } as never);
+        const seen = new Set<number>();
+        for (const f of feats) {
+          const props = f.properties as Record<string, number>;
+          const id = props.cluster_id;
+          if (seen.has(id)) continue;
+          seen.add(id);
+          if (!markerPool.has(id)) {
+            const total = props.point_count;
+            const counts = [props.t0, props.t1, props.t2, props.t3, props.t4, props.t5].map(
+              (c) => c || 0
+            );
+            const el = donutElement(counts, total, dark);
+            const coords = (f.geometry as GeoJSON.Point).coordinates as [number, number];
+            el.addEventListener('click', (ev) => {
+              ev.stopPropagation();
+              clusterClick(id, coords);
             });
+            markerPool.set(id, new maplibregl.Marker({ element: el }).setLngLat(coords).addTo(map));
           }
-        });
+        }
+        for (const [id, marker] of markerPool) {
+          if (!seen.has(id)) {
+            marker.remove();
+            markerPool.delete(id);
+          }
+        }
+      };
+      map.on('render', updateClusterMarkers);
+      map.on('remove', () => {
+        for (const m of markerPool.values()) m.remove();
+        markerPool.clear();
       });
 
       // Click a restaurant → quick view
@@ -304,15 +380,13 @@ export default function MapPage() {
         }
       });
 
-      for (const layer of ['fine-dot', 'fine-cluster']) {
-        map.on('mouseenter', layer, () => { map.getCanvas().style.cursor = 'pointer'; });
-        map.on('mouseleave', layer, () => { map.getCanvas().style.cursor = ''; });
-      }
+      map.on('mouseenter', 'fine-dot', () => { map.getCanvas().style.cursor = 'pointer'; });
+      map.on('mouseleave', 'fine-dot', () => { map.getCanvas().style.cursor = ''; });
 
       // Tapping empty map dismisses the quick view / picker
       map.on('click', (e) => {
         const hits = map.queryRenderedFeatures(e.point, {
-          layers: ['fine-dot', 'fine-cluster'],
+          layers: ['fine-dot'],
         });
         if (hits.length === 0) {
           selectRef.current(null);
