@@ -5,6 +5,7 @@ import { format, parseISO } from 'date-fns';
 import { fetchIndex } from '../lib/api';
 import { getScoreTheme } from '../scoring';
 import { categoryVisual } from '../violationCategories';
+import { isFavorite, hasNewReport, useSavedVersion } from '../lib/saved';
 import type { Restaurant } from '../types';
 
 const FEED_SIZE = 150;
@@ -16,6 +17,8 @@ export default function LatestPage() {
     queryFn: fetchIndex,
     staleTime: 1000 * 60 * 60,
   });
+
+  useSavedVersion();
 
   // Long feed on a phone needs a way back up
   const [showTop, setShowTop] = useState(false);
@@ -57,7 +60,13 @@ export default function LatestPage() {
               return (
                 <Link key={r.id} to={`/r/${r.id}`} className="result-card">
                   <div className="result-info">
-                    <div className="result-name">{r.name}</div>
+                    <div className="result-name">
+                      {r.name}
+                      {isFavorite(r.id) && <span className="saved-mark"> ♥</span>}
+                      {hasNewReport(r.id, r.latest_inspection_date) && (
+                        <span className="new-report-badge">New report</span>
+                      )}
+                    </div>
                     <div className="result-addr">
                       {r.address}, {r.city}
                     </div>

@@ -1,8 +1,11 @@
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { format, parseISO } from 'date-fns';
 import { fetchRestaurant } from '../lib/api';
 import { getScoreTheme } from '../scoring';
+import { markSeen } from '../lib/saved';
+import SaveButtons from '../components/SaveButtons';
 import type { RestaurantDetail, Inspection, Violation } from '../types';
 
 function useRestaurant(id: string | undefined) {
@@ -24,6 +27,11 @@ export default function RestaurantPage() {
   const { id } = useParams<{ id: string }>();
   const { data: restaurant, isLoading, error } = useRestaurant(id);
 
+  // Reading the full report catches a watch up to the latest inspection
+  useEffect(() => {
+    if (restaurant) markSeen(restaurant.id, restaurant.latest_inspection_date);
+  }, [restaurant]);
+
   if (isLoading) return <div className="center">Loading…</div>;
   if (error || !restaurant) return <div className="center">Restaurant not found.</div>;
 
@@ -33,7 +41,10 @@ export default function RestaurantPage() {
   return (
     <div className="page">
       <div className="detail-header">
-        <h1>{restaurant.name}</h1>
+        <div className="detail-title">
+          <h1>{restaurant.name}</h1>
+          <SaveButtons restaurant={restaurant} size="lg" />
+        </div>
         <p className="small">
           {restaurant.address}, {restaurant.city}, {restaurant.state}
         </p>

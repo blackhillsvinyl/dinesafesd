@@ -5,6 +5,14 @@ import { fetchIndex } from '../lib/api';
 import { buildSearchIndex, searchRestaurants, normalize } from '../lib/search';
 import { getScoreTheme } from '../scoring';
 import TrendCue from '../components/TrendCue';
+import {
+  isFavorite,
+  isWatched,
+  hasNewReport,
+  favoriteCount,
+  watchCount,
+  useSavedVersion,
+} from '../lib/saved';
 import type { Restaurant } from '../types';
 
 type ScoreFilter = 'all' | '95' | '90' | 'below90';
@@ -36,7 +44,9 @@ export default function SearchPage() {
   const [city, setCity] = useState('');
   const [score, setScore] = useState<ScoreFilter>('all');
   const [criticalOnly, setCriticalOnly] = useState(false);
+  const [savedOnly, setSavedOnly] = useState<'none' | 'favorites' | 'watching'>('none');
   const [sort, setSort] = useState<SortOrder>('relevance');
+  const savedVersion = useSavedVersion();
 
   const { data: index, isFetching } = useQuery({
     queryKey: ['restaurant-index'],
@@ -64,7 +74,7 @@ export default function SearchPage() {
   }, [index]);
 
   const hasQuery = normalize(query).length >= 2;
-  const hasFilter = city !== '' || score !== 'all' || criticalOnly;
+  const hasFilter = city !== '' || score !== 'all' || criticalOnly || savedOnly !== 'none';
 
   const results = useMemo(() => {
     if (!index || (!hasQuery && !hasFilter)) return undefined;
@@ -73,6 +83,8 @@ export default function SearchPage() {
       : [...index.restaurants];
     if (city) list = list.filter((r) => (r.city ?? '').toLowerCase() === city);
     if (criticalOnly) list = list.filter((r) => r.has_critical_violations);
+    if (savedOnly === 'favorites') list = list.filter((r) => isFavorite(r.id));
+    if (savedOnly === 'watching') list = list.filter((r) => isWatched(r.id));
     list = list.filter((r) => matchesScore(r, score));
     const effectiveSort = sort === 'relevance' && !hasQuery ? 'best' : sort;
     if (effectiveSort === 'best') list.sort((a, b) => (b.latest_score ?? -1) - (a.latest_score ?? -1));
@@ -81,7 +93,9 @@ export default function SearchPage() {
     else if (effectiveSort === 'recent')
       list.sort((a, b) => (b.latest_inspection_date ?? '').localeCompare(a.latest_inspection_date ?? ''));
     return list.slice(0, 100);
-  }, [index, searchIndex, query, hasQuery, hasFilter, city, score, criticalOnly, sort]);
+    // savedVersion re-filters when hearts/watches change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index, searchIndex, query, hasQuery, hasFilter, city, score, criticalOnly, savedOnly, sort, savedVersion]);
 
   return (
     <div className="page">
@@ -118,6 +132,18 @@ export default function SearchPage() {
         >
           ⚠ Critical violations
         </button>
+        <button
+          className={`filter-chip${savedOnly === 'favorites' ? ' active' : ''}`}
+          onClick={() => setSavedOnly((v) => (v === 'favorites' ? 'none' : 'favorites'))}
+        >
+          ♥ Favorites{favoriteCount() > 0 ? ` (${favoriteCount()})` : ''}
+        </button>
+        <button
+          className={`filter-chip${savedOnly === 'watching' ? ' active' : ''}`}
+          onClick={() => setSavedOnly((v) => (v === 'watching' ? 'none' : 'watching'))}
+        >
+          👁 Watching{watchCount() > 0 ? ` (${watchCount()})` : ''}
+        </button>
         <select
           className="filter-select"
           value={sort}
@@ -139,7 +165,13 @@ export default function SearchPage() {
           return (
             <Link key={r.id} to={`/r/${r.id}`} className="result-card">
               <div className="result-info">
-                <div className="result-name">{r.name}</div>
+                <div className="result-name">
+                  {r.name}
+                  {isFavorite(r.id) && <span className="saved-mark"> ♥</span>}
+                  {hasNewReport(r.id, r.latest_inspection_date) && (
+                    <span className="new-report-badge">New report</span>
+                  )}
+                </div>
                 <div className="result-addr">
                   {r.address}, {r.city}, {r.state}
                   {!isRecent(r) && r.latest_inspection_date && (

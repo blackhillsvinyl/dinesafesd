@@ -1,0 +1,13 @@
+{
+  "name": "DineSafeSD — SD Restaurant Health Inspections",
+  "short_name": "DineSafeSD",
+  "description": "Restaurant health inspection scores across South Dakota.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b1120",
+  "theme_color": "#15803d",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

@@ -3,6 +3,7 @@ import { format, parseISO } from 'date-fns';
 import { getScoreTheme } from '../scoring';
 import { categoryVisual } from '../violationCategories';
 import TrendCue from './TrendCue';
+import SaveButtons from './SaveButtons';
 import type { Restaurant } from '../types';
 
 interface Props {
@@ -23,6 +24,9 @@ export default function QuickView({ restaurant: r, onClose }: Props) {
       <button className="qv-close" onClick={onClose} aria-label="Close">
         ×
       </button>
+      <span className="qv-actions">
+        <SaveButtons restaurant={r} />
+      </span>
 
       <div className="qv-header">
         <div className="qv-score" style={{ background: theme.bg }}>
