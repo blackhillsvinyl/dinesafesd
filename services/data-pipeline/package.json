@@ -25,6 +25,7 @@
     "audit:verified": "tsx src/jobs/audit-verified.ts",
     "repair:cities": "tsx src/jobs/repair-cities.ts",
     "backfill:zips": "tsx src/jobs/backfill-zips.ts",
+    "harvest:zips": "tsx src/jobs/harvest-zips.ts",
     "apply:listings": "tsx src/jobs/apply-listing-results.ts",
     "merge:data": "tsx src/jobs/merge-data.ts"
   },

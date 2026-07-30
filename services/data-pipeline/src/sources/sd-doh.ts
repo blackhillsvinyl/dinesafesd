@@ -6,7 +6,7 @@ import { normalizeStreet } from '../lib/address.js';
 import { standardizeAddress } from '../lib/usps.js';
 
 interface SourceConfig {
-  mode: 'full' | 'incremental' | 'backfill-scores';
+  mode: 'full' | 'incremental' | 'backfill-scores' | 'zip-harvest';
   /** backfill-scores mode: external_id -> inspection dates (YYYY-MM-DD) lacking scores */
   backfillTargets?: Map<string, Set<string>>;
   dateRange?: { start: Date; end: Date };
@@ -17,6 +17,7 @@ interface EstablishmentResult {
   name: string;
   address: string;
   city: string;
+  zip: string | null;
   phone: string | null;
   inspectionDate: string;
   inspectionType: string;
@@ -270,7 +271,10 @@ export class SDDOHSource {
 
       for (let j = 0; j < establishments.length; j++) {
         try {
-          if (this.config.mode === 'backfill-scores') {
+          if (this.config.mode === 'zip-harvest') {
+            this.harvestZipOnly(establishments[j]);
+            continue; // list-only work — nothing to throttle
+          } else if (this.config.mode === 'backfill-scores') {
             const did = await this.backfillEstablishmentScores(establishments[j]);
             if (!did) continue; // skip throttle for non-targets
           } else {
@@ -449,6 +453,8 @@ export class SDDOHSource {
         // to double-space heuristic.
         let address = addressDiv;
         let city = '';
+        const zipMatch = addressDiv.match(/,\s*SD\s+(\d{5})(?:-\d{4})?\b/);
+        const zip = zipMatch ? zipMatch[1] : null;
         const sdMatch = addressDiv.match(/^(.+?),\s*SD\s*\d*/);
         if (sdMatch) {
           const beforeSD = sdMatch[1].trim();
@@ -510,6 +516,7 @@ export class SDDOHSource {
           name,
           address,
           city,
+          zip,
           phone,
           inspectionDate,
           inspectionType,
@@ -543,7 +550,7 @@ export class SDDOHSource {
     let precision: GeoPrecision | null = existing?.geo_precision ?? null;
     let displayStreet = establishment.address;
     let displayCity = establishment.city;
-    let zip: string | null = existing?.zip_code ?? null;
+    let zip: string | null = establishment.zip ?? existing?.zip_code ?? null;
 
     const keepExisting =
       existing &&
@@ -972,6 +979,29 @@ export class SDDOHSource {
       }
     }
     return true;
+  }
+
+  /** zip-harvest mode: attach the portal's ZIP to the existing record. */
+  private harvestZipOnly(establishment: EstablishmentResult): void {
+    if (!establishment.zip) return;
+    const externalId = this.generateExternalId(establishment);
+    const existing = store.getRestaurant(externalId);
+    if (!existing || existing.zip_code === establishment.zip) return;
+    store.upsertRestaurant({
+      external_id: externalId,
+      name: existing.name,
+      address: existing.address,
+      city: existing.city,
+      state: 'SD',
+      zip_code: establishment.zip,
+      phone: existing.phone,
+      latitude: existing.latitude,
+      longitude: existing.longitude,
+      source: existing.source,
+      geo_precision: existing.geo_precision ?? null,
+      source_address: existing.source_address ?? null,
+    });
+    this.stats.restaurants++;
   }
 
   private generateExternalId(establishment: EstablishmentResult): string {
