@@ -111,10 +111,12 @@ export default function MapScreen() {
   // Limit markers on map for performance — show all in the list
   // Limit markers based on zoom level to prevent overlap
   const markerLimit = zoomLevel >= 14 ? 200 : zoomLevel >= 12 ? 100 : zoomLevel >= 10 ? 50 : 25;
-  // Only verified locations get a pin — unverified coordinates stay list-only
+  // Only verified locations get a pin — unverified coordinates stay list-
+  // only, and places with no inspection since before 2025 may be closed
   const mapMarkers =
     displayed
       ?.filter((r) => r.geo_precision === 'rooftop' || r.geo_precision === 'address')
+      .filter((r) => (r.latest_inspection_date ?? '') >= '2025-01-01')
       .slice(0, markerLimit) ?? [];
 
   useEffect(() => {

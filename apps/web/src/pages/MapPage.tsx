@@ -8,7 +8,7 @@ import QuickView from '../components/QuickView';
 import StackPicker from '../components/StackPicker';
 import CitySearch, { buildCityList } from '../components/CitySearch';
 import type { CityEntry } from '../components/CitySearch';
-import { isVerifiedLocation } from '../lib/geo';
+import { isMappable, isVerifiedLocation } from '../lib/geo';
 import { CATEGORY_VISUALS } from '../violationCategories';
 import { isFavorite, favoriteCount, useSavedVersion } from '../lib/saved';
 import { useEffectiveDark } from '../lib/theme';
@@ -186,7 +186,7 @@ export default function MapPage() {
     // only — an unverified coordinate must never place anything on the map.
     // User filters (score / critical / category exclusions) apply on top.
     const mappable = index.restaurants
-      .filter(isVerifiedLocation)
+      .filter(isMappable)
       .filter((r) => passesFilters(r, filters));
     byId.current = new Map(index.restaurants.map((r) => [r.id, r]));
     dataRef.current = toFeatureCollection(mappable);

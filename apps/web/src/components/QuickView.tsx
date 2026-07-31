@@ -5,6 +5,7 @@ import { categoryVisual } from '../violationCategories';
 import TrendCue from './TrendCue';
 import SaveButtons from './SaveButtons';
 import { locationReportMailto } from '../lib/report';
+import { possiblyClosed } from '../lib/geo';
 import type { Restaurant } from '../types';
 
 interface Props {
@@ -80,6 +81,12 @@ export default function QuickView({ restaurant: r, onClose }: Props) {
         <div className="qv-critical">⚠ Critical violations found on latest inspection</div>
       )}
 
+      {possiblyClosed(r) && (
+        <div className="qv-approx">
+          No inspection since {r.latest_inspection_date?.slice(0, 4) ?? '2024'} — this place may
+          have closed, so it isn&apos;t shown on the map
+        </div>
+      )}
       {r.geo_precision !== 'rooftop' && r.geo_precision !== 'address' && (
         <div className="qv-approx">Not shown on the map yet — we haven&apos;t verified this exact location</div>
       )}
