@@ -1,0 +1,158 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-23T00:00:00Z",
+  "title": "Design System: DineSafeSD",
+  "extensions": {
+    "colorMeta": {
+      "inspection-green": { "role": "primary", "displayName": "Inspection Green", "canonical": "#15803d", "tonalRamp": ["#14532d", "#166534", "#15803d", "#16a34a", "#22c55e", "#4ade80", "#86efac", "#dcfce7"] },
+      "green-deep": { "role": "primary", "displayName": "Green Deep", "canonical": "#166534", "tonalRamp": ["#052e16", "#14532d", "#166534", "#15803d", "#16a34a", "#22c55e", "#4ade80", "#bbf7d0"] },
+      "passing-green": { "role": "secondary", "displayName": "Passing Green", "canonical": "#16a34a", "tonalRamp": ["#14532d", "#166534", "#15803d", "#16a34a", "#22c55e", "#4ade80", "#86efac", "#f0fdf4"] },
+      "mint": { "role": "primary", "displayName": "Mint", "canonical": "#dcfce7", "tonalRamp": ["#15803d", "#16a34a", "#22c55e", "#4ade80", "#86efac", "#bbf7d0", "#dcfce7", "#f0fdf4"] },
+      "mint-wash": { "role": "primary", "displayName": "Mint Wash", "canonical": "#f0fdf4", "tonalRamp": ["#16a34a", "#22c55e", "#4ade80", "#86efac", "#bbf7d0", "#dcfce7", "#f0fdf4", "#ffffff"] },
+      "caution-amber": { "role": "secondary", "displayName": "Caution Amber", "canonical": "#a16207", "tonalRamp": ["#713f12", "#854d0e", "#a16207", "#ca8a04", "#eab308", "#facc15", "#fde047", "#fef9c3"] },
+      "caution-marker": { "role": "secondary", "displayName": "Caution Marker", "canonical": "#facc15", "tonalRamp": ["#854d0e", "#a16207", "#ca8a04", "#eab308", "#facc15", "#fde047", "#fef08a", "#fef9c3"] },
+      "alert-orange": { "role": "secondary", "displayName": "Alert Orange", "canonical": "#c2410c", "tonalRamp": ["#7c2d12", "#9a3412", "#c2410c", "#ea580c", "#f97316", "#fb923c", "#fdba74", "#ffedd5"] },
+      "alert-marker": { "role": "secondary", "displayName": "Alert Marker", "canonical": "#f97316", "tonalRamp": ["#9a3412", "#c2410c", "#ea580c", "#f97316", "#fb923c", "#fdba74", "#fed7aa", "#ffedd5"] },
+      "critical-red": { "role": "secondary", "displayName": "Critical Red", "canonical": "#b91c1c", "tonalRamp": ["#7f1d1d", "#991b1b", "#b91c1c", "#dc2626", "#ef4444", "#f87171", "#fca5a5", "#fee2e2"] },
+      "critical-marker": { "role": "secondary", "displayName": "Critical Marker", "canonical": "#dc2626", "tonalRamp": ["#991b1b", "#b91c1c", "#dc2626", "#ef4444", "#f87171", "#fca5a5", "#fecaca", "#fee2e2"] },
+      "critical-wash": { "role": "secondary", "displayName": "Critical Wash", "canonical": "#fee2e2", "tonalRamp": ["#dc2626", "#ef4444", "#f87171", "#fca5a5", "#fecaca", "#fee2e2", "#fef2f2", "#ffffff"] },
+      "gold-star": { "role": "secondary", "displayName": "Gold Star", "canonical": "#ca8a04", "tonalRamp": ["#713f12", "#854d0e", "#a16207", "#ca8a04", "#eab308", "#facc15", "#fde047", "#fef9c3"] },
+      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#0f172a", "tonalRamp": ["#020617", "#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1"] },
+      "slate": { "role": "neutral", "displayName": "Slate", "canonical": "#64748b", "tonalRamp": ["#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0"] },
+      "faint": { "role": "neutral", "displayName": "Faint", "canonical": "#94a3b8", "tonalRamp": ["#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0", "#f1f5f9"] },
+      "active-slate": { "role": "neutral", "displayName": "Active Slate", "canonical": "#334155", "tonalRamp": ["#020617", "#0f172a", "#1e293b", "#334155", "#475569", "#64748b", "#94a3b8", "#cbd5e1"] },
+      "hairline": { "role": "neutral", "displayName": "Hairline", "canonical": "#e2e8f0", "tonalRamp": ["#475569", "#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0", "#f1f5f9", "#f8fafc", "#ffffff"] },
+      "mist": { "role": "neutral", "displayName": "Mist", "canonical": "#f1f5f9", "tonalRamp": ["#64748b", "#94a3b8", "#cbd5e1", "#e2e8f0", "#f1f5f9", "#f8fafc", "#fafaf9", "#ffffff"] },
+      "frost": { "role": "neutral", "displayName": "Frost", "canonical": "#f8fafc", "tonalRamp": ["#94a3b8", "#cbd5e1", "#e2e8f0", "#f1f5f9", "#f8fafc", "#fafafa", "#fdfdfc", "#ffffff"] },
+      "paper": { "role": "neutral", "displayName": "Paper", "canonical": "#fafaf9", "tonalRamp": ["#a8a29e", "#d6d3d1", "#e7e5e4", "#f5f5f4", "#fafaf9", "#fbfbfa", "#fdfdfc", "#ffffff"] },
+      "card": { "role": "neutral", "displayName": "Card", "canonical": "#ffffff", "tonalRamp": ["#cbd5e1", "#e2e8f0", "#f1f5f9", "#f8fafc", "#fafaf9", "#fcfcfb", "#fefefe", "#ffffff"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Score numerals only — quick-view score (24px), detail badge (30px), pills. Always tabular, always raw out of 100." },
+      "headline": { "displayName": "Headline", "purpose": "Page titles on content pages; 23px under 560px." },
+      "title": { "displayName": "Title", "purpose": "Restaurant names, section heads, the brand wordmark (20px/900)." },
+      "body": { "displayName": "Body", "purpose": "Paragraphs and lists on About/Privacy/Terms/Support pages." },
+      "label": { "displayName": "Label", "purpose": "Chips, violation codes, /100 denominators, uppercase micro-labels." }
+    },
+    "shadows": [
+      { "name": "float", "value": "0 8px 28px rgba(15, 23, 42, 0.22)", "purpose": "The map quick-view — the strongest shadow in the system; only for surfaces hovering above the map." },
+      { "name": "dropdown", "value": "0 8px 24px rgba(15, 23, 42, 0.16)", "purpose": "City-search results list." },
+      { "name": "field-float", "value": "0 2px 10px rgba(15, 23, 42, 0.12)", "purpose": "The floating map search input." },
+      { "name": "native-lift", "value": "0 2px 4px rgba(15, 23, 42, 0.06)", "purpose": "Mobile cards only (RN shadowOpacity 0.06–0.08, elevation 1–2). Web resting cards get no shadow." }
+    ],
+    "motion": [
+      { "name": "instant", "value": "none", "purpose": "The incumbent system defines no transitions — hover and press states swap instantly. Any added motion must be brief and functional." }
+    ],
+    "breakpoints": [
+      { "name": "mobile", "value": "560px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The quick-view CTA: full-width Inspection Green bar, 44px minimum tap height.",
+      "html": "<a href=\"#\" class=\"ds-btn-primary\">Full Inspection History</a>",
+      "css": ".ds-btn-primary { display: flex; align-items: center; justify-content: center; min-height: 44px; padding: 10px 16px; background: #15803d; color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 800; text-decoration: none; border-radius: 10px; } .ds-btn-primary:hover { background: #166534; } .ds-btn-primary:focus-visible { outline: 2px solid #15803d; outline-offset: 2px; }"
+    },
+    {
+      "name": "Filter Chip",
+      "kind": "chip",
+      "refersTo": "chip-filter",
+      "description": "Pill filter; selected state is Active Slate, deliberately not green.",
+      "html": "<span><button class=\"ds-chip\">Open now</button> <button class=\"ds-chip ds-chip--active\">90+ only</button></span>",
+      "css": ".ds-chip { border: 1px solid #e2e8f0; background: #ffffff; border-radius: 999px; padding: 6px 12px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 13px; font-weight: 600; color: #64748b; cursor: pointer; } .ds-chip:hover { background: #f8fafc; } .ds-chip--active { background: #334155; border-color: #334155; color: #fff; } .ds-chip:focus-visible { outline: 2px solid #15803d; outline-offset: 2px; }"
+    },
+    {
+      "name": "Score Pill (solid)",
+      "kind": "custom",
+      "refersTo": "pill-score",
+      "description": "The system's atom: marker-color fill, white Display numeral. Shown here at tier 96+.",
+      "html": "<div class=\"ds-score-row\"><span class=\"ds-score ds-score--96\">98</span><span class=\"ds-score ds-score--90\">93</span><span class=\"ds-score ds-score--83\">86</span><span class=\"ds-score ds-score--76\">79</span><span class=\"ds-score ds-score--0\">68</span></div>",
+      "css": ".ds-score-row { display: flex; gap: 8px; } .ds-score { min-width: 46px; padding: 8px 0; border-radius: 10px; color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-weight: 900; font-size: 16px; text-align: center; font-variant-numeric: tabular-nums; letter-spacing: -0.5px; } .ds-score--96 { background: #15803d; } .ds-score--90 { background: #4ade80; } .ds-score--83 { background: #facc15; color: #713f12; } .ds-score--76 { background: #f97316; } .ds-score--0 { background: #dc2626; }"
+    },
+    {
+      "name": "Score Badge (wash)",
+      "kind": "custom",
+      "refersTo": "pill-score",
+      "description": "Tier-wash variant used in the quick-view and mobile cards, with the /100 denominator.",
+      "html": "<div class=\"ds-badge\"><span class=\"ds-badge-num\">97</span><span class=\"ds-badge-denom\">/100</span></div>",
+      "css": ".ds-badge { width: 56px; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 12px; padding: 8px 0 6px; background: #dcfce7; } .ds-badge-num { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 24px; font-weight: 900; letter-spacing: -1px; line-height: 1; color: #15803d; font-variant-numeric: tabular-nums; } .ds-badge-denom { font-size: 9px; font-weight: 700; color: #94a3b8; letter-spacing: 0.3px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }"
+    },
+    {
+      "name": "Result Card",
+      "kind": "card",
+      "refersTo": "card-result",
+      "description": "Search-result row: bordered, flat at rest, border turns green on hover.",
+      "html": "<a href=\"#\" class=\"ds-result\"><span class=\"ds-result-info\"><span class=\"ds-result-name\">Prairie Berry Kitchen</span><span class=\"ds-result-addr\">324 Main St, Rapid City</span></span><span class=\"ds-result-score\">95</span></a>",
+      "css": ".ds-result { display: flex; align-items: center; gap: 14px; padding: 14px 16px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; text-decoration: none; color: inherit; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .ds-result:hover { border-color: #15803d; } .ds-result-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; } .ds-result-name { font-weight: 700; font-size: 15px; color: #0f172a; letter-spacing: -0.3px; } .ds-result-addr { font-size: 13px; color: #64748b; } .ds-result-score { min-width: 46px; padding: 8px 0; border-radius: 10px; background: #4ade80; color: #fff; font-weight: 900; font-size: 16px; text-align: center; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Search Input",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "16px text (no iOS zoom), hairline border that turns Inspection Green on focus — no ring, no glow.",
+      "html": "<input class=\"ds-input\" type=\"text\" placeholder=\"Search restaurants, cities, addresses…\" />",
+      "css": ".ds-input { width: 100%; padding: 12px 16px; font-size: 16px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #0f172a; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; outline: none; } .ds-input:focus { border-color: #15803d; } .ds-input::placeholder { color: #94a3b8; }"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "refersTo": "chip-filter",
+      "description": "Header navigation: Slate at rest, Mist on hover, green-on-mint when active.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\" class=\"ds-nav-link ds-nav-link--active\">Map</a><a href=\"#\" class=\"ds-nav-link\">Search</a><a href=\"#\" class=\"ds-nav-link\">About</a></nav>",
+      "css": ".ds-nav { display: flex; gap: 2px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .ds-nav-link { padding: 8px 14px; border-radius: 9px; font-size: 15px; font-weight: 600; color: #64748b; text-decoration: none; } .ds-nav-link:hover { background: #f1f5f9; } .ds-nav-link--active { color: #15803d; background: #f0fdf4; } .ds-nav-link:focus-visible { outline: 2px solid #15803d; outline-offset: 2px; }"
+    },
+    {
+      "name": "Violation Row",
+      "kind": "custom",
+      "refersTo": "card-result",
+      "description": "A violation entry: 4px category-color spine, code label, plain description.",
+      "html": "<div class=\"ds-violation\"><span class=\"ds-violation-bar\"></span><span><span class=\"ds-violation-code\">4-601.11(A)</span><br/><span class=\"ds-violation-desc\">Food-contact surfaces not clean to sight and touch.</span></span></div>",
+      "css": ".ds-violation { display: flex; gap: 10px; padding: 10px; background: #fafaf9; border-radius: 8px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .ds-violation-bar { width: 4px; border-radius: 2px; background: #b91c1c; flex-shrink: 0; } .ds-violation-code { font-size: 11px; font-weight: 700; color: #64748b; letter-spacing: 0.3px; } .ds-violation-desc { font-size: 13px; color: #0f172a; }"
+    },
+    {
+      "name": "Brand Lockup",
+      "kind": "custom",
+      "refersTo": "button-primary",
+      "description": "The signature mark: South Dakota's outline in Inspection Green crossed by a white check, beside the 900-weight wordmark.",
+      "html": "<span class=\"ds-brand\"><svg width=\"30\" height=\"19\" viewBox=\"0 0 100 63.6\" aria-hidden=\"true\"><path d=\"M0.1 0.0L98.3 0.2L98.1 2.3L94.5 6.2L96.8 9.8L99.8 11.9L99.8 44.9L98.1 45.3L98.8 46.8L98.3 50.1L100.0 51.9L99.0 53.2L98.6 56.8L97.4 59.5L99.9 63.6L97.5 63.1L96.6 60.4L89.7 57.0L83.5 57.0L81.7 56.6L80.1 58.4L73.3 55.1L72.9 54.2L31.9 54.2L9.6 54.1L0.1 54.1L0.0 17.4L0.2 17.4L0.1 0.0Z\" fill=\"#15803d\"/><path d=\"M35 32 L46 43 L66 20\" fill=\"none\" stroke=\"#fff\" stroke-width=\"9\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg><span class=\"ds-brand-word\">DineSafe<span class=\"ds-brand-sd\">SD</span></span></span>",
+      "css": ".ds-brand { display: inline-flex; align-items: center; gap: 9px; color: #0f172a; line-height: 1; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .ds-brand-word { font-size: 20px; font-weight: 900; letter-spacing: -0.5px; } .ds-brand-sd { color: #15803d; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Pocket Field Guide",
+    "overview": "DineSafeSD is the trustworthy reference you pull out before a meal: compact, indexed, friendly but factual. Like a good field guide, it is organized for identification at a glance — a fixed color-coded scoring key, big unambiguous numerals, and dense-but-breathable entries you can flip through in seconds while standing outside a restaurant. The voice is trustworthy, brisk, and plainspoken: the design gets you to a number fast and never dramatizes it.\n\nThe system is quiet by construction so the data can be loud. Nearly everything is paper-and-slate — a warm off-white page, white cards, hairline borders, slate text — and color is reserved for exactly two jobs: the brand's Inspection Green (the SD-outline checkmark, navigation, calls to action) and the five-band score ramp. Components are soft-edged utility: rounded corners, hairline borders, whisper shadows, and one glassy floating card over the map. Nothing decorative, nothing invented — the app reports official data and its design must feel like it.",
+    "keyCharacteristics": [
+      "Paper-quiet chrome; color belongs almost exclusively to scores and the brand green",
+      "Big raw numerals (out of 100, tabular, weight 900) — never letter grades or adjectives",
+      "A fixed five-band score ramp (dark green → light green → yellow → orange → red)",
+      "Soft-edged utility components: hairline borders, 6–16px radii, flat by default",
+      "System font stack on every platform; no custom faces",
+      "One signature mark: the South Dakota outline in Inspection Green with a white check"
+    ],
+    "rules": [
+      { "name": "The Two Voices Rule", "body": "Only two things are allowed to be colorful: the brand's Inspection Green and the score ramp. Any new hue must justify itself as a third voice — and almost nothing qualifies.", "section": "colors" },
+      { "name": "The Never-Alone Rule", "body": "Score color never carries meaning by itself; it always accompanies the numeral (or a dot beside a labeled score). Color-blind users get the same answer.", "section": "colors" },
+      { "name": "The Raw Number Rule", "body": "Scores are shown as raw numerals out of 100 in Display weight — never letter grades, never adjective labels, never re-interpreted. Tabular figures everywhere a number can change.", "section": "typography" },
+      { "name": "The Float-Earns-Shadow Rule", "body": "A surface gets a shadow only if it hovers above the map or another surface. Resting cards are bordered, not lifted. Shadow tint is always Ink (rgba(15,23,42,…)), never gray or black.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do pair every score color with its numeral or a text label (The Never-Alone Rule).",
+      "Do use tabular-nums on every number that can change — scores, counts, distances.",
+      "Do keep tap targets at 44px minimum height; the quick-view CTA already models this.",
+      "Do use the five-band ramp exactly as defined in scoring.ts — both apps must stay mirror-identical.",
+      "Do structure with hairline borders and reserve shadows for floating overlays.",
+      "Do respect safe-area insets on anything docked to a screen edge."
+    ],
+    "donts": [
+      "Don't translate scores into letter grades, star ratings, or adjectives — raw numbers only (The Raw Number Rule).",
+      "Don't introduce new saturated hues beyond Inspection Green and the score ramp (The Two Voices Rule).",
+      "Don't add custom fonts; the system stack is the voice on every platform.",
+      "Don't make filter/selection states green — selection is Active Slate so it can never be misread as a score.",
+      "Don't shadow resting cards on the web or tint shadows anything but Ink.",
+      "Don't editorialize in UI copy — \"3 critical violations,\" never \"dirty\" or \"unsafe.\""
+    ]
+  }
+}
