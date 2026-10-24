@@ -47,8 +47,8 @@ jobs:
       # committed data while this one waited, that checkout is stale.
       - name: Sync to branch tip
         run: |
-          git fetch origin "${{ github.ref_name }}"
-          git reset --hard "origin/${{ github.ref_name }}"
+          git fetch origin "$GITHUB_REF_NAME"
+          git reset --hard "origin/$GITHUB_REF_NAME"
 
       - name: Setup Node.js
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
@@ -122,19 +122,19 @@ jobs:
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             git commit -m "data: scheduled update (${{ steps.mode.outputs.mode }})"
-            if ! git pull --rebase origin "${{ github.ref_name }}"; then
+            if ! git pull --rebase origin "$GITHUB_REF_NAME"; then
               # Another run pushed data derived from the same base — git can't
               # merge the JSON, so merge at the data level: re-apply the remote
               # snapshot additively into ours (store semantics keep both sides'
               # scores/inspections), then re-commit on the remote tip.
               git rebase --abort || true
-              git worktree add /tmp/theirs "origin/${{ github.ref_name }}"
+              git worktree add /tmp/theirs "origin/$GITHUB_REF_NAME"
               (cd services/data-pipeline && npm run merge:data -- /tmp/theirs/apps/web/public/data)
-              git reset --soft "origin/${{ github.ref_name }}"
+              git reset --soft "origin/$GITHUB_REF_NAME"
               git add apps/web/public/data
               git commit -m "data: scheduled update (${{ steps.mode.outputs.mode }}, merged)"
             fi
-            git push origin "HEAD:${{ github.ref_name }}"
+            git push origin "HEAD:$GITHUB_REF_NAME"
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 

@@ -2,7 +2,7 @@ export default function PrivacyPage() {
   return (
     <div className="page">
       <h1>Privacy Policy</h1>
-      <p className="small">Last updated: July 7, 2026</p>
+      <p className="small">Last updated: October 23, 2026</p>
 
       <p>
         DineSafeSD (&quot;the app&quot;) is a free service that displays public-record restaurant
@@ -31,10 +31,10 @@ export default function PrivacyPage() {
 
       <h2>Data requests</h2>
       <p>
-        When you browse restaurants, the app requests public inspection data from our database
-        (hosted by Supabase). These requests are standard internet traffic (your IP address is
-        visible to the hosting provider, as with any website) but are not logged or used to
-        identify you by us.
+        When you browse restaurants, the app requests public inspection data from our website
+        (static files hosted by Cloudflare Pages). These requests are standard internet traffic
+        (your IP address is visible to the hosting provider, as with any website) but are not
+        logged or used to identify you by us.
       </p>
 
       <h2>The inspection data</h2>
