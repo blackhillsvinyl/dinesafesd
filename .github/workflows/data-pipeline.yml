@@ -4,8 +4,9 @@ on:
   schedule:
     # Daily incremental at 6 AM Central Time (12 PM UTC)
     - cron: '0 12 * * *'
-    # Monthly full backfill on the 1st at 2 AM Central Time (8 AM UTC)
-    - cron: '0 8 1 * *'
+    # Monthly full backfill disabled 2026-11-09: it hit the 6h job timeout every month.
+    # Run it manually via workflow_dispatch (mode: full) if needed.
+    # - cron: '0 8 1 * *'
   workflow_dispatch:
     inputs:
       mode:
