@@ -4,6 +4,7 @@ import { parseInspectionPDF } from './pdf-parser.js';
 import { geocodeValidated } from '../processors/geocoder.js';
 import { normalizeStreet } from '../lib/address.js';
 import { standardizeAddress } from '../lib/usps.js';
+import { parseViolationCount } from '../lib/parsing.js';
 
 interface SourceConfig {
   mode: 'full' | 'incremental' | 'backfill-scores' | 'zip-harvest';
@@ -22,7 +23,8 @@ interface EstablishmentResult {
   inspectionDate: string;
   inspectionType: string;
   score: number | null;
-  violationCount: number;
+  /** null when the portal row carries no readable count (unknown, not zero). */
+  violationCount: number | null;
   reportButtonId: string | null;
   violationsLinkId: string | null;
   pastInspectionsLinkId: string | null;
@@ -102,7 +104,12 @@ export class SDDOHSource {
     console.log('Browser initialized and page loaded');
   }
 
-  async syncAll(): Promise<void> {
+  /**
+   * Sync every configured county. Progress is saved per county and a failed
+   * county does not stop the run — but it is reported, so callers can record
+   * the run as partial instead of successful.
+   */
+  async syncAll(): Promise<{ failedCounties: string[] }> {
     const counties = this.config.counties ?? SD_COUNTIES;
     const failedCounties: string[] = [];
     let consecutiveTimeouts = 0;
@@ -161,6 +168,7 @@ export class SDDOHSource {
     console.log(`Restaurants: ${this.stats.restaurants}`);
     console.log(`Inspections: ${this.stats.inspections}`);
     console.log(`Violations: ${this.stats.violations}`);
+    return { failedCounties };
   }
 
   async syncByCounty(county: string): Promise<void> {
@@ -402,12 +410,15 @@ export class SDDOHSource {
   private async extractEstablishments(): Promise<EstablishmentResult[]> {
     if (!this.page) return [];
 
-    return await this.page.evaluate((tableSel: string) => {
+    // The page hands back the raw link text; the count is parsed out here so
+    // a missing or unreadable count stays unknown instead of becoming zero.
+    type RawRow = Omit<EstablishmentResult, 'violationCount'> & { violationsText: string };
+    const raw = await this.page.evaluate((tableSel: string) => {
       const table = document.querySelector(tableSel);
       if (!table) return [];
 
       const rows = table.querySelectorAll(':scope > tbody > tr, :scope > tr');
-      const results: EstablishmentResult[] = [];
+      const results: RawRow[] = [];
 
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
@@ -505,8 +516,6 @@ export class SDDOHSource {
         // Count violations from the violations link text (e.g., "Violation(s) 5")
         const violationsLink = row.querySelector('a[id*="lnkViolations"]');
         const violationsText = violationsLink?.textContent?.trim() || '';
-        const violationMatch = violationsText.match(/(\d+)/);
-        const violationCount = violationMatch ? parseInt(violationMatch[1], 10) : 0;
 
         // Get IDs for report button and links
         const reportButton = row.querySelector('input[id*="btnInspectionReport"]');
@@ -521,7 +530,7 @@ export class SDDOHSource {
           inspectionDate,
           inspectionType,
           score: isNaN(score as number) ? null : score,
-          violationCount,
+          violationsText,
           reportButtonId: reportButton?.id || null,
           violationsLinkId: violationsLink?.id || null,
           pastInspectionsLinkId: pastInspLink?.id || null,
@@ -530,6 +539,10 @@ export class SDDOHSource {
 
       return results;
     }, SELECTORS.resultsTable);
+    return raw.map(({ violationsText, ...row }) => ({
+      ...row,
+      violationCount: parseViolationCount(violationsText),
+    }));
   }
 
   private async processEstablishment(
@@ -624,7 +637,8 @@ export class SDDOHSource {
         this.stats.inspections++;
 
         // If there are violations, try to extract them by clicking the violations link
-        if (establishment.violationCount > 0 && establishment.violationsLinkId) {
+        // Unknown count: still try the link — the modal is the only evidence
+        if (establishment.violationCount !== 0 && establishment.violationsLinkId) {
           try {
             const violations = await this.extractViolations(establishment.violationsLinkId);
             for (const v of violations) {
@@ -672,7 +686,7 @@ export class SDDOHSource {
    */
   private async extractPastInspections(
     linkId: string
-  ): Promise<Array<{ date: string; type: string; violationCount: number; reportButtonId: string | null }>> {
+  ): Promise<Array<{ date: string; type: string; violationCount: number | null; reportButtonId: string | null }>> {
     if (!this.page) return [];
     const idx = linkId.match(/_(\d+)$/)?.[1];
     if (!idx) return [];
@@ -687,20 +701,20 @@ export class SDDOHSource {
       const rows = await this.page.evaluate((tid: string) => {
         const tbl = document.getElementById(tid);
         if (!tbl) return [];
-        const out: Array<{ date: string; type: string; violationCount: number; reportButtonId: string | null }> = [];
+        const out: Array<{ date: string; type: string; vtext: string; reportButtonId: string | null }> = [];
         for (const r of Array.from(tbl.querySelectorAll('tr.GridItem, tr.GridAltItem'))) {
           const tds = r.querySelectorAll(':scope > td');
           if (tds.length < 3) continue;
           const date = tds[0].textContent?.trim() || '';
           const type = tds[1].textContent?.trim() || '';
           const vtext = tds[2].textContent?.trim() || '';
-          const m = vtext.match(/(\d+)/);
           const btn = r.querySelector('input[id*="btnInspectionReport"]');
-          if (date) out.push({ date, type, violationCount: m ? parseInt(m[1], 10) : 0, reportButtonId: btn?.id || null });
+          if (date) out.push({ date, type, vtext, reportButtonId: btn?.id || null });
         }
         return out;
       }, tableId);
-      return rows;
+      // Parsed here, not in the page: missing text must stay unknown
+      return rows.map(({ vtext, ...r }) => ({ ...r, violationCount: parseViolationCount(vtext) }));
     } catch (error) {
       console.warn(`  Failed to extract past inspections from ${linkId}:`, error);
       return [];

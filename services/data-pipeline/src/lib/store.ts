@@ -132,7 +132,9 @@ export interface DetailRestaurant extends IndexRestaurant {
 }
 
 export interface SourceRun {
-  status: 'success' | 'failure';
+  // 'partial': the run finished and saved what it read, but part of the
+  // source could not be read (failed counties / establishments).
+  status: 'success' | 'partial' | 'failure';
   finished_at: string;
   restaurants_upserted: number | null;
   inspections_upserted: number | null;
@@ -353,6 +355,20 @@ class Store {
     if (existing >= 0) inspection.violations[existing] = stored;
     else inspection.violations.push(stored);
     this.dirty.add(ref.restaurantId);
+  }
+
+  /** ZIP codes already on record for a city (any source), for place checks. */
+  zipsForCity(city: string): Set<string> {
+    const want = city.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+    const zips = new Set<string>();
+    if (!want) return zips;
+    for (const r of this.loadIndex().restaurants) {
+      const zip = (r.zip_code ?? '').slice(0, 5);
+      if (/^\d{5}$/.test(zip) && (r.city ?? '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim() === want) {
+        zips.add(zip);
+      }
+    }
+    return zips;
   }
 
   /** Index rows for one source (used by the SWEEPS pipeline to diff). */

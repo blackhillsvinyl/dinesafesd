@@ -14,6 +14,7 @@
 
 import { store, type GeoPrecision } from '../lib/store.js';
 import { lookupAddressPoint, parseStreetParts } from '../lib/address-points.js';
+import { hitMatchesPlace, pointMatchesCity } from '../lib/geo-trust.js';
 
 export interface GeoResult {
   lat: number;
@@ -77,6 +78,7 @@ interface NominatimHit {
   road: string;
   houseNumber: string | null;
   zip: string | null;
+  city: string | null;
 }
 
 function parseNominatimHit(raw: Record<string, unknown> | null): NominatimHit | null {
@@ -88,6 +90,7 @@ function parseNominatimHit(raw: Record<string, unknown> | null): NominatimHit | 
     road: (addr.road ?? '').toUpperCase(),
     houseNumber: addr.house_number ?? null,
     zip: addr.postcode?.slice(0, 5) ?? null,
+    city: addr.city ?? addr.town ?? addr.village ?? addr.hamlet ?? addr.municipality ?? null,
   };
 }
 
@@ -112,8 +115,11 @@ export async function geocodeValidated(
   };
 
   // Tier 0: authoritative rooftop address points
+  // Without a ZIP the point table (keyed by street alone) cannot tell towns
+  // apart, so the point must sit in a ZIP already on record for this city.
+  const knownZips = zip5 ? new Set<string>() : store.zipsForCity(city);
   const rooftop = lookupAddressPoint(street, zip5);
-  if (rooftop && inSouthDakota(rooftop)) {
+  if (rooftop && inSouthDakota(rooftop) && (zip5 || pointMatchesCity(rooftop.zip, knownZips))) {
     return remember({ lat: rooftop.lat, lng: rooftop.lng, precision: 'rooftop' });
   }
 
@@ -121,7 +127,7 @@ export async function geocodeValidated(
   const wantTokens = significantTokens(street);
   const streetAgrees = (road: string) =>
     wantTokens.length > 0 && significantTokens(road).some((t) => wantTokens.includes(t));
-  const zipAgrees = (hitZip: string | null) => !zip5 || !hitZip || hitZip === zip5;
+  const placeAgrees = (hit: NominatimHit) => hitMatchesPlace({ city, zip5 }, hit, knownZips);
 
   // Tier 1: Nominatim/OSM, cross-checked against the (USPS) input
   const queries = [
@@ -132,7 +138,7 @@ export async function geocodeValidated(
   for (const q of queries) {
     const hit = parseNominatimHit(await nominatim(q));
     if (!hit || !inSouthDakota(hit)) continue;
-    if (!streetAgrees(hit.road) || !zipAgrees(hit.zip)) continue;
+    if (!streetAgrees(hit.road) || !placeAgrees(hit)) continue;
     if (wantNumber && hit.houseNumber === wantNumber) {
       return remember({ lat: hit.lat, lng: hit.lng, precision: 'address' });
     }
@@ -144,7 +150,7 @@ export async function geocodeValidated(
   const nameOnly = street.replace(/^\d+\s+/, '');
   if (nameOnly && nameOnly !== street) {
     const hit = parseNominatimHit(await nominatim(`${nameOnly}, ${city}, South Dakota`));
-    if (hit && inSouthDakota(hit) && streetAgrees(hit.road) && zipAgrees(hit.zip)) {
+    if (hit && inSouthDakota(hit) && streetAgrees(hit.road) && placeAgrees(hit)) {
       return remember({ lat: hit.lat, lng: hit.lng, precision: 'street' });
     }
   }

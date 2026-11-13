@@ -1,14 +1,16 @@
 import 'dotenv/config';
 import { store } from '../lib/store.js';
 import { SDDOHSource } from '../sources/sd-doh.js';
-import { syncSiouxFalls } from './sync-sioux-falls.js';
+import { syncSiouxFalls, sweepsRunRecord } from './sync-sioux-falls.js';
+import { dohRunRecord } from '../lib/run-record.js';
 
 /**
  * Daily sync of all South Dakota sources.
  *
  * Runs each source independently — one failing doesn't abort the other —
- * records each source's outcome in index.json (shown as "Data updated X ago"
- * in the apps), saves the store, and exits non-zero if any source failed.
+ * records each source's outcome in index.json (success, partial, or failure;
+ * the site tells visitors when a source could not be fully read), saves the
+ * store, and exits non-zero unless every source fully succeeded.
  */
 
 async function runSDDOH(full: boolean): Promise<boolean> {
@@ -26,15 +28,10 @@ async function runSDDOH(full: boolean): Promise<boolean> {
 
   try {
     await pipeline.initialize();
-    await pipeline.syncAll();
-    const stats = pipeline.getStats();
-    store.recordRun('sd_doh', {
-      status: 'success',
-      restaurants_upserted: stats.restaurants,
-      inspections_upserted: stats.inspections,
-      error: null,
-    });
-    return true;
+    const { failedCounties } = await pipeline.syncAll();
+    const run = dohRunRecord(pipeline.getStats(), failedCounties);
+    store.recordRun('sd_doh', run);
+    return run.status === 'success';
   } catch (error) {
     console.error('SD DOH sync failed:', error);
     store.recordRun('sd_doh', {
@@ -54,13 +51,9 @@ async function runSweeps(allDetails: boolean): Promise<boolean> {
 
   try {
     const stats = await syncSiouxFalls({ allDetails });
-    store.recordRun('sf_sweeps', {
-      status: 'success',
-      restaurants_upserted: stats.restaurantsUpserted,
-      inspections_upserted: stats.inspectionsUpserted,
-      error: null,
-    });
-    return true;
+    const run = sweepsRunRecord(stats);
+    store.recordRun('sf_sweeps', run);
+    return run.status === 'success';
   } catch (error) {
     console.error('Sioux Falls SWEEPS sync failed:', error);
     store.recordRun('sf_sweeps', {
@@ -85,8 +78,8 @@ async function main() {
   const { restaurantsWritten } = store.save();
 
   console.log('\n========== DAILY SYNC RESULT ==========');
-  console.log('SD DOH: ' + (sdOk ? 'success' : 'FAILURE'));
-  console.log('Sioux Falls SWEEPS: ' + (sfOk ? 'success' : 'FAILURE'));
+  console.log('SD DOH: ' + (sdOk ? 'success' : 'INCOMPLETE OR FAILED'));
+  console.log('Sioux Falls SWEEPS: ' + (sfOk ? 'success' : 'INCOMPLETE OR FAILED'));
   console.log('Restaurant files written: ' + restaurantsWritten);
   console.log('Finished at ' + new Date().toISOString());
 

@@ -2,6 +2,8 @@ import 'dotenv/config';
 import { pathToFileURL } from 'node:url';
 import { store } from '../lib/store.js';
 import { geocodeAddress } from '../processors/geocoder.js';
+import { parseSweepsDetail, shouldFetchSweepsDetail, utcDayNumber } from '../lib/parsing.js';
+import type { SweepsInspection } from '../lib/parsing.js';
 
 const BASE_URL = 'https://sweepsdata.siouxfalls.gov/';
 const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36';
@@ -14,24 +16,17 @@ interface SFRestaurant {
   score: number | null;
 }
 
-interface SFViolation {
-  code: string;
-  description: string;
-  severity: 'critical' | 'minor';
-}
-
-interface SFInspection {
-  date: string; // YYYY-MM-DD
-  score: number | null;
-  comments: string;
-  violations: SFViolation[];
-}
-
 export interface SweepsStats {
   restaurantsUpserted: number;
   inspectionsUpserted: number;
   errors: number;
+  /** Establishments whose processing failed (name, for the run record). */
+  failed: string[];
 }
+
+// Each establishment's detail page is re-read at least this often, so a new
+// inspection with an unchanged score is found within a week.
+const RECHECK_CYCLE_DAYS = 7;
 
 async function fetchPage(url: string): Promise<string> {
   const resp = await fetch(url, { headers: { 'User-Agent': USER_AGENT } });
@@ -69,80 +64,19 @@ async function fetchRestaurantList(): Promise<SFRestaurant[]> {
   return restaurants;
 }
 
-/** Parse "1/28/2026" → "2026-01-28" */
-function parseUSDate(raw: string): string | null {
-  const m = raw.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
-  if (!m) return null;
-  return m[3] + '-' + m[1].padStart(2, '0') + '-' + m[2].padStart(2, '0');
-}
-
-/**
- * Fetch a restaurant's detail page and parse the real inspections it shows
- * (the page lists violations "for last two inspections", each starting with a
- * <div class="inspection"> header carrying the date and total score).
- */
+/** Fetch and parse a restaurant's detail page (one retry on a transient failure). */
 async function fetchInspectionDetails(
   r: SFRestaurant
-): Promise<{ inspections: SFInspection[]; phone: string | null }> {
+): Promise<{ inspections: SweepsInspection[]; phone: string | null }> {
   const url = BASE_URL + 'Restaurant_Detail.aspx?SiteID=' + r.siteId + '&FacType=' + r.facType + '&inv=1';
-  const html = await fetchPage(url);
-
-  // Row attributes carry "NAME ADDRESS City, SD ZIP PHONE"
-  const phone =
-    html.match(/nonformattednameaddress="[^"]*?(\(?\d{3}\)?[ .-]?\d{3}[ .-]?\d{4})\s*"/i)?.[1] ?? null;
-
-  const inspections: SFInspection[] = [];
-  const blocks = html.split(/<div class="inspection">/i);
-  for (let b = 1; b < blocks.length; b++) {
-    const block = blocks[b];
-    const header = block.match(/^\s*Inspection Date:\s*([\d/]+)\s*<br\s*\/?>\s*Total Score:\s*(\d+)/i);
-    if (!header) continue;
-    const date = parseUSDate(header[1]);
-    if (!date) continue;
-    const score = parseInt(header[2], 10);
-
-    // Violations for this inspection are grouped under "Critical Violations" /
-    // "Non-Critical Violations" headers; each is a <table class="violations">
-    // with a title row and a description row. A "No Violations" table may
-    // still carry inspector comments.
-    const violations: SFViolation[] = [];
-    let comments = '';
-    const sections = block.split(/<div class="violhead">/i);
-    for (let i = 0; i < sections.length; i++) {
-      const section = sections[i];
-      const severity: SFViolation['severity'] = /^\s*<b>\s*critical/i.test(section) ? 'critical' : 'minor';
-      const tableRegex = /<table class="violations">([\s\S]*?)<\/table>/gi;
-      let t;
-      while ((t = tableRegex.exec(section)) !== null) {
-        const table = t[1];
-        const commentMatch = table.match(/Inspector Comments:\s*([\s\S]*?)<\/td>/i);
-        if (commentMatch) {
-          comments = (comments ? comments + ' ' : '') +
-            commentMatch[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-        }
-        const title = table.match(/(\d+)\s*points?:\s*<a href='[^']*\/violation\/(\d+)'>([^<]+)<\/a>/i);
-        if (!title) continue;
-        const descMatch = table.match(/<\/tr>\s*<tr>\s*<td>([\s\S]*?)<\/td>/i);
-        const points = title[1];
-        const code = title[2];
-        const name = title[3].trim();
-        const desc = (descMatch ? descMatch[1] : '').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-
-        const existing = violations.find((v) => v.code === code);
-        const description = name + ' (' + points + ' pts): ' + desc;
-        if (existing) {
-          // UNIQUE(inspection_id, code) — merge repeat citations of the same code
-          existing.description += ' | ' + description;
-        } else {
-          violations.push({ code, description, severity });
-        }
-      }
-    }
-
-    inspections.push({ date, score, comments, violations });
+  let html: string;
+  try {
+    html = await fetchPage(url);
+  } catch {
+    await randomDelay(1500, 2500);
+    html = await fetchPage(url);
   }
-
-  return { inspections, phone };
+  return parseSweepsDetail(html);
 }
 
 function calculateGrade(score: number | null): string {
@@ -178,9 +112,13 @@ function loadExistingRestaurants(): Map<string, ExistingRestaurant> {
  *
  * - Geocodes only restaurants that are new or whose address changed
  *   (Nominatim is rate-limited to ~1 req/s).
- * - Fetches the inv=1 detail page for the real inspection date + violations,
- *   but only when the list score differs from what we already have —
- *   pass allDetails=true (monthly backfill) to refetch every detail page.
+ * - Reads the inv=1 detail page (real inspection date + violations) for new
+ *   establishments, changed list scores, and a rotating slice that covers
+ *   every establishment once per RECHECK_CYCLE_DAYS — the list page shows
+ *   only a score, so a same-score inspection is invisible there.
+ *   Pass allDetails=true to re-read every detail page.
+ * - Individual failures are counted and named; the caller decides what a
+ *   partial run means.
  */
 export async function syncSiouxFalls(options: { allDetails?: boolean } = {}): Promise<SweepsStats> {
   console.log('=== Sioux Falls SWEEPS Source ===\n');
@@ -194,7 +132,9 @@ export async function syncSiouxFalls(options: { allDetails?: boolean } = {}): Pr
   const existing = loadExistingRestaurants();
   console.log('Known restaurants in store: ' + existing.size + '\n');
 
-  const stats: SweepsStats = { restaurantsUpserted: 0, inspectionsUpserted: 0, errors: 0 };
+  const stats: SweepsStats = { restaurantsUpserted: 0, inspectionsUpserted: 0, errors: 0, failed: [] };
+  const dayNumber = utcDayNumber();
+  const reasons: Record<string, number> = {};
   let geocoded = 0;
   let detailsFetched = 0;
 
@@ -242,10 +182,17 @@ export async function syncSiouxFalls(options: { allDetails?: boolean } = {}): Pr
 
       if (!restaurantId) continue;
 
-      // Fetch the real inspections (date, score, violations) when the score is
-      // new/changed, or always during a full backfill.
-      const scoreChanged = r.score !== null && (isNew || known!.latest_score !== r.score);
-      if (r.score !== null && (options.allDetails || scoreChanged)) {
+      const reason = shouldFetchSweepsDetail({
+        isNew,
+        listScore: r.score,
+        knownScore: known?.latest_score ?? null,
+        siteId: r.siteId,
+        dayNumber,
+        cycleDays: RECHECK_CYCLE_DAYS,
+        allDetails: !!options.allDetails,
+      });
+      if (reason) {
+        reasons[reason] = (reasons[reason] ?? 0) + 1;
         const { inspections, phone } = await fetchInspectionDetails(r);
         detailsFetched++;
         await randomDelay(250, 500); // be polite to the city site
@@ -268,7 +215,7 @@ export async function syncSiouxFalls(options: { allDetails?: boolean } = {}): Pr
             grade: calculateGrade(inspection.score),
             inspection_type: 'Routine',
             comments: inspection.comments,
-            violationCount: inspection.violations.length,
+            violationCount: inspection.violationCount,
           });
           stats.inspectionsUpserted++;
 
@@ -285,6 +232,7 @@ export async function syncSiouxFalls(options: { allDetails?: boolean } = {}): Pr
     } catch (error) {
       console.error('  Error processing ' + r.name + ': ' + error);
       stats.errors++;
+      stats.failed.push(r.name);
     }
   }
 
@@ -292,10 +240,23 @@ export async function syncSiouxFalls(options: { allDetails?: boolean } = {}): Pr
   console.log('Total found: ' + restaurants.length);
   console.log('Restaurants upserted: ' + stats.restaurantsUpserted);
   console.log('Geocoded: ' + geocoded);
-  console.log('Details fetched: ' + detailsFetched);
+  console.log('Details fetched: ' + detailsFetched + ' ' + JSON.stringify(reasons));
   console.log('Inspections upserted: ' + stats.inspectionsUpserted);
   console.log('Errors: ' + stats.errors);
   return stats;
+}
+
+/** Run record for a finished pass: partial when any establishment failed. */
+export function sweepsRunRecord(stats: SweepsStats) {
+  return {
+    status: stats.errors > 0 ? ('partial' as const) : ('success' as const),
+    restaurants_upserted: stats.restaurantsUpserted,
+    inspections_upserted: stats.inspectionsUpserted,
+    error:
+      stats.errors > 0
+        ? `${stats.errors} establishment(s) could not be read: ${stats.failed.slice(0, 10).join('; ')}${stats.failed.length > 10 ? '; …' : ''}`
+        : null,
+  };
 }
 
 // CLI entry: `npm run sync:sioux-falls [-- --all-details]`
@@ -303,14 +264,10 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   const allDetails = process.argv.includes('--all-details');
   syncSiouxFalls({ allDetails })
     .then((stats) => {
-      store.recordRun('sf_sweeps', {
-        status: 'success',
-        restaurants_upserted: stats.restaurantsUpserted,
-        inspections_upserted: stats.inspectionsUpserted,
-        error: null,
-      });
+      store.recordRun('sf_sweeps', sweepsRunRecord(stats));
       const { restaurantsWritten } = store.save();
       console.log('Saved ' + restaurantsWritten + ' restaurant files');
+      if (stats.errors > 0) process.exit(1);
     })
     .catch((e) => {
       console.error(e);

@@ -23,9 +23,15 @@ async function main() {
 
   try {
     await pipeline.initialize();
-    await pipeline.syncAll();
+    const { failedCounties } = await pipeline.syncAll();
     const { restaurantsWritten } = store.save();
     console.log('Saved ' + restaurantsWritten + ' restaurant files');
+    if (failedCounties.length) {
+      // Progress is saved, but the run did not cover everything it was asked to
+      console.error('INCOMPLETE: could not read ' + failedCounties.join(', '));
+      process.exitCode = 1;
+      return;
+    }
     console.log('\nSync completed successfully!');
   } catch (error) {
     console.error('Sync failed:', error);
