@@ -84,7 +84,7 @@ export function restaurantMeta(r: RestaurantDetail): PageMeta {
   const latest = r.inspections[0];
   const parts: string[] = [];
   if (latest) {
-    const f = inspectionFindings(latest);
+    const f = inspectionFindings(latest, r.source);
     const bits = [`Latest inspection ${longDate(latest.date)}`];
     if (latest.score != null) bits.push(`score ${latest.score} out of 100`);
     if (f.kind === 'itemized' || f.kind === 'count-only') {

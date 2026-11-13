@@ -4,13 +4,16 @@ import {
   inspectionFindings,
   latestStatus,
   latestStatusLabel,
+  publishedSeverity,
   severityBasis,
   severityLabel,
 } from '../inspection';
+import { applySeverityRules } from '../api';
+import type { RestaurantIndex } from '../../types';
 import { officialSource } from '../sources';
 import { TIERS, NO_SCORE_THEME, contrastRatio, getScoreTheme } from '../../scoring';
 
-const v = (code: string, severity: 'critical' | 'major' | 'minor') => ({
+const v = (code: string, severity: 'critical' | 'major' | 'minor' | 'unclassified') => ({
   code,
   severity,
   description: 'x',
@@ -18,31 +21,49 @@ const v = (code: string, severity: 'critical' | 'major' | 'minor') => ({
 });
 
 describe('severity provenance', () => {
-  it('treats SWEEPS and scoresheet marks as official, rule-section codes as derived', () => {
+  it('treats SWEEPS and scoresheet marks as official, portal citations as unpublished', () => {
     expect(severityBasis('sf_sweeps', '12')).toBe('sweeps');
     expect(severityBasis('sd_doh', '30')).toBe('scoresheet');
-    expect(severityBasis('sd_doh', '44:02:07:24')).toBe('code-section');
+    expect(severityBasis('sd_doh', '44:02:07:24')).toBe('portal');
     // Unrecognized code shapes are never promoted to "official"
-    expect(severityBasis('sd_doh', 'ABC')).toBe('code-section');
+    expect(severityBasis('sd_doh', 'ABC')).toBe('portal');
   });
 
-  it('labels official non-critical items without inventing major/minor', () => {
+  it('labels only what the official record states', () => {
     expect(severityLabel(v('30', 'critical'), 'sd_doh')).toBe('Critical');
     expect(severityLabel(v('23', 'minor'), 'sd_doh')).toBe('Non-critical');
     expect(severityLabel(v('7', 'minor'), 'sf_sweeps')).toBe('Non-critical');
-    expect(severityLabel(v('44:02:07:55', 'major'), 'sd_doh')).toBe('Major');
-    expect(severityLabel(v('44:02:07:70', 'minor'), 'sd_doh')).toBe('Minor');
+    expect(severityLabel(v('44:02:07:55', 'unclassified'), 'sd_doh')).toBe('Severity not published');
+  });
+
+  it('ignores severities that older data files assigned to portal citations', () => {
+    for (const stale of ['critical', 'major', 'minor'] as const) {
+      expect(publishedSeverity(v('44:02:07:24', stale), 'sd_doh')).toBe('not-published');
+    }
   });
 });
 
 describe('inspectionFindings', () => {
-  it('counts itemized violations and criticals', () => {
-    const f = inspectionFindings({
-      violations: [v('44:02:07:24', 'critical'), v('44:02:07:55', 'major')],
-      violation_count: 2,
-    });
-    expect(f).toEqual({ kind: 'itemized', count: 2, critical: 1 });
-    expect(findingsSentence(f)).toBe('2 violations recorded on this inspection, 1 labeled critical.');
+  it('never counts a portal citation as critical, whatever the file says', () => {
+    const f = inspectionFindings(
+      { violations: [v('44:02:07:24', 'critical'), v('44:02:07:55', 'major')], violation_count: 2 },
+      'sd_doh'
+    );
+    expect(f).toEqual({ kind: 'itemized', count: 2, critical: 0, unpublished: 2 });
+    expect(findingsSentence(f)).toBe(
+      '2 violations recorded on this inspection. The state portal does not publish a severity for them.'
+    );
+  });
+
+  it('counts official critical marks', () => {
+    const f = inspectionFindings(
+      { violations: [v('30', 'critical'), v('23', 'minor')], violation_count: 2 },
+      'sd_doh'
+    );
+    expect(f).toEqual({ kind: 'itemized', count: 2, critical: 1, unpublished: 0 });
+    expect(findingsSentence(f)).toBe('2 violations recorded on this inspection, 1 marked critical.');
+    const sf = inspectionFindings({ violations: [v('7', 'minor')], violation_count: 1 }, 'sf_sweeps');
+    expect(findingsSentence(sf)).toBe('1 violation recorded on this inspection; none marked critical.');
   });
 
   it('only says none recorded on an explicit zero count', () => {
@@ -55,6 +76,22 @@ describe('inspectionFindings', () => {
     const f = inspectionFindings({ violations: [], violation_count: 3 });
     expect(f).toEqual({ kind: 'count-only', count: 3 });
     expect(findingsSentence(f)).toMatch(/severity is unknown/);
+  });
+});
+
+describe('index flags from before severity rules 2', () => {
+  const row = (source: string) =>
+    ({ id: source, source, has_critical_violations: true }) as unknown as RestaurantIndex['restaurants'][number];
+  const base = { updated_at: '', sources: {}, restaurants: [row('sd_doh'), row('sf_sweeps')] };
+
+  it('drops unverified state flags and keeps Sioux Falls flags on older data', () => {
+    const out = applySeverityRules(base);
+    expect(out.restaurants.map((r) => r.has_critical_violations)).toEqual([false, true]);
+  });
+
+  it('trusts every flag once the pipeline has reindexed', () => {
+    const out = applySeverityRules({ ...base, severity_rules: 2 });
+    expect(out.restaurants.map((r) => r.has_critical_violations)).toEqual([true, true]);
   });
 });
 

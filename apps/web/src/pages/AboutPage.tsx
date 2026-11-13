@@ -86,7 +86,10 @@ export default function AboutPage() {
 
       <h2 id="severity">Critical violations and severity labels</h2>
       <p>{SCORE_VS_CRITICAL}</p>
-      <p>Where a severity label comes from depends on the record:</p>
+      <p>
+        We only show a severity that the official record states. Where it comes from depends
+        on the record:
+      </p>
       <ul>
         <li>
           <b>Sioux Falls reports:</b> {BASIS_EXPLANATION.sweeps}
@@ -95,7 +98,7 @@ export default function AboutPage() {
           <b>State scoresheets:</b> {BASIS_EXPLANATION.scoresheet}
         </li>
         <li>
-          <b>State portal citations:</b> {BASIS_EXPLANATION['code-section']}
+          <b>State portal citations:</b> {BASIS_EXPLANATION.portal}
         </li>
       </ul>
       <p>

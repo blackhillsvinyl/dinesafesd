@@ -24,7 +24,7 @@ const detail: RestaurantDetail = {
   latest_inspection_date: '2026-07-20',
   average_score: 98,
   inspection_count: 1,
-  has_critical_violations: true,
+  has_critical_violations: false,
   violation_categories: ['contamination'],
   score_history: [],
   score_trend: null,
@@ -39,7 +39,7 @@ const detail: RestaurantDetail = {
       inspection_type: 'Routine',
       comments: '',
       violation_count: 1,
-      violations: [{ code: '44:02:07:24', description: 'x', severity: 'critical', corrected: false }],
+      violations: [{ code: '44:02:07:24', description: 'x', severity: 'unclassified', corrected: false }],
     },
   ],
 };

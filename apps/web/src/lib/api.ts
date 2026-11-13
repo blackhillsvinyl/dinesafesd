@@ -12,8 +12,27 @@ async function fetchJson<T>(path: string): Promise<T> {
   return resp.json() as Promise<T>;
 }
 
-export function fetchIndex(): Promise<RestaurantIndex> {
-  return fetchJson<RestaurantIndex>('/index.json');
+export async function fetchIndex(): Promise<RestaurantIndex> {
+  return applySeverityRules(await fetchJson<RestaurantIndex>('/index.json'));
+}
+
+/**
+ * Data written before severity rules 2 flagged SD DOH restaurants as having
+ * critical violations from a rule-section mapping that did not hold up (see
+ * docs/dinesafe-update-plan.md). Until the pipeline has reindexed every file
+ * (it then stamps severity_rules: 2), those flags are not shown. Sioux Falls
+ * flags come from the city's own headings and are always kept.
+ */
+export function applySeverityRules(index: RestaurantIndex): RestaurantIndex {
+  if ((index.severity_rules ?? 1) >= 2) return index;
+  return {
+    ...index,
+    restaurants: index.restaurants.map((r) =>
+      r.source === 'sd_doh' && r.has_critical_violations
+        ? { ...r, has_critical_violations: false }
+        : r
+    ),
+  };
 }
 
 export function fetchRestaurant(id: string): Promise<RestaurantDetail> {

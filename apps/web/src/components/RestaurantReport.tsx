@@ -6,6 +6,7 @@ import {
   SCORE_VS_CRITICAL,
   findingsSentence,
   inspectionFindings,
+  publishedSeverity,
   severityBasis,
   severityLabel,
 } from '../lib/inspection';
@@ -25,7 +26,7 @@ interface Props {
   copyName?: ReactNode;
 }
 
-const BASIS_ORDER: SeverityBasis[] = ['sweeps', 'scoresheet', 'code-section'];
+const BASIS_ORDER: SeverityBasis[] = ['sweeps', 'scoresheet', 'portal'];
 
 function ScorePill({ score }: { score: number | null }) {
   const theme = getScoreTheme(score);
@@ -47,7 +48,7 @@ function ScorePill({ score }: { score: number | null }) {
 }
 
 function InspectionCard({ inspection, source }: { inspection: Inspection; source: string }) {
-  const findings = inspectionFindings(inspection);
+  const findings = inspectionFindings(inspection, source);
   return (
     <section className="inspection-card">
       <div className="inspection-head">
@@ -61,10 +62,11 @@ function InspectionCard({ inspection, source }: { inspection: Inspection; source
           {inspection.violations.map((v) => {
             const basis = severityBasis(source, v.code);
             const label = severityLabel(v, source);
+            const critical = publishedSeverity(v, source) === 'critical';
             return (
-              <li key={v.code} className={`violation violation-${v.severity}`}>
+              <li key={v.code} className={`violation${critical ? ' violation-critical' : ''}`}>
                 <div className="violation-meta">
-                  <span className={`sev sev-${v.severity === 'critical' ? 'critical' : 'other'}`}>{label}</span>
+                  <span className={`sev sev-${critical ? 'critical' : 'other'}`}>{label}</span>
                   <span className="sev-basis">{BASIS_SHORT[basis]}</span>
                   <span className="violation-code">Code {v.code}</span>
                 </div>
@@ -91,13 +93,8 @@ function InspectionCard({ inspection, source }: { inspection: Inspection; source
 export default function RestaurantReport({ restaurant: r, dataUpdatedAt, actions, copyName }: Props) {
   const inspections = r.inspections; // newest first
   const latest = inspections[0] ?? null;
-  const latestFindings = latest ? inspectionFindings(latest) : null;
+  const latestFindings = latest ? inspectionFindings(latest, r.source) : null;
   const hasCritical = latestFindings?.kind === 'itemized' && latestFindings.critical > 0;
-  const criticalBases = latest
-    ? BASIS_ORDER.filter((b) =>
-        latest.violations.some((v) => v.severity === 'critical' && severityBasis(r.source, v.code) === b)
-      )
-    : [];
   // The headline score is the latest inspection's own score. If that
   // inspection has none, say which inspection the number belongs to.
   const scored = inspections.find((i) => i.score != null) ?? null;
@@ -162,21 +159,21 @@ export default function RestaurantReport({ restaurant: r, dataUpdatedAt, actions
                   {findingsSentence(latestFindings!)}
                 </p>
                 <p>{SCORE_VS_CRITICAL}</p>
-                {criticalBases.includes('code-section') ? (
-                  <p>
-                    “Critical” here is DineSafeSD’s classification based on the rule section cited.
-                    The state portal does not publish a severity level.{' '}
-                    <a href="#severity-heading">How severity is labeled</a>
-                  </p>
-                ) : (
-                  <p>
-                    “Critical” is the mark on the official report.{' '}
-                    <a href="#severity-heading">How severity is labeled</a>
-                  </p>
-                )}
+                <p>
+                  “Critical” is the mark on the official report.{' '}
+                  <a href="#severity-heading">How severity is labeled</a>
+                </p>
               </div>
             ) : (
-              <p className="status status-neutral">{findingsSentence(latestFindings!)}</p>
+              <p className="status status-neutral">
+                {findingsSentence(latestFindings!)}
+                {latestFindings?.kind === 'itemized' && latestFindings.unpublished > 0 && (
+                  <>
+                    {' '}
+                    <a href="#severity-heading">How severity is labeled</a>
+                  </>
+                )}
+              </p>
             )}
           </>
         ) : (

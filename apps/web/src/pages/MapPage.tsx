@@ -15,6 +15,7 @@ import { CATEGORY_VISUALS } from '../violationCategories';
 import { isFavorite, favoriteCount, useSavedVersion } from '../lib/saved';
 import { useEffectiveDark } from '../lib/theme';
 import { HOME_INTRO, STATIC_META } from '../lib/meta';
+import { CRITICAL_FILTER_NOTE } from '../lib/inspection';
 import { usePageMeta } from '../lib/usePageMeta';
 import type { Restaurant } from '../types';
 
@@ -872,6 +873,7 @@ export default function MapPage() {
                     <span aria-hidden="true">⚠</span>Hide places with critical violations
                   </button>
                 </div>
+                <p className="legend-note">{CRITICAL_FILTER_NOTE}</p>
               </div>
               <div role="group" aria-labelledby="mf-cats">
                 <div className="mf-label" id="mf-cats">Hide places with violations for…</div>
@@ -926,8 +928,8 @@ export default function MapPage() {
                 to zoom in, or a dot for details.
               </p>
               <p className="legend-note">
-                Colors only echo the score. A high score can still include a critical violation,
-                so open a restaurant to read its report. <Link to="/about">More about the data</Link>
+                Colors only echo the score. A high score can still come with violations, so
+                open a restaurant to read its report. <Link to="/about">More about the data</Link>
               </p>
               {refreshed && (
                 <p className="legend-note">

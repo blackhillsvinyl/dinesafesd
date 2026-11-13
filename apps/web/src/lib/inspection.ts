@@ -5,43 +5,50 @@ import type { Inspection, Restaurant, Violation } from '../types';
 // (services/data-pipeline/src/lib/store.ts) — nothing is reclassified.
 
 /**
- * Where a violation's severity value comes from:
+ * Where a violation's severity can come from:
  *
  * - 'sweeps'       City of Sioux Falls report lists it under "Critical
  *                  Violations" or "Non-Critical Violations" (sync-sioux-falls.ts).
  * - 'scoresheet'   SD DOH inspection scoresheet PDF; critical items carry the
  *                  form's "*" mark (pdf-parser.ts). Codes are item numbers 1–60.
- * - 'code-section' SD DOH portal violation cited by rule section (e.g.
- *                  "44:02:07:24"). The portal publishes no severity, so the
- *                  pipeline assigns one from the section number
- *                  (sd-doh.ts mapSDCodeToSeverity). This is a DineSafeSD
- *                  classification, not an official one.
+ * - 'portal'       SD DOH portal violation cited by rule section (e.g.
+ *                  "44:02:07:24"). Neither the portal nor the rule publishes a
+ *                  severity for these, so none is shown — whatever value an
+ *                  older data file may still carry.
  */
-export type SeverityBasis = 'sweeps' | 'scoresheet' | 'code-section';
+export type SeverityBasis = 'sweeps' | 'scoresheet' | 'portal';
 
 export function severityBasis(source: string, code: string): SeverityBasis {
   if (source === 'sf_sweeps') return 'sweeps';
-  return /^\d{1,2}$/.test(code.trim()) ? 'scoresheet' : 'code-section';
+  return /^\d{1,2}$/.test(code.trim()) ? 'scoresheet' : 'portal';
 }
 
-export function isOfficialBasis(basis: SeverityBasis): boolean {
-  return basis !== 'code-section';
+export type PublishedSeverity = 'critical' | 'non-critical' | 'not-published';
+
+/** The severity the official record actually states for a violation. */
+export function publishedSeverity(
+  v: Pick<Violation, 'severity' | 'code'>,
+  source: string
+): PublishedSeverity {
+  if (severityBasis(source, v.code) === 'portal') return 'not-published';
+  return v.severity === 'critical' ? 'critical' : 'non-critical';
 }
 
-/** Text shown beside a violation. Official sources only mark critical or not. */
+const SEVERITY_TEXT: Record<PublishedSeverity, string> = {
+  critical: 'Critical',
+  'non-critical': 'Non-critical',
+  'not-published': 'Severity not published',
+};
+
+/** Text shown beside a violation. */
 export function severityLabel(v: Pick<Violation, 'severity' | 'code'>, source: string): string {
-  const basis = severityBasis(source, v.code);
-  if (v.severity === 'critical') return 'Critical';
-  if (isOfficialBasis(basis)) return 'Non-critical';
-  if (v.severity === 'major') return 'Major';
-  if (v.severity === 'minor') return 'Minor';
-  return 'Severity not classified';
+  return SEVERITY_TEXT[publishedSeverity(v, source)];
 }
 
 export const BASIS_SHORT: Record<SeverityBasis, string> = {
   sweeps: 'per city report',
   scoresheet: 'per state scoresheet',
-  'code-section': 'DineSafeSD classification',
+  portal: 'state portal citation',
 };
 
 export const BASIS_EXPLANATION: Record<SeverityBasis, string> = {
@@ -49,26 +56,38 @@ export const BASIS_EXPLANATION: Record<SeverityBasis, string> = {
     'The City of Sioux Falls report lists each violation under “Critical Violations” or “Non-Critical Violations”. We show that grouping as published.',
   scoresheet:
     'The state inspection scoresheet marks critical items on the form. We show that mark as published; unmarked items are labeled non-critical.',
-  'code-section':
-    'The state portal cites a rule section (for example 44:02:07:24) but does not publish a severity level. DineSafeSD labels these Critical, Major, or Minor from the rule section cited. This is our classification, not an official one.',
+  portal:
+    'The state portal cites the rule section violated (for example 44:02:07:24) but does not publish a severity, and the rule itself does not rank its sections. We show the citation and the inspector’s notes and do not assign a severity.',
 };
 
 export type Findings =
   /** The source reported a violation count of zero. */
   | { kind: 'none-recorded' }
-  /** Individual violations are published, each with a severity. */
-  | { kind: 'itemized'; count: number; critical: number }
+  /**
+   * Individual violations are published. `critical` counts official critical
+   * marks; `unpublished` counts violations whose severity the source does
+   * not state.
+   */
+  | { kind: 'itemized'; count: number; critical: number; unpublished: number }
   /** Only a count is published; severity cannot be known. */
   | { kind: 'count-only'; count: number }
   /** Neither violations nor a count are published. */
   | { kind: 'unknown' };
 
-export function inspectionFindings(i: Pick<Inspection, 'violations' | 'violation_count'>): Findings {
+// `source` only matters for telling Sioux Falls codes from state ones; both
+// official code systems are short item numbers and portal citations are not,
+// so the state default gives the same answer for every record.
+export function inspectionFindings(
+  i: Pick<Inspection, 'violations' | 'violation_count'>,
+  source = 'sd_doh'
+): Findings {
   if (i.violations.length > 0) {
+    const kinds = i.violations.map((v) => publishedSeverity(v, source));
     return {
       kind: 'itemized',
       count: i.violations.length,
-      critical: i.violations.filter((v) => v.severity === 'critical').length,
+      critical: kinds.filter((k) => k === 'critical').length,
+      unpublished: kinds.filter((k) => k === 'not-published').length,
     };
   }
   if (i.violation_count === 0) return { kind: 'none-recorded' };
@@ -80,18 +99,26 @@ export function inspectionFindings(i: Pick<Inspection, 'violations' | 'violation
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
-/** One factual sentence about an inspection's findings. */
+/** One factual sentence (or two) about an inspection's findings. */
 export function findingsSentence(f: Findings): string {
   switch (f.kind) {
     case 'none-recorded':
       return 'No violations were recorded on this inspection.';
-    case 'itemized':
-      if (f.critical === 0) {
-        return `${plural(f.count, 'violation')} recorded on this inspection; none labeled critical.`;
+    case 'itemized': {
+      const head = `${plural(f.count, 'violation')} recorded on this inspection`;
+      if (f.unpublished === f.count) {
+        return `${head}. The state portal does not publish a severity for ${f.count === 1 ? 'it' : 'them'}.`;
       }
-      return f.critical === f.count
-        ? `${plural(f.count, 'violation')} recorded on this inspection, labeled critical.`
-        : `${plural(f.count, 'violation')} recorded on this inspection, ${f.critical} labeled critical.`;
+      const marked =
+        f.critical === 0
+          ? `${head}; none marked critical.`
+          : f.critical === f.count
+            ? `${head}, marked critical.`
+            : `${head}, ${f.critical} marked critical.`;
+      return f.unpublished > 0
+        ? `${marked} No severity is published for ${f.unpublished} of them.`
+        : marked;
+    }
     case 'count-only':
       return `${plural(f.count, 'violation')} recorded on this inspection. Itemized details are not published, so severity is unknown.`;
     case 'unknown':
@@ -107,8 +134,9 @@ export type LatestStatus =
 
 /**
  * Same question for an index row, which carries only derived fields. The
- * pipeline computes has_critical_violations and violation_categories from the
- * latest inspection's itemized violations, and violation_history from the
+ * pipeline computes has_critical_violations (official critical marks only —
+ * see applySeverityRules in api.ts for older data) and violation_categories
+ * from the latest inspection's itemized violations, and violation_history from the
  * itemized length or the published count — so "none recorded" is only
  * claimed when the latest inspection's count is an explicit zero.
  */
@@ -143,3 +171,6 @@ export function latestStatusLabel(s: LatestStatus): string {
 
 export const SCORE_VS_CRITICAL =
   'A high score can still include a critical violation. The score reflects the points deducted across the whole inspection; “critical” describes the kind of violation.';
+
+export const CRITICAL_FILTER_NOTE =
+  'Only Sioux Falls reports and state scoresheets mark violations critical. The state portal, the source of most statewide latest inspections, does not publish a severity.';

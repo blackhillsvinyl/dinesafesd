@@ -23,6 +23,8 @@ mkdirSync(shots, { recursive: true });
 const PIZZA = 'sd_doh_rapid-city-pizza-ranch-1556-luna-ave-rapid-city';
 const UNKNOWN_LATEST = 'sd_doh_comfort-suites-food-1333-n-elk-vale-rapid-city';
 const SWEEPS_NONE = 'sf_sweeps_715';
+// Sioux Falls record whose latest inspection has an official critical mark and a score of 97
+const SWEEPS_CRITICAL = 'sf_sweeps_144';
 const COUNT_ONLY = process.env.COUNT_ONLY_ID ?? '';
 
 const VIEWPORTS = [
@@ -224,14 +226,16 @@ async function layoutChecks(browser, vp, theme) {
   await page.keyboard.press('Escape');
 
   // Report page
-  await page.goto(`${BASE}/r/${PIZZA}`, { waitUntil: 'networkidle0' });
-  await page.waitForSelector('.save-btn');
-  check(`report: no horizontal overflow (${tag})`, await noOverflow(page));
-  await shot(page, `report-critical-${vp.name}-${theme}`);
-  if (vp.name === '390' || vp.name === 'desktop') {
-    await page.screenshot({ path: path.join(shots, `report-critical-full-${vp.name}-${theme}.jpg`), type: 'jpeg', quality: 70, fullPage: true });
+  for (const [id, kind] of [[SWEEPS_CRITICAL, 'critical'], [PIZZA, 'portal']]) {
+    await page.goto(`${BASE}/r/${id}`, { waitUntil: 'networkidle0' });
+    await page.waitForSelector('.save-btn');
+    check(`report (${kind}): no horizontal overflow (${tag})`, await noOverflow(page));
+    await shot(page, `report-${kind}-${vp.name}-${theme}`);
+    if (vp.name === '390' || vp.name === 'desktop') {
+      await page.screenshot({ path: path.join(shots, `report-${kind}-full-${vp.name}-${theme}.jpg`), type: 'jpeg', quality: 70, fullPage: true });
+    }
+    await axe(page, `report, ${kind} (${tag})`);
   }
-  await axe(page, `report (${tag})`);
 
   // Search with results, Latest
   await page.goto(`${BASE}/search?q=pizza+ranch`, { waitUntil: 'networkidle0' });
@@ -264,7 +268,9 @@ async function httpChecks() {
   check('initial HTML: unique title', /<title>RAPID CITY PIZZA RANCH — Rapid City, SD health inspections \| DineSafeSD<\/title>/.test(r.body));
   check('initial HTML: canonical', r.body.includes(`<link rel="canonical" href="https://dinesafesd.com/r/${PIZZA}" />`));
   check('initial HTML: Open Graph title/description/url', /og:title/.test(r.body) && /og:description/.test(r.body) && /og:url/.test(r.body));
-  check('initial HTML: report content without JavaScript', /<h1>RAPID CITY PIZZA RANCH<\/h1>/.test(r.body) && /Critical violations recorded on this inspection/.test(r.body) && /July 20, 2026/.test(r.body));
+  check('initial HTML: report content without JavaScript', /<h1>RAPID CITY PIZZA RANCH<\/h1>/.test(r.body) && /The state portal does not publish a severity for them/.test(r.body) && /July 20, 2026/.test(r.body));
+  const rc = await get(`/r/${SWEEPS_CRITICAL}`);
+  check('initial HTML: official critical warning without JavaScript', /Critical violations recorded on this inspection/.test(rc.body));
   check('initial HTML: structured data has no rating/review', /application\/ld\+json/.test(r.body) && !/"(aggregateRating|review|ratingValue)"/i.test(r.body));
   const home = await get('/');
   check('initial HTML: homepage has intro text and canonical', /South Dakota restaurant health inspections/.test(home.body.split('<body>')[1] ?? '') && /rel="canonical" href="https:\/\/dinesafesd\.com\/"/.test(home.body));
@@ -464,7 +470,22 @@ async function keyboardFlow(browser) {
   await page.waitForSelector('.quickview');
   check('map search → card', /PIZZA RANCH/i.test(await page.$eval('#qv-name', (e) => e.textContent)));
   const qv = await page.$eval('.quickview', (e) => e.textContent);
-  check('map card: critical status shown', /Critical violations found on latest inspection/.test(qv));
+  check('map card: portal citations are not presented as critical', !/critical/i.test(qv) && /Violations found:/.test(qv), qv.slice(0, 140));
+  await page.keyboard.press('Escape');
+  await page.focus('#map-search');
+  await page.keyboard.type('get n go 6201');
+  await page.waitForSelector('#cs-listbox [role="option"]');
+  await page.keyboard.press('ArrowDown');
+  await page.keyboard.press('Enter');
+  await page.waitForFunction(() => /GET N GO #11/.test(document.querySelector('#qv-name')?.textContent ?? ''));
+  const qvc = await page.$eval('.quickview', (e) => e.textContent);
+  check('map card: official critical status shown with a high score', /Critical violations found on latest inspection/.test(qvc) && /97/.test(qvc), qvc.slice(0, 140));
+  await shot(page, 'quickview-official-critical-desktop-light');
+  const filterNote = await page.evaluate(() => {
+    [...document.querySelectorAll('.map-btn')].find((b) => /^Filters/.test(b.textContent.trim())).click();
+    return new Promise((r) => setTimeout(() => r(document.querySelector('#map-panel-filters')?.textContent ?? ''), 200));
+  });
+  check('filters: critical filter says which records carry official marks', /Only Sioux Falls reports and state scoresheets mark violations critical/.test(filterNote));
   await page.close();
 }
 
@@ -484,13 +505,14 @@ async function contentFlows(browser) {
     c?.click();
     return c?.textContent ?? '';
   });
-  check('search card: critical status and inspection date in text', /Critical violation on latest inspection/.test(card) && /Inspected Jul 20, 2026/.test(card), card.slice(0, 120));
+  check('search card: findings and inspection date in text, no unverified critical flag', /2 violations recorded/.test(card) && !/critical/i.test(card) && /Inspected Jul 20, 2026/.test(card), card.slice(0, 120));
   await page.waitForFunction(() => location.pathname.startsWith('/r/'));
   await page.waitForSelector('article.report');
   const rep = await page.evaluate(() => ({
     title: document.title,
     canonical: document.querySelector('link[rel="canonical"]')?.href,
     text: document.querySelector('article.report').innerText,
+    summary: document.querySelector('.latest-summary').innerText,
     sev: [...document.querySelectorAll('.inspection-card')][0]
       ? [...[...document.querySelectorAll('.inspection-card')][0].querySelectorAll('.violation')].map((v) => v.querySelector('.violation-meta').innerText.replace(/\s+/g, ' '))
       : [],
@@ -498,10 +520,9 @@ async function contentFlows(browser) {
   }));
   check('search → report', /RAPID CITY PIZZA RANCH/.test(rep.text));
   check('report: SPA navigation updates title and canonical', /^RAPID CITY PIZZA RANCH — Rapid City, SD/.test(rep.title) && rep.canonical?.endsWith(`/r/${PIZZA}`), rep.title);
-  check('report: written critical warning matches the map card', /Critical violations recorded on this inspection\./.test(rep.text));
-  check('report: explains high score with critical findings', /A high score can still include a critical violation/.test(rep.text));
-  check('report: says where the critical label comes from', /DineSafeSD’s classification based on the rule section cited/.test(rep.text));
-  check('report: severity in text beside each violation', rep.sev.length === 2 && /^Critical DineSafeSD classification Code 44:02:07:24/.test(rep.sev[0]) && /^Major /.test(rep.sev[1]), rep.sev.join(' || '));
+  check('report (portal citations): matches the card — no critical warning', /2 violations recorded on this inspection\. The state portal does not publish a severity for them\./.test(rep.summary) && !/critical/i.test(rep.summary.replace(/How severity is labeled/, '')), rep.summary.replace(/\n/g, ' | ').slice(0, 220));
+  check('report (portal citations): each violation says severity is not published', rep.sev.length === 2 && rep.sev.every((x) => /^Severity not published state portal citation Code 44:02:07:/.test(x)), rep.sev.join(' || '));
+  check('report: explains why portal citations carry no severity', /does not publish a severity, and the rule itself does not rank its sections/.test(rep.text));
   check('report: inspection date prominent', /LATEST INSPECTION\s+July 20, 2026/i.test(rep.text) && rep.dateSize >= 20, `${rep.dateSize}px`);
   check('report: refresh date distinguished from inspection date', /Dates shown are when the inspector visited\. DineSafeSD last refreshed its copy of the official data on/.test(rep.text));
   check('report: official scoresheet criticals labeled as such', /Critical\s+per state scoresheet\s+Code 30/.test(rep.text.replace(/\n/g, ' ')));
@@ -520,6 +541,27 @@ async function contentFlows(browser) {
   check('report: copy-name gives visible, announced feedback', copyStatus === 'status: Copied.', copyStatus);
   const clip = await page.evaluate(() => navigator.clipboard.readText()).catch((e) => `unreadable (${e.message})`);
   check('report: copy-name puts the exact name on the clipboard', clip === 'RAPID CITY PIZZA RANCH', clip);
+
+  // Official critical mark: card and report agree, with a high score
+  await page.goto(`${BASE}/search?q=get+n+go+6201`, { waitUntil: 'networkidle0' });
+  await page.waitForSelector('.result-card');
+  const critCard = await page.$eval('.result-card', (e) => e.textContent);
+  check('search card: official critical status in text', /Critical violation on latest inspection/.test(critCard) && /GET N GO #11/.test(critCard), critCard.slice(0, 120));
+  await page.click('.result-card');
+  await page.waitForSelector('article.report');
+  const crit = await page.evaluate(() => ({
+    summary: document.querySelector('.latest-summary').innerText,
+    sev: [...document.querySelector('.inspection-card').querySelectorAll('.violation-meta')].map((m) => m.innerText.replace(/\s+/g, ' ')),
+    score: document.querySelector('.detail-score-label').textContent,
+  }));
+  check('report: written critical warning matches the card', /Critical violations recorded on this inspection\./.test(crit.summary), crit.score);
+  check('report: explains high score with critical findings', /A high score can still include a critical violation/.test(crit.summary) && /97 out of 100/.test(crit.score));
+  check('report: says the critical label is the official mark', /“Critical” is the mark on the official report\./.test(crit.summary));
+  check('report: severity in text beside each violation', crit.sev.length > 0 && crit.sev.some((x) => /^Critical per city report Code \d+/.test(x)) && crit.sev.every((x) => /^(Critical|Non-critical) per city report/.test(x)), crit.sev.join(' || '));
+  await page.goBack();
+  await page.waitForSelector('.result-card');
+  await page.goBack();
+  await page.waitForSelector('article.report');
 
   // Back restores the search
   await page.goBack();

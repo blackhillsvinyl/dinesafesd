@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchIndex } from '../lib/api';
 import { buildCityOptions, buildSearchIndex, inCity, searchRestaurants, normalize } from '../lib/search';
 import ResultCard from '../components/ResultCard';
+import { CRITICAL_FILTER_NOTE } from '../lib/inspection';
 import {
   isFavorite,
   isWatched,
@@ -236,6 +237,7 @@ export default function SearchPage() {
                 <span aria-hidden="true">⚠</span>Critical violations
               </button>
             </div>
+            <p className="legend-note">{CRITICAL_FILTER_NOTE}</p>
           </div>
           <div role="group" aria-labelledby="sf-saved">
             <div className="mf-label" id="sf-saved">Saved on this device</div>

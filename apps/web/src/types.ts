@@ -39,7 +39,9 @@ export interface ViolationPoint {
 export interface Violation {
   code: string;
   description: string;
-  severity: 'critical' | 'major' | 'minor';
+  // 'unclassified': the source publishes no severity for this violation.
+  // 'major' only exists in files written before severity rules 2.
+  severity: 'critical' | 'major' | 'minor' | 'unclassified';
   corrected: boolean;
 }
 
@@ -69,6 +71,8 @@ export interface SourceRun {
 
 export interface RestaurantIndex {
   updated_at: string;
+  /** Pipeline severity rules the whole dataset follows (absent = 1). */
+  severity_rules?: number;
   sources: Record<string, SourceRun>;
   restaurants: Restaurant[];
 }
