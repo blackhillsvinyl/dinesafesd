@@ -1,7 +1,7 @@
 {
   "base": "http://127.0.0.1:8788",
-  "ranAt": "2026-11-13T04:53:20.735Z",
-  "passed": 274,
+  "ranAt": "2026-11-13T05:22:45.551Z",
+  "passed": 286,
   "failed": 0,
   "results": [
     {
@@ -408,6 +408,66 @@
       "name": "missing restaurant: clear message, not-found title, noindex",
       "ok": true,
       "detail": "{\"h1\":\"Restaurant not found\",\"title\":\"Page not found | DineSafeSD\",\"robots\":\"noindex\"}"
+    },
+    {
+      "name": "report: states the official count and the itemized rows when they differ",
+      "ok": true,
+      "detail": "The official record counts 5 violations for this inspection and itemizes 4, 1 marked critical."
+    },
+    {
+      "name": "search: score filter and sort survive Back from a report",
+      "ok": true,
+      "detail": "{\"chips\":\"Remove filter: City: Rapid City ✕ Remove filter: Score 95+ ✕ Clear all filters\",\"sort\":\"name\",\"count\":\"2 restaurants found.\"}"
+    },
+    {
+      "name": "search: filters survive refresh",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "outage: search says it could not load and offers a retry",
+      "ok": true,
+      "detail": "alert: We couldn’t load the restaurant list.  This looks like a temporary connection or server problem, not a "
+    },
+    {
+      "name": "outage: search recovers after retry",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "outage: latest says it could not load and offers a retry",
+      "ok": true,
+      "detail": "alert: We couldn’t load the latest inspection reports.  This looks like a temporary connection or server probl"
+    },
+    {
+      "name": "outage: latest recovers after retry",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "outage: an existing report is not called “not found” and is not noindex",
+      "ok": true,
+      "detail": "{\"robots\":null,\"title\":\"RAPID CITY PIZZA RANCH — Rapid City, SD health inspections | DineSafeSD\"}"
+    },
+    {
+      "name": "outage: report recovers after retry",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "outage: map stops saying “Loading” and offers a retry",
+      "ok": true,
+      "detail": "Restaurants could not be loaded."
+    },
+    {
+      "name": "outage: map recovers after retry",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "map: filters survive leaving the map and coming back",
+      "ok": true,
+      "detail": "3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
     },
     {
       "name": "touch targets: all at least 24×24 (WCAG 2.2 AA) on a 390px phone",
@@ -1409,7 +1469,7 @@
       "impact": "serious",
       "nodes": [
         {
-          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(53)",
+          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(67)",
           "summary": "Fix any of the following:\n  Target has insufficient size because it is partially obscured (smallest space is 16px by 32px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe c"
         }
       ],
@@ -1422,7 +1482,7 @@
       "impact": "serious",
       "nodes": [
         {
-          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(53)",
+          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(67)",
           "summary": "Fix any of the following:\n  Target has insufficient size because it is partially obscured (smallest space is 16px by 32px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe c"
         }
       ],

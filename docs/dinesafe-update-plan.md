@@ -12,10 +12,11 @@ This file is a handoff record, not a lock.
 ```bash
 npm ci
 cd apps/web
-npm test                 # vitest: 26 unit tests (+4 published-data contract tests owned by Codex, untracked)
+npm test                 # vitest: 32 unit tests (+4 published-data contract tests owned by Codex, untracked)
 npm run build            # tsc (app) + tsc (scripts) + vite build + prerender
 npx wrangler@4 pages dev dist --port 8788 --compatibility-date 2026-05-01   # Cloudflare Pages emulator
 COUNT_ONLY_ID=sd_doh_al-s-hotwing-sauce-219-se-1st-ave-watertown npm run test:e2e   # in a second shell
+cd ../../services/data-pipeline && npm test    # vitest: 15 pipeline unit tests
 ```
 
 `--compatibility-date` is only needed because the locally installed wrangler (4.90.1) is older
@@ -23,21 +24,23 @@ than today's default date. `npm run test:e2e` writes `apps/web/e2e/results.json`
 `apps/web/e2e/screenshots/` (both git-ignored). A copy of the last run is in
 `docs/dinesafe-update-evidence/`.
 
-## Results of the last run (2026-11-12, after the severity change)
+## Results of the last run (2026-11-12, after the review-finding fixes)
 
 | Check | Command | Result |
 |---|---|---|
-| Unit tests | `npm test` | 30 passed, 0 failed (26 of mine, 4 of Codex's `published-data.test.ts`) |
+| Web unit tests | `npm test` in `apps/web` | 36 passed, 0 failed (32 of mine, 4 of Codex's `published-data.test.ts`) |
+| Pipeline unit tests | `npm test` in `services/data-pipeline` | 15 passed, 0 failed |
 | Pipeline type-check | `npx tsc --noEmit -p services/data-pipeline` | passed |
 | Production build | `npm run build` | passed; 4,486 restaurant pages + 7 static pages + 404 + sitemap (4,493 URLs) + robots in about 1.8 s |
-| Browser suite | `npm run test:e2e` | 274 passed, 0 failed |
+| Browser suite | `npm run test:e2e` | 286 passed, 0 failed |
 | Automated accessibility | axe-core 4.14, WCAG 2.0/2.1/2.2 A+AA tags, inside the browser suite | 48 runs (6 screens × 4 widths × 2 themes), 0 violations counted; map-marker spacing noted as exempt (see Remaining issues) |
-| Reindex | `npm run reindex` in `services/data-pipeline` | 4,486 restaurants reindexed; 2,791 data files changed; refresh date unchanged |
+| Live Sioux Falls parse | refactored parser against the live city pages for sites 144, 715, 2400 | all three match the stored records |
+| Live state sync | one county (Hughes), last 45 days, against a temporary copy of the data | 7 establishments, 35 violations, no failed counties; output byte-identical to the stored data |
 
 The browser suite ran in headless Chromium (Puppeteer) against the production build on the
-Pages emulator, at 320, 390, 768, and 1280 px, in light and dark. One `npm run build` failed
-once in `vite build` and passed on immediate retry with no change; Codex was building in the
-same checkout at the time, which is the likely cause but was not confirmed.
+Pages emulator, at 320, 390, 768, and 1280 px, in light and dark. Earlier in the day one
+`npm run build` failed once in `vite build` and passed on immediate retry with no change; Codex
+was building in the same checkout at the time, which is the likely cause but was not confirmed.
 
 **Automated versus manual.** Everything in the table is automated. Manual work was limited to
 reading the screenshots in `docs/dinesafe-update-evidence/`. **Not done:** a real screen reader
@@ -205,8 +208,8 @@ screenshots `report-saved-390-light.jpg`, `search-new-report-390-light.jpg`,
 6. **SWEEPS deep link** assumes facility type `16F`, which all 1,272 listed establishments use
    today. The page keeps a "search for the name" fallback sentence.
 7. **Social preview image** is the app icon for every page; there is no per-restaurant image.
-8. **Mobile app** (`apps/mobile`) still says "Clean inspection — no violations" and has the old
-   score colors. Not touched; this request was the website.
+8. **Mobile app** (`apps/mobile`) still says "Clean inspection — no violations", treats an empty
+   list as no violations, and has the old score colors (Codex R9). Not touched; fix before store submission.
 9. **CI** does not run `npm test` or the browser suite. Not changed; assign if wanted.
 10. Static pages other than restaurants (About, Privacy, and so on) prerender a heading and
     description only; their full text still needs JavaScript.
@@ -290,8 +293,40 @@ cd services/data-pipeline && npm run reindex
 
 Or drop the data commit before merging and run the workflow once with mode `reindex` afterward.
 
-Not addressed here: the other findings in `docs/dinesafe-review.md` (R2–R10). R1 is this change
-and awaits Codex's independent check.
+R1 is this change and awaits Codex's independent check. The other findings are answered in
+"Response to Codex's findings" below.
+
+## Response to Codex's findings (`docs/dinesafe-review.md`)
+
+Reproduced each in the code before changing anything. All of this awaits Codex's independent check.
+
+| Finding | Status | What changed | Evidence |
+|---|---|---|---|
+| R1 unverified severity | fixed | See "Option A as implemented" above | web and pipeline unit tests; browser checks `map card:`, `search card:`, `report` |
+| R2 missing count becomes zero | fixed going forward | `lib/parsing.ts` `parseViolationCount` returns null for missing or unreadable text; the page now hands back raw link text and the count is parsed outside the browser. Both the results grid and Past Inspections use it. An unknown count still tries the violations link. For Sioux Falls, no parsed rows count as zero only when the score is 100. | pipeline tests `SD DOH violation count (R2)`, `counts zero only when the score is 100`; live one-county run unchanged |
+| R3 same-score Sioux Falls inspections never fetched | fixed | The list page publishes only "Last Score" (checked on the live page). Each daily run now also re-reads a rotating one-seventh of establishments, so every one, including those with no list score, is re-read at least weekly (about 180 extra requests a day). Detail fetches retry once. | pipeline tests `SWEEPS detail refresh (R3)`; live parse matches stored records |
+| R4 partial ingestion marked successful | fixed | `syncAll()` returns failed counties; run records gain a `partial` status with what was missed; every sync job exits non-zero after saving progress. Sioux Falls per-establishment errors make the run partial. The site shows a plain-language notice on Latest, Search, About, and the map legend when a source failed, was partial, or has not been checked for 3 days. Internal error text is never shown. | pipeline tests `run records (R4)`; web tests `source health notices (R4)` |
+| R5 ZIP-less rooftop lookup ignores city | fixed | Without a ZIP, an address point is accepted only if its ZIP is already on record for the requested city, and a Nominatim hit must name the same city or sit in one of its ZIPs. With a ZIP, behavior is unchanged. | pipeline tests `ZIP-less location trust (R5)` |
+| R6 itemized rows replace the source count | fixed | When the record's count and its itemized rows differ, the report states both and limits severity statements to "the itemized ones". Stored counts are untouched. | web tests `source count versus itemized rows (R6)`; browser check on the 2nd Street Diner record |
+| R7 failed fetches have no recovery | fixed | A 404 is "not found"; anything else is an outage with a message and a working Try again on the map, Search, Latest, and reports. An outage on an existing report is no longer "not found" or `noindex`. Outages retry twice automatically; a missing record is never retried. | web test `load failures (R7)`; nine browser checks beginning `outage:` |
+| R8 Search drops filters on Back | fixed | Score, critical, saved, and sort are in the URL with query and city. Map filters persist while the page is open. | browser checks `search: score filter and sort survive Back`, `filters survive refresh`, `map: filters survive leaving the map` |
+| R9 native app wording and contrast | **not fixed** | The native app cannot be built or run here, and its status logic is a separate copy. Recommend porting `lib/inspection.ts` and `scoring.ts` rather than patching strings. Must be done before store submission. | none |
+| R10 dependency advisories | partly | `maplibre-gl` 5.24.0 → 5.24.1 (the patched release for GHSA-jrc7-96c5-q579); lockfile only. No other upgrades; the rest need the reachability triage Codex describes. | full browser suite on the new version |
+
+Known limits of these fixes:
+
+- **R2 does not repair stored data.** No stored zero contradicts its score (none sits beside a
+  score under 100). 67 past state inspections have a zero count and no score; those cannot be
+  told apart from the old parser's fallback and are left as published.
+- **R3 worst case is 7 days** for a same-score Sioux Falls inspection to appear.
+- **R4 will open a GitHub issue on any partial run**, including one unreadable Sioux Falls page
+  after a retry. That is deliberate; loosen it if it proves noisy.
+- **R5 changes nothing already stored.** It only affects future geocoding. Existing pins were
+  not re-audited here.
+- **R7 on a prerendered report** replaces the static report with the outage message rather than
+  keeping it on screen.
+- The current local `index.json` shows the state source last checked on November 8, so the new
+  3-day notice appears in today's screenshots. That is accurate for this checkout.
 
 ## Codex review
 
