@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { store, type GeoPrecision } from '../lib/store.js';
+import type { Severity } from '../lib/store.js';
 
 /**
  * Additively merge another data snapshot into the working-tree store.
@@ -114,7 +115,7 @@ function main() {
           store.upsertViolation(ref, {
             code: v.code,
             description: v.description,
-            severity: v.severity as 'critical' | 'major' | 'minor',
+            severity: v.severity as Severity,
             corrected: v.corrected,
           });
         }

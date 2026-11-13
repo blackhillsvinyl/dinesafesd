@@ -28,7 +28,8 @@
     "backfill:zips": "tsx src/jobs/backfill-zips.ts",
     "harvest:zips": "tsx src/jobs/harvest-zips.ts",
     "apply:listings": "tsx src/jobs/apply-listing-results.ts",
-    "merge:data": "tsx src/jobs/merge-data.ts"
+    "merge:data": "tsx src/jobs/merge-data.ts",
+    "reindex": "tsx src/jobs/reindex.ts"
   },
   "dependencies": {
     "dotenv": "^16.4.0",

@@ -22,7 +22,33 @@ const moduleDir = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR =
   process.env.DATA_DIR ?? path.resolve(moduleDir, '../../../../apps/web/public/data');
 
-export type Severity = 'critical' | 'major' | 'minor';
+// 'unclassified' = the source publishes no severity for this violation.
+// 'major' is retired (it only ever came from the removed rule-section
+// mapping) but stays in the type so old files still load.
+export type Severity = 'critical' | 'major' | 'minor' | 'unclassified';
+
+// Bumped when the meaning of stored severities changes. Written to the index
+// after a full reindex so readers know every file follows the current rules.
+//   2: SD DOH portal citations are 'unclassified' (2026-11); critical flags
+//      come only from official marks.
+export const SEVERITY_RULES = 2;
+
+/**
+ * The severity we are entitled to publish for a violation.
+ *
+ * Official marks exist in exactly two places: Sioux Falls SWEEPS lists
+ * violations under Critical / Non-Critical headings, and the SD DOH
+ * scoresheet PDF stars its critical items (codes there are item numbers
+ * 1-60). The SD DOH portal cites a rule section (e.g. "44:02:07:24") and
+ * publishes no severity. ARSD 44:02:07 does not designate sections as
+ * critical either, so those are stored as 'unclassified' — see
+ * docs/dinesafe-update-plan.md, "Severity mapping verification".
+ */
+export function publishedSeverity(source: string, code: string, severity: string): Severity {
+  const official = source === 'sf_sweeps' || /^\d{1,2}$/.test(code.trim());
+  if (!official) return 'unclassified';
+  return severity === 'critical' ? 'critical' : 'minor';
+}
 
 export interface StoredViolation {
   code: string;
@@ -115,6 +141,7 @@ export interface SourceRun {
 
 interface IndexFile {
   updated_at: string;
+  severity_rules?: number;
   sources: Record<string, SourceRun>;
   restaurants: IndexRestaurant[];
 }
@@ -179,6 +206,7 @@ class Store {
   private index: IndexFile | null = null;
   private details = new Map<string, DetailRestaurant>();
   private dirty = new Set<string>();
+  private fullReindex = false;
   private geocodeCache: Record<string, { lat: number; lng: number }> | null = null;
   private geocodeCacheDirty = false;
 
@@ -317,9 +345,13 @@ class Store {
     if (!detail || !inspection) {
       throw new Error(`upsertViolation: unknown inspection ${ref.restaurantId} ${ref.date}`);
     }
+    const stored: StoredViolation = {
+      ...violation,
+      severity: publishedSeverity(detail.source, violation.code, violation.severity),
+    };
     const existing = inspection.violations.findIndex((v) => v.code === violation.code);
-    if (existing >= 0) inspection.violations[existing] = violation;
-    else inspection.violations.push(violation);
+    if (existing >= 0) inspection.violations[existing] = stored;
+    else inspection.violations.push(stored);
     this.dirty.add(ref.restaurantId);
   }
 
@@ -393,6 +425,7 @@ class Store {
         this.dirty.add(id);
       }
     }
+    this.fullReindex = true;
     return this.dirty.size;
   }
 
@@ -410,6 +443,13 @@ class Store {
 
       // Newest first — the apps and the derived fields both want this order
       detail.inspections.sort((a, b) => b.date.localeCompare(a.date));
+      // Bring severities written under older rules (or merged in from an
+      // older snapshot) in line with what the source actually publishes.
+      for (const inspection of detail.inspections) {
+        for (const v of inspection.violations) {
+          v.severity = publishedSeverity(detail.source, v.code, v.severity);
+        }
+      }
       const latest = detail.inspections[0] ?? null;
       const scored = detail.inspections.filter((i) => i.score !== null);
 
@@ -465,7 +505,13 @@ class Store {
     const written = this.dirty.size;
     if (written > 0 || !existsSync(path.join(DATA_DIR, 'index.json'))) {
       index.restaurants = [...byId.values()].sort((a, b) => a.id.localeCompare(b.id));
-      index.updated_at = new Date().toISOString();
+      // updated_at is shown to visitors as "data refreshed": a reindex only
+      // recomputes from files already on disk, so it must not move it.
+      if (!this.fullReindex) index.updated_at = new Date().toISOString();
+    }
+    if (this.fullReindex) {
+      index.severity_rules = SEVERITY_RULES;
+      this.fullReindex = false;
     }
     // Always write the index so recordRun() metadata lands even on no-op runs
     this.writeJson('index.json', index);

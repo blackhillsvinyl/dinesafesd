@@ -21,6 +21,7 @@ on:
           - counties
           - backfill-scores
           - zips
+          - reindex
       counties:
         description: 'Comma-separated county names (modes: counties, backfill-scores) — empty backfill-scores runs statewide'
         required: false
@@ -99,6 +100,11 @@ jobs:
               # List-page-only pass attaching the portal's ZIPs to existing
               # records (no per-establishment requests)
               npm run harvest:zips
+              ;;
+            reindex)
+              # No scraping: recompute derived fields (and normalize stored
+              # severities) for every restaurant from the existing files.
+              npm run reindex
               ;;
             test)
               npm run sync:test

@@ -810,11 +810,10 @@ export class SDDOHSource {
       // Throttle after closing the modal
       await randomDelay(THROTTLE.afterViolationModal);
 
-      // Map severity based on SD administrative code sections
-      return violations.map(v => ({
-        ...v,
-        severity: this.mapSDCodeToSeverity(v.code),
-      }));
+      // The portal cites a rule section but publishes no severity, and the
+      // rule (ARSD 44:02:07) does not designate sections as critical, so
+      // these are recorded as unclassified rather than guessed.
+      return violations.map(v => ({ ...v, severity: 'unclassified' }));
     } catch (error) {
       // Try to close colorbox in case it opened but parsing failed
       try {
@@ -826,51 +825,6 @@ export class SDDOHSource {
       console.warn(`  Failed to extract violations from ${violationsLinkId}:`, error);
       return [];
     }
-  }
-
-  /**
-   * Map SD DOH administrative code (e.g. "44:02:07:XX") to a severity level.
-   *
-   * SD uses ARSD Title 44, Chapter 02:07 (Food Service) codes. The public UI
-   * does not expose a P/C/M severity field, so we classify based on the code
-   * section number per food safety risk:
-   *
-   * Critical (foodborne illness risk):
-   *   :09-:14  Temperature control, cooking, reheating, cooling
-   *   :15-:21  Food source, condition, adulteration
-   *   :22-:24  Cross-contamination, storage, separation
-   *   :25-:31  Employee health, hygiene, handwashing
-   *   :56-:60  Sanitizing, warewashing
-   *
-   * Major (indirect risk / facility):
-   *   :32-:46  Toxic substances, labeling, allergens
-   *   :47-:55  Equipment design, condition, cleaning
-   *   :61-:65  Water, plumbing, sewage
-   *
-   * Minor (general maintenance):
-   *   :66-:99  Physical facilities, floors, walls, lighting, ventilation, etc.
-   *   :01-:08  Licensing, plan review, definitions (administrative)
-   */
-  private mapSDCodeToSeverity(code: string): string {
-    // Extract the last section number from codes like "44:02:07:55"
-    const parts = code.split(':');
-    const sectionStr = parts[parts.length - 1];
-    const section = parseInt(sectionStr, 10);
-
-    if (isNaN(section)) return 'minor';
-
-    // Critical: temperature, cooking, cross-contamination, hygiene, sanitizing
-    if ((section >= 9 && section <= 31) || (section >= 56 && section <= 60)) {
-      return 'critical';
-    }
-
-    // Major: toxic substances, equipment, water/plumbing
-    if ((section >= 32 && section <= 55) || (section >= 61 && section <= 65)) {
-      return 'major';
-    }
-
-    // Minor: physical facilities, administrative
-    return 'minor';
   }
 
   // ---- PDF score backfill -------------------------------------------------
