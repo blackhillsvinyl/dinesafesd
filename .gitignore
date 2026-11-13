@@ -56,3 +56,7 @@ services/data-pipeline/cache/
 .superpowers/
 .claude/settings.local.json
 .wrangler/
+
+# Browser test output (regenerate with npm run test:e2e)
+apps/web/e2e/screenshots/
+apps/web/e2e/results.json

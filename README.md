@@ -61,6 +61,15 @@ cd apps/mobile && npm start        # full map needs a dev build: npx expo run:io
 cd services/data-pipeline && npm run sync:test
 ```
 
+Web checks:
+
+```bash
+cd apps/web
+npm test          # unit tests
+npm run build     # type-check, bundle, then prerender restaurant pages, sitemap.xml, robots.txt, 404.html
+npm run test:e2e  # browser suite; see docs/dinesafe-update-plan.md for the server command
+```
+
 No environment variables are required. The mobile app optionally accepts
 `EXPO_PUBLIC_DATA_URL` to point at a local data server during development.
 

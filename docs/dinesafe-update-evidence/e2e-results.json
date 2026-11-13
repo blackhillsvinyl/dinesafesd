@@ -1,0 +1,1317 @@
+{
+  "base": "http://127.0.0.1:8788",
+  "ranAt": "2026-11-13T04:35:49.343Z",
+  "passed": 251,
+  "failed": 0,
+  "results": [
+    {
+      "name": "http: /robots.txt is text/plain 200 with Sitemap line",
+      "ok": true,
+      "detail": "200 text/plain; charset=utf-8"
+    },
+    {
+      "name": "http: /sitemap.xml is XML 200",
+      "ok": true,
+      "detail": "200 application/xml, 4493 URLs"
+    },
+    {
+      "name": "http: sitemap lists the example restaurant",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "http: restaurant page 200",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "name": "initial HTML: unique title",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "initial HTML: canonical",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "initial HTML: Open Graph title/description/url",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "initial HTML: report content without JavaScript",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "initial HTML: structured data has no rating/review",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "initial HTML: homepage has intro text and canonical",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "http: /search direct load 200 with its own title",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "name": "http: /latest direct load 200 with its own title",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "name": "http: /about direct load 200 with its own title",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "name": "http: /privacy direct load 200 with its own title",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "name": "http: /terms direct load 200 with its own title",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "name": "http: /support direct load 200 with its own title",
+      "ok": true,
+      "detail": "200"
+    },
+    {
+      "name": "http: unknown restaurant returns 404",
+      "ok": true,
+      "detail": "404"
+    },
+    {
+      "name": "http: 404 page is noindex",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "http: unknown path returns 404",
+      "ok": true,
+      "detail": "404"
+    },
+    {
+      "name": "http: missing data file returns 404",
+      "ok": true,
+      "detail": "404"
+    },
+    {
+      "name": "markers: each has a specific accessible name and button role",
+      "ok": true,
+      "detail": "88 markers, e.g. 11 restaurants around White. Activate to zoom in. | 8 restaurants around Highmore. Activate to zoom in. | 16 restaurants around Miller. Activate to zoom in."
+    },
+    {
+      "name": "markers: exactly one tab stop for the whole set",
+      "ok": true,
+      "detail": "1 of 88 tabbable"
+    },
+    {
+      "name": "keyboard: Tab reaches a map marker",
+      "ok": true,
+      "detail": "Skip to content → DineSafeSD home → Map → Search → Latest → About → Theme: auto (follows your device). Switch to light. → Hide introduction → City, ZIP, or restaurant → Filters → Near me → Legend → List → More about the data → Close legend → Map of South Dakota restaurants. Arrow keys pan, plus and mi → CROOKED CREEK 1, Ludlow. Score 88 out of 100."
+    },
+    {
+      "name": "keyboard: every stop on the way shows a focus indicator",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "keyboard: search, filters, location, legend and list come before the map",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "keyboard: arrow keys move between markers",
+      "ok": true,
+      "detail": "CROOKED CREEK 1, Ludlow. Score 88 out of 100. → 16 restaurants around Lemmon. Activate to zoom in."
+    },
+    {
+      "name": "keyboard: Enter on markers drills down to a restaurant card",
+      "ok": true,
+      "detail": "zoom steps 7.0, 9.0, 11.0, 12.0, 13.0, 14.0, 15.0"
+    },
+    {
+      "name": "quick view: focus moves into the card",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "quick view: Escape closes and returns focus to the map",
+      "ok": true,
+      "detail": "AL'S GRILL, Lemmon. Score 92 out of 100."
+    },
+    {
+      "name": "keyboard: map → report without a pointer",
+      "ok": true,
+      "detail": "AL'S GRILL → AL'S GRILL"
+    },
+    {
+      "name": "navigation: focus moves into the new page",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "text alternative: list of restaurants in the current view",
+      "ok": true,
+      "detail": "12 restaurants in this view; 12 rows shown"
+    },
+    {
+      "name": "text alternative: closing the card restores focus to the List button",
+      "ok": true,
+      "detail": "List"
+    },
+    {
+      "name": "panels: Escape closes and restores focus to the trigger",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "map search: combobox with arrow-key selection",
+      "ok": true,
+      "detail": "{\"role\":\"combobox\",\"active\":\"RAPID CITY PIZZA RANCHRapid City\",\"selected\":\"true\"}"
+    },
+    {
+      "name": "map search → card",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "map card: critical status shown",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "search page: persistent visible label on the input",
+      "ok": true,
+      "detail": "Name, address, or ZIP"
+    },
+    {
+      "name": "search: result count announced",
+      "ok": true,
+      "detail": "status: 3 restaurants found."
+    },
+    {
+      "name": "search card: critical status and inspection date in text",
+      "ok": true,
+      "detail": "RAPID CITY PIZZA RANCH1556 Luna AVE, Rapid City, SD⚠ Critical violation on latest inspection · Inspected Jul 20, 2026▼98"
+    },
+    {
+      "name": "search → report",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report: SPA navigation updates title and canonical",
+      "ok": true,
+      "detail": "RAPID CITY PIZZA RANCH — Rapid City, SD health inspections | DineSafeSD"
+    },
+    {
+      "name": "report: written critical warning matches the map card",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report: explains high score with critical findings",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report: says where the critical label comes from",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report: severity in text beside each violation",
+      "ok": true,
+      "detail": "Critical DineSafeSD classification Code 44:02:07:24 || Major DineSafeSD classification Code 44:02:07:55"
+    },
+    {
+      "name": "report: inspection date prominent",
+      "ok": true,
+      "detail": "22px"
+    },
+    {
+      "name": "report: refresh date distinguished from inspection date",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report: official scoresheet criticals labeled as such",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report (state): portal link goes to the public search, with copy-name and steps",
+      "ok": true,
+      "detail": "https://sddoh.safefoodinspection.com/Inspection/publicinspectionsearch.aspx"
+    },
+    {
+      "name": "report: copy-name gives visible, announced feedback",
+      "ok": true,
+      "detail": "status: Copied."
+    },
+    {
+      "name": "report: copy-name puts the exact name on the clipboard",
+      "ok": true,
+      "detail": "RAPID CITY PIZZA RANCH"
+    },
+    {
+      "name": "search: Back from a report restores the query",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "save/watch: visible explanation, device-only, no notifications implied",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "save/watch: visible text labels with pressed state",
+      "ok": true,
+      "detail": "Save:false,Watch:false"
+    },
+    {
+      "name": "save: visible, announced feedback",
+      "ok": true,
+      "detail": "status: Saved to Favorites on this device. Find it in Search under Favorites."
+    },
+    {
+      "name": "watch: explains the “New report” badge and that nothing is sent",
+      "ok": true,
+      "detail": "Watching on this device. A “New report” badge will appear next to this place in Search and Latest when a newer inspection is published. No emails or notifications are sent."
+    },
+    {
+      "name": "save/watch: persists across reload",
+      "ok": true,
+      "detail": "true,true"
+    },
+    {
+      "name": "save: favorite appears under Search → Favorites",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "search: active filter stays visible when More filters is closed",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "watch: “New report” badge appears when a newer inspection exists",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "empty results: explains what was searched and offers actions",
+      "ok": true,
+      "detail": "No restaurants match “zzzzqqq” with City: Rapid City. |  | Check the spelling, try fewer words, or search by city or ZIP instead. |  | Search all cities | Clear search text | Browse the map"
+    },
+    {
+      "name": "empty results: recovery action returns results",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "unknown: missing violation data is not described as clean",
+      "ok": true,
+      "detail": "LATEST INSPECTION |  | January 27, 2026 |  | 100 |  | Inspection score: 100 out of 100 |  | Average score 100.0 over 1 inspection on record |  | Violation details are not available for this inspection"
+    },
+    {
+      "name": "unknown: count-only inspections say severity is unknown",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "none recorded: stated only on an explicit zero count",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "source: Sioux Falls record deep link",
+      "ok": true,
+      "detail": "https://sweepsdata.siouxfalls.gov/Restaurant_Detail.aspx?SiteID=715&FacType=16F&inv=1"
+    },
+    {
+      "name": "latest: no “Clean” wording",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "latest: factual wording present",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "latest: states refresh date separately from inspection dates",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "latest: labeled city filter",
+      "ok": true,
+      "detail": "303 options"
+    },
+    {
+      "name": "latest: city filter limits the feed and is announced",
+      "ok": true,
+      "detail": "150 cards; Showing the 150 most recent of 477 restaurants in Rapid City."
+    },
+    {
+      "name": "latest: city filter survives refresh",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "missing restaurant: clear message, not-found title, noindex",
+      "ok": true,
+      "detail": "{\"h1\":\"Restaurant not found\",\"title\":\"Page not found | DineSafeSD\",\"robots\":\"noindex\"}"
+    },
+    {
+      "name": "touch targets: all at least 24×24 (WCAG 2.2 AA) on a 390px phone",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: no horizontal overflow (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: wordmark visible and unclipped (320/light)",
+      "ok": true,
+      "detail": "DineSafeSD"
+    },
+    {
+      "name": "header: every nav item inside the viewport (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: home link has an accessible name (320/light)",
+      "ok": true,
+      "detail": "DineSafeSD home"
+    },
+    {
+      "name": "map search: persistent visible label (320/light)",
+      "ok": true,
+      "detail": "Search"
+    },
+    {
+      "name": "map search: placeholder fits without clipping (320/light)",
+      "ok": true,
+      "detail": "\"City, ZIP, or restaurant\" 161px in 220px"
+    },
+    {
+      "name": "home: introduction visible (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: labeled location action (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: data refresh date shown apart from inspection dates (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "legend: score bands and ring explanation (320/light)",
+      "ok": true,
+      "detail": "6 rows"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with legend (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "filters: chips expose selected state (320/light)",
+      "ok": true,
+      "detail": "16 chips, Any=true"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with filters (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "filters: result count announced via live status (320/light)",
+      "ok": true,
+      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+    },
+    {
+      "name": "search suggestions never overlap filters (320/light)",
+      "ok": true,
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+    },
+    {
+      "name": "map search: no-match message with a way forward (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report: no horizontal overflow (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "search: no horizontal overflow (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — search results (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "latest: no horizontal overflow (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — latest (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: no horizontal overflow (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: wordmark visible and unclipped (320/dark)",
+      "ok": true,
+      "detail": "DineSafeSD"
+    },
+    {
+      "name": "header: every nav item inside the viewport (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: home link has an accessible name (320/dark)",
+      "ok": true,
+      "detail": "DineSafeSD home"
+    },
+    {
+      "name": "map search: persistent visible label (320/dark)",
+      "ok": true,
+      "detail": "Search"
+    },
+    {
+      "name": "map search: placeholder fits without clipping (320/dark)",
+      "ok": true,
+      "detail": "\"City, ZIP, or restaurant\" 161px in 220px"
+    },
+    {
+      "name": "home: introduction visible (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: labeled location action (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: data refresh date shown apart from inspection dates (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "legend: score bands and ring explanation (320/dark)",
+      "ok": true,
+      "detail": "6 rows"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with legend (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "filters: chips expose selected state (320/dark)",
+      "ok": true,
+      "detail": "16 chips, Any=true"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with filters (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "filters: result count announced via live status (320/dark)",
+      "ok": true,
+      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+    },
+    {
+      "name": "search suggestions never overlap filters (320/dark)",
+      "ok": true,
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+    },
+    {
+      "name": "map search: no-match message with a way forward (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report: no horizontal overflow (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "search: no horizontal overflow (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — search results (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "latest: no horizontal overflow (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — latest (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: no horizontal overflow (390/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: wordmark visible and unclipped (390/light)",
+      "ok": true,
+      "detail": "DineSafeSD"
+    },
+    {
+      "name": "header: every nav item inside the viewport (390/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: home link has an accessible name (390/light)",
+      "ok": true,
+      "detail": "DineSafeSD home"
+    },
+    {
+      "name": "map search: persistent visible label (390/light)",
+      "ok": true,
+      "detail": "Search"
+    },
+    {
+      "name": "map search: placeholder fits without clipping (390/light)",
+      "ok": true,
+      "detail": "\"City, ZIP, or restaurant\" 161px in 290px"
+    },
+    {
+      "name": "home: introduction visible (390/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: labeled location action (390/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: data refresh date shown apart from inspection dates (390/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "legend: score bands and ring explanation (390/light)",
+      "ok": true,
+      "detail": "6 rows"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with legend (390/light)",
+      "ok": true,
+      "detail": "map-marker spacing noted as exempt"
+    },
+    {
+      "name": "filters: chips expose selected state (390/light)",
+      "ok": true,
+      "detail": "16 chips, Any=true"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with filters (390/light)",
+      "ok": true,
+      "detail": "map-marker spacing noted as exempt"
+    },
+    {
+      "name": "filters: result count announced via live status (390/light)",
+      "ok": true,
+      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+    },
+    {
+      "name": "search suggestions never overlap filters (390/light)",
+      "ok": true,
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+    },
+    {
+      "name": "map search: no-match message with a way forward (390/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report: no horizontal overflow (390/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report (390/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "search: no horizontal overflow (390/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — search results (390/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "latest: no horizontal overflow (390/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — latest (390/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: no horizontal overflow (390/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: wordmark visible and unclipped (390/dark)",
+      "ok": true,
+      "detail": "DineSafeSD"
+    },
+    {
+      "name": "header: every nav item inside the viewport (390/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: home link has an accessible name (390/dark)",
+      "ok": true,
+      "detail": "DineSafeSD home"
+    },
+    {
+      "name": "map search: persistent visible label (390/dark)",
+      "ok": true,
+      "detail": "Search"
+    },
+    {
+      "name": "map search: placeholder fits without clipping (390/dark)",
+      "ok": true,
+      "detail": "\"City, ZIP, or restaurant\" 161px in 290px"
+    },
+    {
+      "name": "home: introduction visible (390/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: labeled location action (390/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: data refresh date shown apart from inspection dates (390/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "legend: score bands and ring explanation (390/dark)",
+      "ok": true,
+      "detail": "6 rows"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with legend (390/dark)",
+      "ok": true,
+      "detail": "map-marker spacing noted as exempt"
+    },
+    {
+      "name": "filters: chips expose selected state (390/dark)",
+      "ok": true,
+      "detail": "16 chips, Any=true"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with filters (390/dark)",
+      "ok": true,
+      "detail": "map-marker spacing noted as exempt"
+    },
+    {
+      "name": "filters: result count announced via live status (390/dark)",
+      "ok": true,
+      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+    },
+    {
+      "name": "search suggestions never overlap filters (390/dark)",
+      "ok": true,
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+    },
+    {
+      "name": "map search: no-match message with a way forward (390/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report: no horizontal overflow (390/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report (390/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "search: no horizontal overflow (390/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — search results (390/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "latest: no horizontal overflow (390/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — latest (390/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: no horizontal overflow (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: wordmark visible and unclipped (tablet/light)",
+      "ok": true,
+      "detail": "DineSafeSD"
+    },
+    {
+      "name": "header: every nav item inside the viewport (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: home link has an accessible name (tablet/light)",
+      "ok": true,
+      "detail": "DineSafeSD home"
+    },
+    {
+      "name": "map search: persistent visible label (tablet/light)",
+      "ok": true,
+      "detail": "Search"
+    },
+    {
+      "name": "map search: placeholder fits without clipping (tablet/light)",
+      "ok": true,
+      "detail": "\"City, ZIP, or restaurant\" 161px in 250px"
+    },
+    {
+      "name": "home: introduction visible (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: labeled location action (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: data refresh date shown apart from inspection dates (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "legend: score bands and ring explanation (tablet/light)",
+      "ok": true,
+      "detail": "6 rows"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with legend (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "filters: chips expose selected state (tablet/light)",
+      "ok": true,
+      "detail": "16 chips, Any=true"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with filters (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "filters: result count announced via live status (tablet/light)",
+      "ok": true,
+      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+    },
+    {
+      "name": "search suggestions never overlap filters (tablet/light)",
+      "ok": true,
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+    },
+    {
+      "name": "map search: no-match message with a way forward (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report: no horizontal overflow (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "search: no horizontal overflow (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — search results (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "latest: no horizontal overflow (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — latest (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: no horizontal overflow (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: wordmark visible and unclipped (tablet/dark)",
+      "ok": true,
+      "detail": "DineSafeSD"
+    },
+    {
+      "name": "header: every nav item inside the viewport (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: home link has an accessible name (tablet/dark)",
+      "ok": true,
+      "detail": "DineSafeSD home"
+    },
+    {
+      "name": "map search: persistent visible label (tablet/dark)",
+      "ok": true,
+      "detail": "Search"
+    },
+    {
+      "name": "map search: placeholder fits without clipping (tablet/dark)",
+      "ok": true,
+      "detail": "\"City, ZIP, or restaurant\" 161px in 250px"
+    },
+    {
+      "name": "home: introduction visible (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: labeled location action (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: data refresh date shown apart from inspection dates (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "legend: score bands and ring explanation (tablet/dark)",
+      "ok": true,
+      "detail": "6 rows"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with legend (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "filters: chips expose selected state (tablet/dark)",
+      "ok": true,
+      "detail": "16 chips, Any=true"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with filters (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "filters: result count announced via live status (tablet/dark)",
+      "ok": true,
+      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+    },
+    {
+      "name": "search suggestions never overlap filters (tablet/dark)",
+      "ok": true,
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+    },
+    {
+      "name": "map search: no-match message with a way forward (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report: no horizontal overflow (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "search: no horizontal overflow (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — search results (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "latest: no horizontal overflow (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — latest (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: no horizontal overflow (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: wordmark visible and unclipped (desktop/light)",
+      "ok": true,
+      "detail": "DineSafeSD"
+    },
+    {
+      "name": "header: every nav item inside the viewport (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: home link has an accessible name (desktop/light)",
+      "ok": true,
+      "detail": "DineSafeSD home"
+    },
+    {
+      "name": "map search: persistent visible label (desktop/light)",
+      "ok": true,
+      "detail": "Search"
+    },
+    {
+      "name": "map search: placeholder fits without clipping (desktop/light)",
+      "ok": true,
+      "detail": "\"City, ZIP, or restaurant\" 161px in 250px"
+    },
+    {
+      "name": "home: introduction visible (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: labeled location action (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: data refresh date shown apart from inspection dates (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "legend: score bands and ring explanation (desktop/light)",
+      "ok": true,
+      "detail": "6 rows"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with legend (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "filters: chips expose selected state (desktop/light)",
+      "ok": true,
+      "detail": "16 chips, Any=true"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with filters (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "filters: result count announced via live status (desktop/light)",
+      "ok": true,
+      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+    },
+    {
+      "name": "search suggestions never overlap filters (desktop/light)",
+      "ok": true,
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+    },
+    {
+      "name": "map search: no-match message with a way forward (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report: no horizontal overflow (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "search: no horizontal overflow (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — search results (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "latest: no horizontal overflow (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — latest (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: no horizontal overflow (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: wordmark visible and unclipped (desktop/dark)",
+      "ok": true,
+      "detail": "DineSafeSD"
+    },
+    {
+      "name": "header: every nav item inside the viewport (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "header: home link has an accessible name (desktop/dark)",
+      "ok": true,
+      "detail": "DineSafeSD home"
+    },
+    {
+      "name": "map search: persistent visible label (desktop/dark)",
+      "ok": true,
+      "detail": "Search"
+    },
+    {
+      "name": "map search: placeholder fits without clipping (desktop/dark)",
+      "ok": true,
+      "detail": "\"City, ZIP, or restaurant\" 161px in 250px"
+    },
+    {
+      "name": "home: introduction visible (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: labeled location action (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "home: data refresh date shown apart from inspection dates (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "legend: score bands and ring explanation (desktop/dark)",
+      "ok": true,
+      "detail": "6 rows"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with legend (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "filters: chips expose selected state (desktop/dark)",
+      "ok": true,
+      "detail": "16 chips, Any=true"
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — home with filters (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "filters: result count announced via live status (desktop/dark)",
+      "ok": true,
+      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+    },
+    {
+      "name": "search suggestions never overlap filters (desktop/dark)",
+      "ok": true,
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+    },
+    {
+      "name": "map search: no-match message with a way forward (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report: no horizontal overflow (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "search: no horizontal overflow (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — search results (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "latest: no horizontal overflow (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — latest (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    }
+  ],
+  "axeFindings": [
+    {
+      "label": "home with legend (390/light)",
+      "exempt": true,
+      "id": "target-size",
+      "impact": "serious",
+      "nodes": [
+        {
+          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(67)",
+          "summary": "Fix any of the following:\n  Target has insufficient size because it is partially obscured (smallest space is 16px by 32px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe c"
+        }
+      ],
+      "count": 1
+    },
+    {
+      "label": "home with filters (390/light)",
+      "exempt": true,
+      "id": "target-size",
+      "impact": "serious",
+      "nodes": [
+        {
+          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(67)",
+          "summary": "Fix any of the following:\n  Target has insufficient size because it is partially obscured (smallest space is 16px by 32px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe c"
+        }
+      ],
+      "count": 1
+    },
+    {
+      "label": "home with legend (390/dark)",
+      "exempt": true,
+      "id": "target-size",
+      "impact": "serious",
+      "nodes": [
+        {
+          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(67)",
+          "summary": "Fix any of the following:\n  Target has insufficient size because it is partially obscured (smallest space is 16px by 32px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe c"
+        }
+      ],
+      "count": 1
+    },
+    {
+      "label": "home with filters (390/dark)",
+      "exempt": true,
+      "id": "target-size",
+      "impact": "serious",
+      "nodes": [
+        {
+          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(67)",
+          "summary": "Fix any of the following:\n  Target has insufficient size because it is partially obscured (smallest space is 16px by 32px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe c"
+        }
+      ],
+      "count": 1
+    }
+  ]
+}
