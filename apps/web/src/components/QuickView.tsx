@@ -78,9 +78,7 @@ export default function QuickView({ restaurant: r, onClose }: Props) {
             )}
             <TrendCue
               scoreHistory={r.score_history}
-              scoreTrend={r.score_trend}
               violationHistory={r.violation_history}
-              violationTrend={r.violation_trend}
             />
           </div>
         </div>

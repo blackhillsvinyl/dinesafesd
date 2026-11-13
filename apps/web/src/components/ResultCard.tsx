@@ -66,9 +66,7 @@ export default function ResultCard({ restaurant: r, chips = false, date = false 
         )}
         <TrendCue
           scoreHistory={r.score_history}
-          scoreTrend={r.score_trend}
           violationHistory={r.violation_history}
-          violationTrend={r.violation_trend}
         />
       </div>
       <div className="score-pill" style={{ background: theme.markerColor, color: theme.onMarker }}>

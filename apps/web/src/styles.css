@@ -1854,3 +1854,31 @@ button {
   line-height: 1.5;
   color: var(--body);
 }
+
+.cs-more {
+  border-top: 1px solid var(--border);
+}
+
+.cs-more .cs-name {
+  color: var(--green);
+}
+
+/* Trend: neutral ink, with the size of the change in text */
+.trend-cue {
+  gap: 5px;
+  color: var(--muted);
+}
+
+.trend-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.trend-arrow {
+  font-size: 9px;
+}

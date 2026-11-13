@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { format, parseISO } from 'date-fns';
 import { fetchIndex } from '../lib/api';
 import { buildCityOptions, inCity } from '../lib/search';
+import { SCORE_BANDS, getScoreTheme } from '../scoring';
 import { useSavedVersion } from '../lib/saved';
 import ResultCard from '../components/ResultCard';
 import LoadError, { SourceNotices } from '../components/LoadError';
@@ -11,6 +12,12 @@ import { sourceNotices } from '../lib/sourceHealth';
 import type { Restaurant } from '../types';
 
 const FEED_SIZE = 150;
+
+// Score filter options: the same bands as the map legend, plus "no score"
+const TIERS = [
+  ...SCORE_BANDS.map((b, i) => ({ key: `t${i + 1}`, label: b.range, theme: b.theme })),
+  { key: 'none', label: 'No score published', theme: getScoreTheme(null) },
+];
 
 /** Stream of the most recent inspection reports, newest day first, optionally for one city. */
 export default function LatestPage() {
@@ -21,6 +28,17 @@ export default function LatestPage() {
   });
   const [params, setParams] = useSearchParams();
   const city = (params.get('city') ?? '').toLowerCase();
+  const tier = TIERS.find((t) => t.key === params.get('score')) ?? null;
+  const setParam = (key: 'city' | 'score', value: string) =>
+    setParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (value) next.set(key, value);
+        else next.delete(key);
+        return next;
+      },
+      { replace: true }
+    );
 
   useSavedVersion();
 
@@ -38,7 +56,11 @@ export default function LatestPage() {
   const { days, total } = useMemo(() => {
     if (!index) return { days: [], total: 0 };
     const dated = index.restaurants.filter(
-      (r) => r.latest_inspection_date && (!city || inCity(r, city))
+      (r) =>
+        r.latest_inspection_date &&
+        (!city || inCity(r, city)) &&
+        // same band lookup the map and legend use, so the filter can't drift
+        (!tier || getScoreTheme(r.latest_score) === tier.theme)
     );
     dated.sort((a, b) =>
       (b.latest_inspection_date ?? '').localeCompare(a.latest_inspection_date ?? '')
@@ -51,10 +73,12 @@ export default function LatestPage() {
       else grouped.push({ date: d, items: [r] });
     }
     return { days: grouped, total: dated.length };
-  }, [index, city]);
+  }, [index, city, tier]);
 
   const shown = Math.min(total, FEED_SIZE);
-  const where = cityName ? ` in ${cityName}` : ' across South Dakota';
+  const where =
+    (tier ? (tier.key === 'none' ? ' with no score published' : ` scoring ${tier.label}`) : '') +
+    (cityName ? ` in ${cityName}` : ' across South Dakota');
 
   return (
     <div className="page">
@@ -78,18 +102,7 @@ export default function LatestPage() {
           <select
             className="filter-select"
             value={cityName ? city : ''}
-            onChange={(e) => {
-              const value = e.target.value;
-              setParams(
-                (prev) => {
-                  const next = new URLSearchParams(prev);
-                  if (value) next.set('city', value);
-                  else next.delete('city');
-                  return next;
-                },
-                { replace: true }
-              );
-            }}
+            onChange={(e) => setParam('city', e.target.value)}
           >
             <option value="">All cities</option>
             {cities.map((c) => (
@@ -99,17 +112,24 @@ export default function LatestPage() {
             ))}
           </select>
         </label>
-        {cityName && (
+        <label className="field">
+          <span className="field-label">Latest score</span>
+          <select className="filter-select" value={tier?.key ?? ''} onChange={(e) => setParam('score', e.target.value)}>
+            <option value="">Any score</option>
+            {TIERS.map((t) => (
+              <option key={t.key} value={t.key}>
+                {t.label}
+              </option>
+            ))}
+          </select>
+        </label>
+        {(cityName || tier) && (
           <button
             type="button"
             className="filter-chip"
-            onClick={() => {
-              const next = new URLSearchParams(params);
-              next.delete('city');
-              setParams(next, { replace: true });
-            }}
+            onClick={() => setParams(new URLSearchParams(), { replace: true })}
           >
-            Show all cities
+            Clear filters
           </button>
         )}
       </div>
@@ -134,6 +154,26 @@ export default function LatestPage() {
           >
             Show all cities
           </button>
+        </div>
+      )}
+
+      {index && total === 0 && (cityName || tier) && !(city && !cityName) && (
+        <div className="empty-state">
+          <p className="empty-title">No restaurants{where}.</p>
+          <div className="empty-actions">
+            {tier && cityName && (
+              <button type="button" className="filter-chip" onClick={() => setParam('score', '')}>
+                Any score in {cityName}
+              </button>
+            )}
+            <button
+              type="button"
+              className="filter-chip"
+              onClick={() => setParams(new URLSearchParams(), { replace: true })}
+            >
+              Clear filters
+            </button>
+          </div>
         </div>
       )}
 

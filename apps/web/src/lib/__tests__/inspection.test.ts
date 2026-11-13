@@ -9,6 +9,7 @@ import {
   severityLabel,
 } from '../inspection';
 import { applySeverityRules, NotFoundError, shouldRetry } from '../api';
+import { trendSummary } from '../../components/TrendCue';
 import { sourceNotices } from '../sourceHealth';
 import type { RestaurantIndex } from '../../types';
 import { officialSource } from '../sources';
@@ -230,5 +231,30 @@ describe('score colors', () => {
 
   it('reproduces the reported failure for white on the 90–95 pin', () => {
     expect(contrastRatio('#ffffff', getScoreTheme(92).markerColor)).toBeLessThan(2);
+  });
+});
+
+describe('trend summary', () => {
+  const scores = (...v: number[]) => v.map((score, i) => ({ date: `2026-0${i + 1}-01`, score }));
+  const counts = (...v: number[]) => v.map((count, i) => ({ date: `2026-0${i + 1}-01`, count }));
+
+  it('states the size of a change, so 100 → 98 reads differently from 90 → 70', () => {
+    const small = trendSummary(scores(100, 98))!;
+    const large = trendSummary(scores(90, 70))!;
+    expect(small).toMatchObject({ arrow: '▼', text: '2 pts' });
+    expect(small.sentence).toBe('Score down 2 points from the previous inspection, 100 to 98.');
+    expect(large).toMatchObject({ arrow: '▼', text: '20 pts' });
+  });
+
+  it('handles a rise, a single point, and no change', () => {
+    expect(trendSummary(scores(95, 100))).toMatchObject({ arrow: '▲', text: '5 pts' });
+    expect(trendSummary(scores(99, 100))).toMatchObject({ text: '1 pt' });
+    expect(trendSummary(scores(100, 100))).toMatchObject({ arrow: '', text: 'No change' });
+  });
+
+  it('falls back to violation counts, and is empty without two inspections', () => {
+    expect(trendSummary([], counts(1, 3))).toMatchObject({ text: '+2 violations' });
+    expect(trendSummary(undefined, counts(3, 2))!.sentence).toBe('1 fewer violation than the previous inspection, 3 to 2.');
+    expect(trendSummary(scores(98), counts(2))).toBeNull();
   });
 });

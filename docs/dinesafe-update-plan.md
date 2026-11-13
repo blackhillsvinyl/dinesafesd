@@ -363,6 +363,28 @@ For the owner: 82 restaurants still have 175 past inspections with no score. A m
 `backfill-scores` run could fill those from the state's PDFs; that is a data change and was
 not done here.
 
+## Deployed 2026-11-12, and owner feedback from the live site
+
+`429a4b0a` (this branch merged with `origin/main`'s daily data, data re-reindexed) was pushed to
+`main` at the owner's request. The Deploy Web workflow succeeded, and the full browser suite
+then passed against https://dinesafesd.com (287 passed, 0 failed). Live checks: `robots.txt`
+and `sitemap.xml` (4,495 URLs) are real files, unknown URLs return 404, `index.json` carries
+`severity_rules: 2` with no state critical flags.
+
+Changes made after that deploy, from the owner using the live site. **Committed locally, not yet
+deployed:**
+
+| Report | Cause | Change | Evidence |
+|---|---|---|---|
+| Typing "social" in the map search did not show THE SOCIAL HOUSE (Rapid City) | Ties in search ranking were broken by inspection score, and the map showed only 5 restaurant suggestions. Six places matched; the lowest-scoring one (85) was sixth and cut off. | Ranking uses text match only: whole word, then start of a word, then fragment, city, address, typo; a leading "the" is ignored; ties go to the shorter name, then alphabetical. Score plays no part. The map shows up to 8, and when more match, a "See all N matching restaurants" row opens full search. | `search.test.ts` (6 tests, one on the published data); browser checks `map search: "social"…`, `a long list says how many…`, `"see all" opens full search` |
+| List panel showed "the first 50 by name" of 263 | Hard cap of 50 | "Show 50 more (N left)" pages through the whole view; the panel scrolls | browser check `list: “Show more” extends the list` |
+| A red down-arrow on a 100 → 98 restaurant looks alarming | Trend was drawn red for any decrease | Trend is neutral ink and states the size: "▼ 2 pts", with the full sentence for screen readers ("Score down 2 points from the previous inspection, 100 to 98."). No color verdict. | web tests `trend summary`; browser check `trend:` |
+| Latest: filter by score tier | New request | "Latest score" select with the legend's bands plus "No score published", combined with city, kept in the URL | browser checks `latest: labeled score filter…`, `score filter keeps only that band` |
+| (found while testing) Restaurants vanished when base-map tiles failed | Restaurant data was only pushed to the map once the whole style, including every base-map tile, had loaded | Restaurants are set up on style load and no longer wait on tiles | browser check `map: restaurants still appear when base-map tiles fail to load` |
+
+Results for this set: 46 web unit tests, 27 pipeline unit tests, production build, and 295 browser
+checks pass locally.
+
 ## Codex review
 
 _(Codex: record findings here.)_

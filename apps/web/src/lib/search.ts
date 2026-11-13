@@ -61,6 +61,10 @@ export interface IndexedRestaurant {
   city: string;
   address: string;
   words: string[]; // name + city words, for typo matching
+  nameWords: string[];
+  cityWords: string[];
+  /** Name without a leading article, for "starts with" and length ranking. */
+  nameKey: string;
 }
 
 export function buildSearchIndex(restaurants: Restaurant[]): IndexedRestaurant[] {
@@ -69,7 +73,16 @@ export function buildSearchIndex(restaurants: Restaurant[]): IndexedRestaurant[]
     const city = normalize(r.city ?? '');
     // ZIP folded into the address text so "57701" or "410 main 57769" work
     const address = normalize(`${r.address ?? ''} ${r.zip_code ?? ''}`);
-    return { restaurant: r, name, city, address, words: `${name} ${city}`.split(' ') };
+    return {
+      restaurant: r,
+      name,
+      city,
+      address,
+      words: `${name} ${city}`.split(' '),
+      nameWords: name.split(' '),
+      cityWords: city.split(' '),
+      nameKey: name.replace(/^(the|a|an) /, ''),
+    };
   });
 }
 
@@ -85,25 +98,28 @@ function fuzzyWordHit(token: string, words: string[]): boolean {
 
 /**
  * Every query token must hit the name, city, or address (or be a one-typo
- * miss of a name/city word). Results rank name matches above city/address
- * matches, with the latest score as the tiebreaker.
+ * miss of a name/city word). Ranking is by how well the text matches and
+ * nothing else — a whole word in the name beats the start of a word, which
+ * beats a fragment inside a word, then city, address, and typo matches.
+ * Ties go to the shorter name, then alphabetically. The inspection score
+ * plays no part: it says nothing about which place you meant, and ranking
+ * by it pushed lower-scoring matches out of short lists.
  */
-export function searchRestaurants(
-  index: IndexedRestaurant[],
-  query: string,
-  limit = 50
-): Restaurant[] {
+export function rankRestaurants(index: IndexedRestaurant[], query: string): Restaurant[] {
   const q = normalize(query);
   if (!q) return [];
   const tokens = q.split(' ');
-  const scored: { r: Restaurant; s: number }[] = [];
+  const qKey = q.replace(/^(the|a|an) /, '');
+  const scored: { e: IndexedRestaurant; s: number }[] = [];
   for (const e of index) {
     let s = 0;
     let ok = true;
     for (const t of tokens) {
-      if (e.name.includes(t)) s += 3;
-      else if (e.city.includes(t)) s += 2;
-      else if (e.address.includes(t)) s += 1;
+      if (e.nameWords.includes(t)) s += 8;
+      else if (e.nameWords.some((w) => w.startsWith(t))) s += 6;
+      else if (e.name.includes(t)) s += 4;
+      else if (e.cityWords.some((w) => w.startsWith(t)) || e.city.includes(t)) s += 3;
+      else if (e.address.includes(t)) s += 2;
       else if (fuzzyWordHit(t, e.words)) s += 1;
       else {
         ok = false;
@@ -111,14 +127,27 @@ export function searchRestaurants(
       }
     }
     if (!ok) continue;
-    if (e.name.startsWith(q)) s += 4;
+    if (e.nameKey.startsWith(qKey)) s += 4;
     else if (e.name.includes(q)) s += 2;
-    scored.push({ r: e.restaurant, s });
+    scored.push({ e, s });
   }
   return scored
-    .sort((a, b) => b.s - a.s || (b.r.latest_score ?? -1) - (a.r.latest_score ?? -1))
-    .slice(0, limit)
-    .map((x) => x.r);
+    .sort(
+      (a, b) =>
+        b.s - a.s ||
+        a.e.nameKey.length - b.e.nameKey.length ||
+        a.e.name.localeCompare(b.e.name) ||
+        a.e.city.localeCompare(b.e.city)
+    )
+    .map((x) => x.e.restaurant);
+}
+
+export function searchRestaurants(
+  index: IndexedRestaurant[],
+  query: string,
+  limit = 50
+): Restaurant[] {
+  return rankRestaurants(index, query).slice(0, limit);
 }
 
 export interface CityOption {

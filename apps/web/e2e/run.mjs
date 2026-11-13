@@ -437,6 +437,20 @@ async function keyboardFlow(browser) {
     rows: document.querySelectorAll('#map-panel-list .view-list li').length,
   }));
   check('text alternative: list of restaurants in the current view', list.rows > 0, `${list.heading}; ${list.rows} rows shown`);
+  // The list pages instead of cutting off: zoom out so there are more than one page
+  await page.evaluate(() => window.__map.jumpTo({ center: [-100, 44.4], zoom: 6.4 }));
+  await page.waitForFunction(() => /^[\d,]{4,} restaurants in this view/.test(document.querySelector('#map-panel-list .mf-label')?.textContent.trim() ?? ''));
+  const before = await page.$$eval('#map-panel-list .view-list li', (l) => l.length);
+  const moreLabel = await page.evaluate(() => {
+    const b = [...document.querySelectorAll('#map-panel-list .panel-foot button')].find((x) => /^Show \d+ more/.test(x.textContent.trim()));
+    b?.click();
+    return b?.textContent.trim() ?? '';
+  });
+  await page.waitForFunction((n) => document.querySelectorAll('#map-panel-list .view-list li').length > n, {}, before);
+  const after = await page.$$eval('#map-panel-list .view-list li', (l) => l.length);
+  const shownNote = await page.evaluate(() => [...document.querySelectorAll('#map-panel-list .legend-note')].map((n) => n.textContent.replace(/\s+/g, ' ').trim()).join(' '));
+  check('list: “Show more” extends the list instead of truncating it', before === 50 && after === 100 && /Showing 100 of [\d,]+/.test(shownNote), `${moreLabel}; ${before} → ${after}; ${shownNote}`);
+  await shot(page, 'list-more-desktop-light');
   await shot(page, 'list-panel-desktop-light');
   await page.focus('#map-panel-list .view-list button');
   await page.keyboard.press('Enter');
@@ -454,6 +468,25 @@ async function keyboardFlow(browser) {
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => !document.querySelector('#map-panel-list'));
   check('panels: Escape closes and restores focus to the trigger', (await describeFocus(page)).what === 'List');
+
+  // Reported from the live site: "social" must surface THE SOCIAL HOUSE, and a
+  // long match list must say there is more instead of silently cutting off
+  await page.focus('#map-search');
+  await page.keyboard.type('social');
+  await page.waitForSelector('#cs-listbox [role="option"]');
+  const social = await page.$$eval('#cs-listbox [role="option"]', (o) => o.map((x) => x.textContent.replace(/\s+/g, ' ').trim()));
+  check('map search: "social" shows THE SOCIAL HOUSE in Rapid City', social.some((t) => /THE SOCIAL HOUSE.*Rapid City/.test(t)), social.join(' | '));
+  await page.keyboard.press('Escape');
+  await page.keyboard.type('pizza');
+  await page.waitForSelector('#cs-listbox .cs-more');
+  const more = await page.$eval('#cs-listbox .cs-more', (e) => e.textContent.replace(/\s+/g, ' ').trim());
+  check('map search: a long list says how many match and links to all of them', /^See all \d+ matching restaurants/.test(more), more);
+  await page.click('#cs-listbox .cs-more');
+  await page.waitForFunction(() => location.pathname === '/search' && new URLSearchParams(location.search).get('q') === 'pizza');
+  await page.waitForSelector('.result-card');
+  check('map search: "see all" opens full search with the same words', /restaurants? found|Showing/.test(await page.$eval('.result-count', (e) => e.textContent)));
+  await page.goBack();
+  await waitForMap(page);
 
   // Combobox keyboard use
   await page.focus('#map-search');
@@ -500,6 +533,11 @@ async function contentFlows(browser) {
   await page.waitForSelector('.result-card');
   const count = await page.$eval('.result-count', (e) => `${e.getAttribute('role')}: ${e.textContent}`);
   check('search: result count announced', /^status: \d+ restaurants? found\./.test(count), count);
+  const trend = await page.evaluate(() => {
+    const c = [...document.querySelectorAll('.result-card')].find((x) => /1556 Luna/.test(x.textContent))?.querySelector('.trend-cue');
+    return c ? { text: c.querySelector('.trend-delta').textContent.trim(), sr: c.querySelector('.sr-only').textContent, color: getComputedStyle(c.querySelector('polyline')).stroke } : null;
+  });
+  check('trend: a small drop from a high score is stated as a number, in neutral ink', trend && /^▼\s*2 pts$/.test(trend.text) && /Score down 2 points from the previous inspection, 100 to 98\./.test(trend.sr) && !/rgb\(220, 38, 38\)/.test(trend.color), JSON.stringify(trend));
   const card = await page.evaluate(() => {
     const c = [...document.querySelectorAll('.result-card')].find((x) => /1556 Luna/.test(x.textContent));
     c?.click();
@@ -659,6 +697,24 @@ async function contentFlows(browser) {
   }));
   check('latest: city filter limits the feed and is announced', cityOnly.all && cityOnly.n > 0 && /in Rapid City/.test(cityOnly.status), `${cityOnly.n} cards; ${cityOnly.status}`);
   await shot(page, 'latest-city-390-light');
+  // score-tier filter on top of the city
+  const tierSel = await page.evaluate(() => {
+    const s = [...document.querySelectorAll('.field-row select')][1];
+    return { label: s.closest('label').querySelector('.field-label').textContent, options: [...s.options].map((o) => o.textContent) };
+  });
+  check('latest: labeled score filter with the legend’s bands', tierSel.label === 'Latest score' && tierSel.options.join('|') === 'Any score|96–100|90–95|83–89|76–82|Below 76|No score published', tierSel.options.join('|'));
+  await page.select('.field-row label:nth-of-type(2) select', 't3');
+  await page.waitForFunction(() => new URLSearchParams(location.search).get('score') === 't3' && /scoring 83–89 in Rapid City/.test(document.querySelector('.result-count').textContent));
+  const tiered = await page.evaluate(() => ({
+    scores: [...document.querySelectorAll('.score-pill')].map((p) => parseInt(p.textContent, 10)),
+    cities: [...document.querySelectorAll('.result-addr')].every((a) => /Rapid City, SD$/.test(a.textContent.trim())),
+    status: document.querySelector('.result-count').textContent,
+  }));
+  check('latest: score filter keeps only that band, within the chosen city', tiered.scores.length > 0 && tiered.scores.every((n) => n >= 83 && n <= 89) && tiered.cities, `${tiered.scores.length} cards, scores ${Math.min(...tiered.scores)}–${Math.max(...tiered.scores)}; ${tiered.status}`);
+  await shot(page, 'latest-city-score-390-light');
+  await page.select('.field-row label:nth-of-type(2) select', '');
+  await page.waitForFunction(() => !new URLSearchParams(location.search).get('score'));
+
   await page.reload({ waitUntil: 'networkidle0' });
   await page.waitForSelector('.result-card');
   check('latest: city filter survives refresh', (await page.$eval('.field-row select', (s) => s.value)) === 'rapid city');
@@ -774,6 +830,20 @@ async function contentFlows(browser) {
   await page.waitForSelector('#map-panel-filters');
   await page.evaluate(() => [...document.querySelectorAll('#map-panel-filters .filter-chip')].find((c) => c.textContent.trim() === 'Reset filters').click());
   await page.keyboard.press('Escape');
+
+  // Base-map tiles failing must not hide the restaurants
+  await page.setRequestInterception(true);
+  const blockTiles = (req) => {
+    if (req.isInterceptResolutionHandled()) return;
+    if (/tiles\.openfreemap\.org\/planet\//.test(req.url())) req.abort();
+    else req.continue();
+  };
+  page.on('request', blockTiles);
+  await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
+  const noTiles = await page.waitForFunction(() => document.querySelectorAll('.map-marker-btn').length > 0, { timeout: 30000 }).then(() => true, () => false);
+  check('map: restaurants still appear when base-map tiles fail to load', noTiles, `${await page.$$eval('.map-marker-btn', (m) => m.length)} markers with every tile request aborted`);
+  page.off('request', blockTiles);
+  await page.setRequestInterception(false);
 
   // touch targets on a phone
   await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });

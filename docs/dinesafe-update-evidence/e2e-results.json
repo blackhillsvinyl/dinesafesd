@@ -1,7 +1,7 @@
 {
   "base": "http://127.0.0.1:8788",
-  "ranAt": "2026-11-13T06:05:07.101Z",
-  "passed": 287,
+  "ranAt": "2026-11-13T07:18:07.548Z",
+  "passed": 295,
   "failed": 0,
   "results": [
     {
@@ -12,7 +12,7 @@
     {
       "name": "http: /sitemap.xml is XML 200",
       "ok": true,
-      "detail": "200 application/xml, 4493 URLs"
+      "detail": "200 application/xml, 4495 URLs"
     },
     {
       "name": "http: sitemap lists the example restaurant",
@@ -170,12 +170,32 @@
       "detail": "12 restaurants in this view; 12 rows shown"
     },
     {
+      "name": "list: “Show more” extends the list instead of truncating it",
+      "ok": true,
+      "detail": "Show 50 more (4,189 left); 50 → 100; Sorted by name. Showing 100 of 4,239."
+    },
+    {
       "name": "text alternative: closing the card restores focus to the List button",
       "ok": true,
       "detail": "List"
     },
     {
       "name": "panels: Escape closes and restores focus to the trigger",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "map search: \"social\" shows THE SOCIAL HOUSE in Rapid City",
+      "ok": true,
+      "detail": "THE SOCIAL HOUSERapid City | UNION SOCIALHarrisburg | THE W SOCIAL HOUSEVermillion | DEADWOOD SOCIAL CLUBDeadwood | JACK ROSE SOCIAL CLUBSioux Falls | JACK ROSE SOCIAL CLUB STEELSioux Falls"
+    },
+    {
+      "name": "map search: a long list says how many match and links to all of them",
+      "ok": true,
+      "detail": "See all 151 matching restaurantsSearch"
+    },
+    {
+      "name": "map search: \"see all\" opens full search with the same words",
       "ok": true,
       "detail": ""
     },
@@ -192,12 +212,12 @@
     {
       "name": "map card: portal citations are not presented as critical",
       "ok": true,
-      "detail": "×98/100out of 100RAPID CITY PIZZA RANCH1556 Luna AVE, Rapid CityInspected Jul 20, 2026▼Violations found:🦠 Cleanliness⚠️ ContaminationSaveWa"
+      "detail": "×98/100out of 100RAPID CITY PIZZA RANCH1556 Luna AVE, Rapid CityInspected Jul 20, 2026▼2 ptsScore down 2 points from the previous inspection"
     },
     {
       "name": "map card: official critical status shown with a high score",
       "ok": true,
-      "detail": "×97/100out of 100GET N GO #116201 W 12TH ST, Sioux FallsInspected Aug 11, 2026▼⚠Critical violations found on latest inspectionViolations fou"
+      "detail": "×97/100out of 100GET N GO #116201 W 12TH ST, Sioux FallsInspected Aug 11, 2026▼3 ptsScore down 3 points from the previous inspection, 100 to"
     },
     {
       "name": "filters: critical filter says which records carry official marks",
@@ -215,9 +235,14 @@
       "detail": "status: 3 restaurants found."
     },
     {
+      "name": "trend: a small drop from a high score is stated as a number, in neutral ink",
+      "ok": true,
+      "detail": "{\"text\":\"▼2 pts\",\"sr\":\"Score down 2 points from the previous inspection, 100 to 98.\",\"color\":\"rgb(71, 85, 105)\"}"
+    },
+    {
       "name": "search card: findings and inspection date in text, no unverified critical flag",
       "ok": true,
-      "detail": "RAPID CITY PIZZA RANCH1556 Luna AVE, Rapid City, SD2 violations recorded · Inspected Jul 20, 2026▼98 out of 100"
+      "detail": "RAPID CITY PIZZA RANCH1556 Luna AVE, Rapid City, SD2 violations recorded · Inspected Jul 20, 2026▼2 ptsScore down 2 poin"
     },
     {
       "name": "search → report",
@@ -277,7 +302,7 @@
     {
       "name": "search card: official critical status in text",
       "ok": true,
-      "detail": "GET N GO #116201 W 12TH ST, Sioux Falls, SD⚠ Critical violation on latest inspection · Inspected Aug 11, 2026▼97 out of "
+      "detail": "GET N GO #116201 W 12TH ST, Sioux Falls, SD⚠ Critical violation on latest inspection · Inspected Aug 11, 2026▼3 ptsScore"
     },
     {
       "name": "report: written critical warning matches the card",
@@ -397,7 +422,17 @@
     {
       "name": "latest: city filter limits the feed and is announced",
       "ok": true,
-      "detail": "150 cards; Showing the 150 most recent of 477 restaurants in Rapid City."
+      "detail": "150 cards; Showing the 150 most recent of 479 restaurants in Rapid City."
+    },
+    {
+      "name": "latest: labeled score filter with the legend’s bands",
+      "ok": true,
+      "detail": "Any score|96–100|90–95|83–89|76–82|Below 76|No score published"
+    },
+    {
+      "name": "latest: score filter keeps only that band, within the chosen city",
+      "ok": true,
+      "detail": "48 cards, scores 83–89; 48 restaurants scoring 83–89 in Rapid City."
     },
     {
       "name": "latest: city filter survives refresh",
@@ -472,7 +507,12 @@
     {
       "name": "map: filters survive leaving the map and coming back",
       "ok": true,
-      "detail": "3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+      "detail": "3,193 restaurants on the map (filtered) · Data refreshed Nov 12, 2026"
+    },
+    {
+      "name": "map: restaurants still appear when base-map tiles fail to load",
+      "ok": true,
+      "detail": "75 markers with every tile request aborted"
     },
     {
       "name": "touch targets: all at least 24×24 (WCAG 2.2 AA) on a 390px phone",
@@ -547,12 +587,12 @@
     {
       "name": "filters: result count announced via live status (320/light)",
       "ok": true,
-      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+      "detail": "status: 3,193 restaurants on the map (filtered) · Data refreshed Nov 12, 2026"
     },
     {
       "name": "search suggestions never overlap filters (320/light)",
       "ok": true,
-      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":11,\"expanded\":\"true\"}"
     },
     {
       "name": "map search: no-match message with a way forward (320/light)",
@@ -667,12 +707,12 @@
     {
       "name": "filters: result count announced via live status (320/dark)",
       "ok": true,
-      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+      "detail": "status: 3,193 restaurants on the map (filtered) · Data refreshed Nov 12, 2026"
     },
     {
       "name": "search suggestions never overlap filters (320/dark)",
       "ok": true,
-      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":11,\"expanded\":\"true\"}"
     },
     {
       "name": "map search: no-match message with a way forward (320/dark)",
@@ -787,12 +827,12 @@
     {
       "name": "filters: result count announced via live status (390/light)",
       "ok": true,
-      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+      "detail": "status: 3,193 restaurants on the map (filtered) · Data refreshed Nov 12, 2026"
     },
     {
       "name": "search suggestions never overlap filters (390/light)",
       "ok": true,
-      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":11,\"expanded\":\"true\"}"
     },
     {
       "name": "map search: no-match message with a way forward (390/light)",
@@ -907,12 +947,12 @@
     {
       "name": "filters: result count announced via live status (390/dark)",
       "ok": true,
-      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+      "detail": "status: 3,193 restaurants on the map (filtered) · Data refreshed Nov 12, 2026"
     },
     {
       "name": "search suggestions never overlap filters (390/dark)",
       "ok": true,
-      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":11,\"expanded\":\"true\"}"
     },
     {
       "name": "map search: no-match message with a way forward (390/dark)",
@@ -1027,12 +1067,12 @@
     {
       "name": "filters: result count announced via live status (tablet/light)",
       "ok": true,
-      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+      "detail": "status: 3,193 restaurants on the map (filtered) · Data refreshed Nov 12, 2026"
     },
     {
       "name": "search suggestions never overlap filters (tablet/light)",
       "ok": true,
-      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":11,\"expanded\":\"true\"}"
     },
     {
       "name": "map search: no-match message with a way forward (tablet/light)",
@@ -1147,12 +1187,12 @@
     {
       "name": "filters: result count announced via live status (tablet/dark)",
       "ok": true,
-      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+      "detail": "status: 3,193 restaurants on the map (filtered) · Data refreshed Nov 12, 2026"
     },
     {
       "name": "search suggestions never overlap filters (tablet/dark)",
       "ok": true,
-      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":11,\"expanded\":\"true\"}"
     },
     {
       "name": "map search: no-match message with a way forward (tablet/dark)",
@@ -1267,12 +1307,12 @@
     {
       "name": "filters: result count announced via live status (desktop/light)",
       "ok": true,
-      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+      "detail": "status: 3,193 restaurants on the map (filtered) · Data refreshed Nov 12, 2026"
     },
     {
       "name": "search suggestions never overlap filters (desktop/light)",
       "ok": true,
-      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":11,\"expanded\":\"true\"}"
     },
     {
       "name": "map search: no-match message with a way forward (desktop/light)",
@@ -1387,12 +1427,12 @@
     {
       "name": "filters: result count announced via live status (desktop/dark)",
       "ok": true,
-      "detail": "status: 3,192 restaurants on the map (filtered) · Data refreshed Nov 8, 2026"
+      "detail": "status: 3,193 restaurants on the map (filtered) · Data refreshed Nov 12, 2026"
     },
     {
       "name": "search suggestions never overlap filters (desktop/dark)",
       "ok": true,
-      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":7,\"expanded\":\"true\"}"
+      "detail": "{\"panelOpen\":false,\"actions\":false,\"options\":11,\"expanded\":\"true\"}"
     },
     {
       "name": "map search: no-match message with a way forward (desktop/dark)",
@@ -1474,7 +1514,7 @@
       "impact": "serious",
       "nodes": [
         {
-          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(53)",
+          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(67)",
           "summary": "Fix any of the following:\n  Target has insufficient size because it is partially obscured (smallest space is 16px by 32px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe c"
         }
       ],
@@ -1487,7 +1527,7 @@
       "impact": "serious",
       "nodes": [
         {
-          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(53)",
+          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(67)",
           "summary": "Fix any of the following:\n  Target has insufficient size because it is partially obscured (smallest space is 16px by 32px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe c"
         }
       ],

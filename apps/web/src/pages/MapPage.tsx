@@ -145,7 +145,9 @@ let savedFilters: MapFilters = NO_FILTERS;
 type Panel = 'none' | 'filters' | 'legend' | 'list';
 
 const INTRO_KEY = 'dinesafe:intro-hidden';
-const LIST_LIMIT = 50;
+// The list shows this many at a time; "Show more" adds another page, so the
+// whole view can be read without zooming.
+const LIST_PAGE = 50;
 // Individual dots get a focusable stand-in only while there are few enough
 // in view to be useful; beyond this, rings and the list cover the same ground.
 const MAX_DOT_PROXIES = 150;
@@ -192,6 +194,7 @@ export default function MapPage() {
   const [showIntro, setShowIntro] = useState(() => !introHidden());
   const [shownCount, setShownCount] = useState<number | null>(null);
   const [inView, setInView] = useState<Restaurant[]>([]);
+  const [listShown, setListShown] = useState(LIST_PAGE);
   const [notice, setNotice] = useState<string | null>(null);
   const noticeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dark = useEffectiveDark();
@@ -222,8 +225,16 @@ export default function MapPage() {
   // the first data arrival can never race the style and leave a source
   // empty.
   const syncSources = (map: maplibregl.Map | null) => {
-    if (!map || !map.isStyleLoaded()) return;
-    const src = map.getSource('restaurants-fine') as maplibregl.GeoJSONSource | undefined;
+    if (!map) return;
+    // Gate on our own source existing, not on isStyleLoaded(): that is false
+    // while any base-map tile is pending or failing, which used to leave the
+    // restaurants off the map whenever the tile host was slow or down.
+    let src: maplibregl.GeoJSONSource | undefined;
+    try {
+      src = map.getSource('restaurants-fine') as maplibregl.GeoJSONSource | undefined;
+    } catch {
+      return; // style not created yet — setUp() reads dataRef when it runs
+    }
     if (src) src.setData(dataRef.current);
   };
   const syncRef = useRef(syncSources);
@@ -320,7 +331,10 @@ export default function MapPage() {
       noticeRef.current("You're outside South Dakota — the map stays within the state.");
     });
 
-    map.on('load', () => {
+    // Set up restaurants as soon as the style is ready. Waiting for the map's
+    // 'load' event would also wait for every base-map tile, so a slow or
+    // failing tile host would leave the map with no restaurants at all.
+    const setUp = () => {
       // The dark basemap draws place names in mid-gray at 10px on near-black.
       // Same style, same fonts — just enough ink to read them.
       if (dark) {
@@ -664,7 +678,9 @@ export default function MapPage() {
           stackRef.current(null);
         }
       });
-    });
+    };
+    if (map.isStyleLoaded()) setUp();
+    else map.once('style.load', setUp);
 
     // First-load belt and suspenders: once the style settles, make sure
     // every source holds the latest data (fixes the initial-load race that
@@ -728,7 +744,10 @@ export default function MapPage() {
 
   const togglePanel = (p: Panel) => {
     const next = panel === p ? 'none' : p;
-    if (next === 'list') refreshInView();
+    if (next === 'list') {
+      refreshInView();
+      setListShown(LIST_PAGE);
+    }
     setPanel(next);
   };
   const closePanel = (restoreFocus: boolean) => {
@@ -968,9 +987,10 @@ export default function MapPage() {
               <div className="mf-label">
                 {inView.length.toLocaleString()} restaurant{inView.length === 1 ? '' : 's'} in this view
               </div>
-              {inView.length > LIST_LIMIT && (
-                <p className="legend-note">
-                  Showing the first {LIST_LIMIT} by name. Zoom in or search to narrow the list.
+              {inView.length > 0 && (
+                <p className="legend-note" role="status">
+                  Sorted by name. Showing {Math.min(listShown, inView.length).toLocaleString()} of{' '}
+                  {inView.length.toLocaleString()}.
                 </p>
               )}
               {inView.length === 0 && (
@@ -980,7 +1000,7 @@ export default function MapPage() {
                 </p>
               )}
               <ul className="view-list">
-                {inView.slice(0, LIST_LIMIT).map((r) => {
+                {inView.slice(0, listShown).map((r) => {
                   const theme = getScoreTheme(r.latest_score);
                   return (
                     <li key={r.id}>
@@ -1010,6 +1030,15 @@ export default function MapPage() {
                 })}
               </ul>
               <div className="panel-foot">
+                {inView.length > listShown && (
+                  <button
+                    type="button"
+                    className="filter-chip"
+                    onClick={() => setListShown((n) => n + LIST_PAGE)}
+                  >
+                    Show {Math.min(LIST_PAGE, inView.length - listShown)} more ({(inView.length - listShown).toLocaleString()} left)
+                  </button>
+                )}
                 <button type="button" className="filter-chip" onClick={() => closePanel(true)}>
                   Close list
                 </button>

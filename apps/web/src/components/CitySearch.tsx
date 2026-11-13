@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { buildSearchIndex, searchRestaurants, normalize } from '../lib/search';
+import { Link, useNavigate } from 'react-router-dom';
+import { buildSearchIndex, rankRestaurants, normalize } from '../lib/search';
 import { getScoreTheme } from '../scoring';
 import type { Restaurant } from '../types';
 
@@ -89,7 +89,13 @@ export interface CitySearchHandle {
 
 type Option =
   | { kind: 'area'; id: string; label: string; detail: string; entry: CityEntry }
-  | { kind: 'restaurant'; id: string; label: string; detail: string; restaurant: Restaurant };
+  | { kind: 'restaurant'; id: string; label: string; detail: string; restaurant: Restaurant }
+  /** More restaurants match than fit here: open the full search with this query. */
+  | { kind: 'more'; id: string; label: string; detail: string };
+
+// Restaurant suggestions shown in the map search. When more match, the list
+// says how many and links to all of them rather than silently cutting off.
+const RESTAURANT_SUGGESTIONS = 8;
 
 /**
  * Map search: an ARIA combobox over cities, ZIP codes, and restaurants.
@@ -102,6 +108,7 @@ const CitySearch = forwardRef<CitySearchHandle, Props>(function CitySearch(
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
+  const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   useImperativeHandle(handle, () => ({ focus: () => inputRef.current?.focus() }));
@@ -153,8 +160,17 @@ const CitySearch = forwardRef<CitySearchHandle, Props>(function CitySearch(
       out.push({ kind: 'area', id: `city-${c.name}`, label: c.name, detail: `${c.count} restaurants`, entry: c });
     }
     if (q.length >= 2) {
-      for (const r of searchRestaurants(searchIndex, query, 5)) {
+      const matches = rankRestaurants(searchIndex, query);
+      for (const r of matches.slice(0, RESTAURANT_SUGGESTIONS)) {
         out.push({ kind: 'restaurant', id: `r-${r.id}`, label: r.name, detail: r.city, restaurant: r });
+      }
+      if (matches.length > RESTAURANT_SUGGESTIONS) {
+        out.push({
+          kind: 'more',
+          id: 'more',
+          label: `See all ${matches.length.toLocaleString()} matching restaurants`,
+          detail: 'Search',
+        });
       }
     }
     return out;
@@ -179,6 +195,10 @@ const CitySearch = forwardRef<CitySearchHandle, Props>(function CitySearch(
   };
 
   const pick = (o: Option) => {
+    if (o.kind === 'more') {
+      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+      return;
+    }
     if (o.kind === 'area') onPick(o.entry);
     else onPickRestaurant(o.restaurant);
     close(true);
@@ -250,7 +270,7 @@ const CitySearch = forwardRef<CitySearchHandle, Props>(function CitySearch(
             <li
               key={o.id}
               id={optionId(i)}
-              className={`cs-row${i === active ? ' active' : ''}`}
+              className={`cs-row${i === active ? ' active' : ''}${o.kind === 'more' ? ' cs-more' : ''}`}
               role="option"
               aria-selected={i === active}
               // Keep focus in the input so the list doesn't close mid-click
@@ -281,7 +301,9 @@ const CitySearch = forwardRef<CitySearchHandle, Props>(function CitySearch(
       <span className="sr-only" role="status">
         {showList
           ? options.length
-            ? `${options.length} suggestion${options.length === 1 ? '' : 's'}. Use the arrow keys to choose.`
+            ? `${options.length} suggestion${options.length === 1 ? '' : 's'}${
+                options.some((o) => o.kind === 'more') ? ', with more in full search' : ''
+              }. Use the arrow keys to choose.`
             : noMatches
               ? 'No matches.'
               : ''
