@@ -49,6 +49,9 @@ export interface Inspection {
   grade: string | null;
   inspection_type: string | null;
   comments: string;
+  // Count published by the source even when the individual violations were
+  // not fetched. Absent/null means the count itself is unknown.
+  violation_count?: number | null;
   violations: Violation[];
 }
 
