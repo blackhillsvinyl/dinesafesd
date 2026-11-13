@@ -12,7 +12,7 @@ This file is a handoff record, not a lock.
 ```bash
 npm ci
 cd apps/web
-npm test                 # vitest: 22 unit tests
+npm test                 # vitest: 26 unit tests (+4 published-data contract tests owned by Codex, untracked)
 npm run build            # tsc (app) + tsc (scripts) + vite build + prerender
 npx wrangler@4 pages dev dist --port 8788 --compatibility-date 2026-05-01   # Cloudflare Pages emulator
 COUNT_ONLY_ID=sd_doh_al-s-hotwing-sauce-219-se-1st-ave-watertown npm run test:e2e   # in a second shell
@@ -23,17 +23,21 @@ than today's default date. `npm run test:e2e` writes `apps/web/e2e/results.json`
 `apps/web/e2e/screenshots/` (both git-ignored). A copy of the last run is in
 `docs/dinesafe-update-evidence/`.
 
-## Results of the last run (2026-11-12)
+## Results of the last run (2026-11-12, after the severity change)
 
 | Check | Command | Result |
 |---|---|---|
-| Unit tests | `npm test` | 22 passed, 0 failed |
+| Unit tests | `npm test` | 30 passed, 0 failed (26 of mine, 4 of Codex's `published-data.test.ts`) |
+| Pipeline type-check | `npx tsc --noEmit -p services/data-pipeline` | passed |
 | Production build | `npm run build` | passed; 4,486 restaurant pages + 7 static pages + 404 + sitemap (4,493 URLs) + robots in about 1.8 s |
-| Browser suite | `npm run test:e2e` | 251 passed, 0 failed |
-| Automated accessibility | axe-core 4.14, WCAG 2.0/2.1/2.2 A+AA tags, inside the browser suite | 40 runs (5 screens × 4 widths × 2 themes), 0 violations counted; map-marker spacing noted as exempt (see Remaining issues) |
+| Browser suite | `npm run test:e2e` | 274 passed, 0 failed |
+| Automated accessibility | axe-core 4.14, WCAG 2.0/2.1/2.2 A+AA tags, inside the browser suite | 48 runs (6 screens × 4 widths × 2 themes), 0 violations counted; map-marker spacing noted as exempt (see Remaining issues) |
+| Reindex | `npm run reindex` in `services/data-pipeline` | 4,486 restaurants reindexed; 2,791 data files changed; refresh date unchanged |
 
 The browser suite ran in headless Chromium (Puppeteer) against the production build on the
-Pages emulator, at 320, 390, 768, and 1280 px, in light and dark.
+Pages emulator, at 320, 390, 768, and 1280 px, in light and dark. One `npm run build` failed
+once in `vite build` and passed on immediate retry with no change; Codex was building in the
+same checkout at the time, which is the likely cause but was not confirmed.
 
 **Automated versus manual.** Everything in the table is automated. Manual work was limited to
 reading the screenshots in `docs/dinesafe-update-evidence/`. **Not done:** a real screen reader
@@ -78,23 +82,27 @@ Acceptance criteria:
 - Official scores, dates, descriptions, correction info, and attribution are unchanged.
 - The source link opens the exact record where possible; otherwise portal + copy-name + steps.
 
-What severity is traced to (no data or pipeline change):
+What severity is traced to (updated after the mapping failed verification; see below):
 
-| Record | Where "critical" comes from | Shown as |
+| Record | Where severity comes from | Shown as |
 |---|---|---|
 | Sioux Falls SWEEPS | The city report's "Critical Violations" / "Non-Critical Violations" headings (`sync-sioux-falls.ts`) | Critical / Non-critical, "per city report" |
 | SD DOH scoresheet PDF (codes 1–60) | The `*` mark on the state form (`pdf-parser.ts`) | Critical / Non-critical, "per state scoresheet" |
-| SD DOH portal citation (codes like `44:02:07:24`) | **The pipeline's own mapping from the rule-section number** (`sd-doh.ts` `mapSDCodeToSeverity`). The portal publishes no severity. | Critical / Major / Minor, "DineSafeSD classification", with an explanation on the page |
+| SD DOH portal citation (codes like `44:02:07:24`) | Nothing. The portal publishes no severity and the rule does not rank its sections. | "Severity not published", "state portal citation" |
 
-The Pizza Ranch example is the third kind. The UI no longer presents it as an official severity.
+The Pizza Ranch example is the third kind. Its card and report now agree: 2 violations recorded,
+no critical claim. Official-critical behavior is exercised with `sf_sweeps_144` (score 97 with a
+critical violation under the city's heading).
 
 Changed files: `src/lib/inspection.ts`, `src/lib/sources.ts`, `src/components/RestaurantReport.tsx`,
 `src/components/QuickView.tsx`, `src/components/ResultCard.tsx`, `src/pages/RestaurantPage.tsx`,
 `src/pages/LatestPage.tsx`, `src/pages/AboutPage.tsx`, `src/types.ts`.
 
-Evidence: unit tests `severity provenance`, `inspectionFindings`, `latestStatus`, `official source links`;
-browser checks beginning `report:`, `unknown:`, `none recorded:`, `source:`, `latest: no “Clean” wording`;
-screenshots `report-critical-full-*.jpg`, `report-unknown-390-light.jpg`.
+Evidence: unit tests `severity provenance`, `inspectionFindings`, `index flags from before severity rules 2`,
+`latestStatus`, `official source links`; browser checks beginning `report`, `map card:`, `search card:`,
+`unknown:`, `none recorded:`, `source:`, `latest: no “Clean” wording`;
+screenshots `report-critical-full-*.jpg` (official mark), `report-portal-full-390-dark.jpg` (portal citations),
+`quickview-official-critical-desktop-light.jpg`, `report-unknown-390-light.jpg`.
 SWEEPS deep link checked by hand against the live city site for site 715 (same facility, date, score).
 
 ### 2. Homepage and mobile — Claude — done
@@ -182,8 +190,10 @@ screenshots `report-saved-390-light.jpg`, `search-new-report-390-light.jpg`,
 
 ## Remaining issues
 
-1. **The rule-section severity mapping failed verification (2026-11-12). Decision needed.**
-   See "Severity mapping verification" below.
+1. **Critical flags now cover far fewer restaurants.** After option A, 143 Sioux Falls restaurants
+   carry a critical flag and no state-inspected restaurant does, because every state latest
+   inspection comes from the portal. The two critical filters say so in a note. This is the
+   honest state of the published data, not a defect, but it changes what those filters do.
 2. **Screen reader and real-device testing not done** (see "Automated versus manual").
 3. **Map marker spacing.** axe reports two overlapping markers at 390 px. WCAG 2.5.8 exempts
    targets whose position is essential and names map pins; recorded as exempt, not fixed.
@@ -242,13 +252,46 @@ and are not flagged.
 
 Conclusion: the ranges are not verified and should not be presented as severity.
 
-Options (not implemented; both rewrite published data, so they belong in the pipeline workflow):
+Decision (owner, 2026-11-12): **option A — stop classifying portal citations.** Option B (a
+crosswalk confirmed by SD DOH) was not chosen.
 
-- **A (recommended).** Stop classifying portal citations. Store them as unclassified, recompute
-  `has_critical_violations` from official marks only (Sioux Falls headings, scoresheet marks), and
-  have the site say "The state portal does not publish a severity for this violation."
-- **B.** Replace the ranges with a section-to-scoresheet-item crosswalk confirmed by SD DOH, and
-  label the result as derived from the state form. Needs the department to confirm the crosswalk.
+### Option A as implemented
+
+Pipeline (`services/data-pipeline`):
+- `sources/sd-doh.ts`: `mapSDCodeToSeverity` removed; portal citations are recorded as `unclassified`.
+- `lib/store.ts`: `publishedSeverity(source, code, severity)` is applied on every violation write
+  and again in `save()`, so severities written under the old rules, or merged in from an older
+  snapshot by `merge-data.ts`, are normalized. `has_critical_violations` therefore comes only from
+  official marks. A full reindex stamps `severity_rules: 2` on `index.json` and does not move
+  `updated_at` (visitors see that as the data refresh date).
+- `npm run reindex` script added; `.github/workflows/data-pipeline.yml` gains a `reindex` mode.
+- Raw citations, descriptions, scores, dates, and counts are untouched.
+
+Site (`apps/web`):
+- `lib/inspection.ts`: severity is shown only where the record states it; portal citations read
+  "Severity not published" regardless of what a data file says.
+- `lib/api.ts` `applySeverityRules`: if `index.json` has no `severity_rules: 2` stamp, state
+  critical flags are ignored. This makes deploy order safe: the site is correct whether or not
+  the data has been reindexed yet.
+- Critical filters on the map and in Search carry a note about which records have official marks.
+
+Data: commit "data: reindex under severity rules 2" rewrites 2,791 files under
+`apps/web/public/data` (12,683 portal citations set to `unclassified`; 1,329 state flags cleared;
+nothing else in the index changed). It is a separate commit so it can be dropped.
+
+**Merging.** The daily bot commits data to `main`, so the data commit will conflict there
+(`index.json` certainly). Resolve by taking `main`'s data and re-running the reindex, which is
+deterministic:
+
+```bash
+git checkout --theirs apps/web/public/data   # or --ours, whichever side is main in your merge
+cd services/data-pipeline && npm run reindex
+```
+
+Or drop the data commit before merging and run the workflow once with mode `reindex` afterward.
+
+Not addressed here: the other findings in `docs/dinesafe-review.md` (R2–R10). R1 is this change
+and awaits Codex's independent check.
 
 ## Codex review
 

@@ -1,7 +1,7 @@
 {
   "base": "http://127.0.0.1:8788",
-  "ranAt": "2026-11-13T04:35:49.343Z",
-  "passed": 251,
+  "ranAt": "2026-11-13T04:53:20.735Z",
+  "passed": 274,
   "failed": 0,
   "results": [
     {
@@ -41,6 +41,11 @@
     },
     {
       "name": "initial HTML: report content without JavaScript",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "initial HTML: official critical warning without JavaScript",
       "ok": true,
       "detail": ""
     },
@@ -185,7 +190,17 @@
       "detail": ""
     },
     {
-      "name": "map card: critical status shown",
+      "name": "map card: portal citations are not presented as critical",
+      "ok": true,
+      "detail": "×98/100out of 100RAPID CITY PIZZA RANCH1556 Luna AVE, Rapid CityInspected Jul 20, 2026▼Violations found:🦠 Cleanliness⚠️ ContaminationSaveWa"
+    },
+    {
+      "name": "map card: official critical status shown with a high score",
+      "ok": true,
+      "detail": "×97/100out of 100GET N GO #116201 W 12TH ST, Sioux FallsInspected Aug 11, 2026▼⚠Critical violations found on latest inspectionViolations fou"
+    },
+    {
+      "name": "filters: critical filter says which records carry official marks",
       "ok": true,
       "detail": ""
     },
@@ -200,9 +215,9 @@
       "detail": "status: 3 restaurants found."
     },
     {
-      "name": "search card: critical status and inspection date in text",
+      "name": "search card: findings and inspection date in text, no unverified critical flag",
       "ok": true,
-      "detail": "RAPID CITY PIZZA RANCH1556 Luna AVE, Rapid City, SD⚠ Critical violation on latest inspection · Inspected Jul 20, 2026▼98"
+      "detail": "RAPID CITY PIZZA RANCH1556 Luna AVE, Rapid City, SD2 violations recorded · Inspected Jul 20, 2026▼98 out of 100"
     },
     {
       "name": "search → report",
@@ -215,24 +230,19 @@
       "detail": "RAPID CITY PIZZA RANCH — Rapid City, SD health inspections | DineSafeSD"
     },
     {
-      "name": "report: written critical warning matches the map card",
+      "name": "report (portal citations): matches the card — no critical warning",
       "ok": true,
-      "detail": ""
+      "detail": "LATEST INSPECTION |  | July 20, 2026 |  | 98 |  | Inspection score: 98 out of 100 |  | Average score 97.6 over 5 inspections on record |  | 2 violations recorded on this inspection. The state portal does not publish a se"
     },
     {
-      "name": "report: explains high score with critical findings",
+      "name": "report (portal citations): each violation says severity is not published",
       "ok": true,
-      "detail": ""
+      "detail": "Severity not published state portal citation Code 44:02:07:24 || Severity not published state portal citation Code 44:02:07:55"
     },
     {
-      "name": "report: says where the critical label comes from",
+      "name": "report: explains why portal citations carry no severity",
       "ok": true,
       "detail": ""
-    },
-    {
-      "name": "report: severity in text beside each violation",
-      "ok": true,
-      "detail": "Critical DineSafeSD classification Code 44:02:07:24 || Major DineSafeSD classification Code 44:02:07:55"
     },
     {
       "name": "report: inspection date prominent",
@@ -263,6 +273,31 @@
       "name": "report: copy-name puts the exact name on the clipboard",
       "ok": true,
       "detail": "RAPID CITY PIZZA RANCH"
+    },
+    {
+      "name": "search card: official critical status in text",
+      "ok": true,
+      "detail": "GET N GO #116201 W 12TH ST, Sioux Falls, SD⚠ Critical violation on latest inspection · Inspected Aug 11, 2026▼97 out of "
+    },
+    {
+      "name": "report: written critical warning matches the card",
+      "ok": true,
+      "detail": "Inspection score: 97 out of 100"
+    },
+    {
+      "name": "report: explains high score with critical findings",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report: says the critical label is the official mark",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report: severity in text beside each violation",
+      "ok": true,
+      "detail": "Critical per city report Code 37"
     },
     {
       "name": "search: Back from a report restores the query",
@@ -460,12 +495,22 @@
       "detail": ""
     },
     {
-      "name": "report: no horizontal overflow (320/light)",
+      "name": "report (critical): no horizontal overflow (320/light)",
       "ok": true,
       "detail": ""
     },
     {
-      "name": "axe: no WCAG A/AA violations — report (320/light)",
+      "name": "axe: no WCAG A/AA violations — report, critical (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report (portal): no horizontal overflow (320/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report, portal (320/light)",
       "ok": true,
       "detail": ""
     },
@@ -570,12 +615,22 @@
       "detail": ""
     },
     {
-      "name": "report: no horizontal overflow (320/dark)",
+      "name": "report (critical): no horizontal overflow (320/dark)",
       "ok": true,
       "detail": ""
     },
     {
-      "name": "axe: no WCAG A/AA violations — report (320/dark)",
+      "name": "axe: no WCAG A/AA violations — report, critical (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report (portal): no horizontal overflow (320/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report, portal (320/dark)",
       "ok": true,
       "detail": ""
     },
@@ -680,12 +735,22 @@
       "detail": ""
     },
     {
-      "name": "report: no horizontal overflow (390/light)",
+      "name": "report (critical): no horizontal overflow (390/light)",
       "ok": true,
       "detail": ""
     },
     {
-      "name": "axe: no WCAG A/AA violations — report (390/light)",
+      "name": "axe: no WCAG A/AA violations — report, critical (390/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report (portal): no horizontal overflow (390/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report, portal (390/light)",
       "ok": true,
       "detail": ""
     },
@@ -790,12 +855,22 @@
       "detail": ""
     },
     {
-      "name": "report: no horizontal overflow (390/dark)",
+      "name": "report (critical): no horizontal overflow (390/dark)",
       "ok": true,
       "detail": ""
     },
     {
-      "name": "axe: no WCAG A/AA violations — report (390/dark)",
+      "name": "axe: no WCAG A/AA violations — report, critical (390/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report (portal): no horizontal overflow (390/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report, portal (390/dark)",
       "ok": true,
       "detail": ""
     },
@@ -900,12 +975,22 @@
       "detail": ""
     },
     {
-      "name": "report: no horizontal overflow (tablet/light)",
+      "name": "report (critical): no horizontal overflow (tablet/light)",
       "ok": true,
       "detail": ""
     },
     {
-      "name": "axe: no WCAG A/AA violations — report (tablet/light)",
+      "name": "axe: no WCAG A/AA violations — report, critical (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report (portal): no horizontal overflow (tablet/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report, portal (tablet/light)",
       "ok": true,
       "detail": ""
     },
@@ -1010,12 +1095,22 @@
       "detail": ""
     },
     {
-      "name": "report: no horizontal overflow (tablet/dark)",
+      "name": "report (critical): no horizontal overflow (tablet/dark)",
       "ok": true,
       "detail": ""
     },
     {
-      "name": "axe: no WCAG A/AA violations — report (tablet/dark)",
+      "name": "axe: no WCAG A/AA violations — report, critical (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report (portal): no horizontal overflow (tablet/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report, portal (tablet/dark)",
       "ok": true,
       "detail": ""
     },
@@ -1120,12 +1215,22 @@
       "detail": ""
     },
     {
-      "name": "report: no horizontal overflow (desktop/light)",
+      "name": "report (critical): no horizontal overflow (desktop/light)",
       "ok": true,
       "detail": ""
     },
     {
-      "name": "axe: no WCAG A/AA violations — report (desktop/light)",
+      "name": "axe: no WCAG A/AA violations — report, critical (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report (portal): no horizontal overflow (desktop/light)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report, portal (desktop/light)",
       "ok": true,
       "detail": ""
     },
@@ -1230,12 +1335,22 @@
       "detail": ""
     },
     {
-      "name": "report: no horizontal overflow (desktop/dark)",
+      "name": "report (critical): no horizontal overflow (desktop/dark)",
       "ok": true,
       "detail": ""
     },
     {
-      "name": "axe: no WCAG A/AA violations — report (desktop/dark)",
+      "name": "axe: no WCAG A/AA violations — report, critical (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "report (portal): no horizontal overflow (desktop/dark)",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "axe: no WCAG A/AA violations — report, portal (desktop/dark)",
       "ok": true,
       "detail": ""
     },
@@ -1294,7 +1409,7 @@
       "impact": "serious",
       "nodes": [
         {
-          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(67)",
+          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(53)",
           "summary": "Fix any of the following:\n  Target has insufficient size because it is partially obscured (smallest space is 16px by 32px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe c"
         }
       ],
@@ -1307,7 +1422,7 @@
       "impact": "serious",
       "nodes": [
         {
-          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(67)",
+          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(53)",
           "summary": "Fix any of the following:\n  Target has insufficient size because it is partially obscured (smallest space is 16px by 32px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe c"
         }
       ],
