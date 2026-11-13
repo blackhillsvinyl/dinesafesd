@@ -12,11 +12,11 @@ This file is a handoff record, not a lock.
 ```bash
 npm ci
 cd apps/web
-npm test                 # vitest: 32 unit tests (+4 published-data contract tests owned by Codex, untracked)
+npm test                 # vitest: 33 unit tests (+4 published-data contract tests owned by Codex, untracked)
 npm run build            # tsc (app) + tsc (scripts) + vite build + prerender
 npx wrangler@4 pages dev dist --port 8788 --compatibility-date 2026-05-01   # Cloudflare Pages emulator
 COUNT_ONLY_ID=sd_doh_al-s-hotwing-sauce-219-se-1st-ave-watertown npm run test:e2e   # in a second shell
-cd ../../services/data-pipeline && npm test    # vitest: 15 pipeline unit tests
+cd ../../services/data-pipeline && npm test    # vitest: 24 pipeline unit tests
 ```
 
 `--compatibility-date` is only needed because the locally installed wrangler (4.90.1) is older
@@ -24,15 +24,15 @@ than today's default date. `npm run test:e2e` writes `apps/web/e2e/results.json`
 `apps/web/e2e/screenshots/` (both git-ignored). A copy of the last run is in
 `docs/dinesafe-update-evidence/`.
 
-## Results of the last run (2026-11-12, after the review-finding fixes)
+## Results of the last run (2026-11-12, after the second round of review fixes)
 
 | Check | Command | Result |
 |---|---|---|
-| Web unit tests | `npm test` in `apps/web` | 36 passed, 0 failed (32 of mine, 4 of Codex's `published-data.test.ts`) |
-| Pipeline unit tests | `npm test` in `services/data-pipeline` | 15 passed, 0 failed |
+| Web unit tests | `npm test` in `apps/web` | 37 passed, 0 failed (33 of mine, 4 of Codex's `published-data.test.ts`) |
+| Pipeline unit tests | `npm test` in `services/data-pipeline` | 24 passed, 0 failed, including a run of the real `syncAll` loop with a stubbed page and a throwaway data directory |
 | Pipeline type-check | `npx tsc --noEmit -p services/data-pipeline` | passed |
 | Production build | `npm run build` | passed; 4,486 restaurant pages + 7 static pages + 404 + sitemap (4,493 URLs) + robots in about 1.8 s |
-| Browser suite | `npm run test:e2e` | 286 passed, 0 failed |
+| Browser suite | `npm run test:e2e` | 287 passed, 0 failed; keyboard group rerun twice more, 20 of 20 each time |
 | Automated accessibility | axe-core 4.14, WCAG 2.0/2.1/2.2 A+AA tags, inside the browser suite | 48 runs (6 screens × 4 widths × 2 themes), 0 violations counted; map-marker spacing noted as exempt (see Remaining issues) |
 | Live Sioux Falls parse | refactored parser against the live city pages for sites 144, 715, 2400 | all three match the stored records |
 | Live state sync | one county (Hughes), last 45 days, against a temporary copy of the data | 7 establishments, 35 violations, no failed counties; output byte-identical to the stored data |
@@ -327,6 +327,23 @@ Known limits of these fixes:
   keeping it on screen.
 - The current local `index.json` shows the state source last checked on November 8, so the new
   3-day notice appears in today's screenshots. That is accurate for this checkout.
+
+## Response to Codex's second pass (at `56f7febc`)
+
+| Codex item | Status | What changed | Evidence |
+|---|---|---|---|
+| 1. State establishment failures look successful (R4) | fixed | `sd-doh.ts` records every establishment it could not process, every violations list or history it could not read, and a count above zero with no rows read. `syncAll()` returns them as `failedRecords`; any makes the run `partial` and the job exit non-zero. `extractViolations` and `extractPastInspections` no longer turn an error into an empty list. A county missing from the portal's list is now a failed county, not a silent skip. | `doh-run.test.ts`: real `syncAll`/`syncByCounty` loop, one failing record among three → partial, other two still processed |
+| 2. Score of 100 stands in for missing evidence (R2) | **inference kept, by owner decision**; tightened | The live city page for a clean inspection prints only the date and "Total Score:100", so there is no explicit zero to read. Zero is now taken from, in order: parsed rows; an explicit "No Violations" statement; or a score of 100 with no violation markup on the report at all. Violation markup that cannot be read is unknown even at 100. The report says the zero is read from the score, and About explains it. | pipeline tests `infers zero from a score of 100 only when the report lists nothing at all`, `does not infer zero when violation markup is present but unreadable`, `takes an explicit “No Violations” statement as zero`; web test `Sioux Falls zero read from the score`; browser check `none recorded (Sioux Falls)` |
+| 3. Unreadable HTTP-200 Sioux Falls page counted as success (R4) | fixed | `detailProblem` rejects a response that is not an establishment page, has an unreadable inspection block, or shows no inspection although the list has a score. Such a page gets one retry, then counts as a failed establishment (partial run); stored records are untouched. | pipeline tests `unreadable SWEEPS responses (R4)`; live pages for sites 144, 715, 2400 still parse and match stored records |
+| 4. HTML outage mistaken for absence (R7) | fixed | Only a 404 is "not found". A 200 that is not JSON is an outage with a retry, and is not `noindex`. | browser check `outage: an HTML 200 response is an outage` |
+| Intermittent List → card → Escape focus on body | fixed, cause identified | Focus was restored inside `requestAnimationFrame`, which does not fire in a background or throttled tab. It now runs in an effect after the card is removed. The tests wait on focus itself instead of a fixed 150 ms. | keyboard group passed 3 runs in a row; not reproduced before or after on this machine, so the cause is inferred from the code, not observed |
+
+Codex's fixture for item 2 ("Findings unavailable" text beside a score of 100) still yields zero,
+because the page carries no violation markup. That is the inference the owner chose to keep.
+
+Side effect to expect: with item 1, a dev server that returns the app shell for a missing data
+file (Vite does) now shows the outage message for an unknown restaurant instead of "not found".
+The production host returns a real 404.
 
 ## Codex review
 

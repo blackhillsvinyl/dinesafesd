@@ -73,6 +73,14 @@ export class SDDOHSource {
   private page: Page | null = null;
   private config: SourceConfig;
   private stats = { restaurants: 0, inspections: 0, violations: 0 };
+  // Records the run could not fully read (a whole establishment, or its
+  // violations or history). The run carries on, but is not a success.
+  private failedRecords: string[] = [];
+
+  private recordFailure(name: string, what: string, error: unknown): void {
+    console.error(`  Could not read ${what} for ${name}:`, error);
+    this.failedRecords.push(`${name} (${what})`);
+  }
 
   constructor(config: SourceConfig) {
     this.config = config;
@@ -105,11 +113,11 @@ export class SDDOHSource {
   }
 
   /**
-   * Sync every configured county. Progress is saved per county and a failed
-   * county does not stop the run — but it is reported, so callers can record
-   * the run as partial instead of successful.
+   * Sync every configured county. Progress is saved per county, and neither
+   * a failed county nor a failed establishment stops the run — but both are
+   * reported, so callers can record the run as partial instead of successful.
    */
-  async syncAll(): Promise<{ failedCounties: string[] }> {
+  async syncAll(): Promise<{ failedCounties: string[]; failedRecords: string[] }> {
     const counties = this.config.counties ?? SD_COUNTIES;
     const failedCounties: string[] = [];
     let consecutiveTimeouts = 0;
@@ -168,7 +176,10 @@ export class SDDOHSource {
     console.log(`Restaurants: ${this.stats.restaurants}`);
     console.log(`Inspections: ${this.stats.inspections}`);
     console.log(`Violations: ${this.stats.violations}`);
-    return { failedCounties };
+    if (this.failedRecords.length) {
+      console.error(`\nRECORDS NOT FULLY READ (${this.failedRecords.length}): ${this.failedRecords.slice(0, 20).join('; ')}`);
+    }
+    return { failedCounties, failedRecords: [...this.failedRecords] };
   }
 
   async syncByCounty(county: string): Promise<void> {
@@ -191,8 +202,8 @@ export class SDDOHSource {
     }, SELECTORS.countyDropdown, county);
 
     if (!countyValue) {
-      console.warn(`County "${county}" not found in dropdown, skipping`);
-      return;
+      // A county we were asked to read and could not find is a failure, not a skip
+      throw new Error(`County "${county}" not found in the portal's county list`);
     }
 
     await this.page.select(SELECTORS.countyDropdown, countyValue);
@@ -289,7 +300,7 @@ export class SDDOHSource {
             await this.processEstablishment(establishments[j], county);
           }
         } catch (error) {
-          console.error(`  Error processing ${establishments[j].name}:`, error);
+          this.recordFailure(establishments[j].name, 'establishment', error);
         }
 
         // Throttle between establishments
@@ -650,8 +661,12 @@ export class SDDOHSource {
               });
             }
             this.stats.violations += violations.length;
+            // The portal counted violations but none could be read from its list
+            if (violations.length === 0 && (establishment.violationCount ?? 0) > 0) {
+              this.recordFailure(establishment.name, 'violations', 'count is ' + establishment.violationCount + ' but no rows were read');
+            }
           } catch (error) {
-            console.warn(`  Failed to extract violations:`, error);
+            this.recordFailure(establishment.name, 'violations', error);
           }
         }
       }
@@ -674,7 +689,7 @@ export class SDDOHSource {
           this.stats.inspections++;
         }
       } catch (error) {
-        console.warn(`  Failed to extract past inspections:`, error);
+        this.recordFailure(establishment.name, 'past inspections', error);
       }
     }
   }
@@ -716,8 +731,8 @@ export class SDDOHSource {
       // Parsed here, not in the page: missing text must stay unknown
       return rows.map(({ vtext, ...r }) => ({ ...r, violationCount: parseViolationCount(vtext) }));
     } catch (error) {
-      console.warn(`  Failed to extract past inspections from ${linkId}:`, error);
-      return [];
+      // Let the caller record it: an unread history is not an empty history
+      throw error;
     }
   }
 
@@ -836,8 +851,8 @@ export class SDDOHSource {
           if (closeBtn) closeBtn.click();
         });
       } catch {}
-      console.warn(`  Failed to extract violations from ${violationsLinkId}:`, error);
-      return [];
+      // Let the caller record it: unread violations are not zero violations
+      throw error;
     }
   }
 

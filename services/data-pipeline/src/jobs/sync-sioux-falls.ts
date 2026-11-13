@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { pathToFileURL } from 'node:url';
 import { store } from '../lib/store.js';
 import { geocodeAddress } from '../processors/geocoder.js';
-import { parseSweepsDetail, shouldFetchSweepsDetail, utcDayNumber } from '../lib/parsing.js';
+import { detailProblem, parseSweepsDetail, shouldFetchSweepsDetail, utcDayNumber } from '../lib/parsing.js';
 import type { SweepsInspection } from '../lib/parsing.js';
 
 const BASE_URL = 'https://sweepsdata.siouxfalls.gov/';
@@ -69,14 +69,22 @@ async function fetchInspectionDetails(
   r: SFRestaurant
 ): Promise<{ inspections: SweepsInspection[]; phone: string | null }> {
   const url = BASE_URL + 'Restaurant_Detail.aspx?SiteID=' + r.siteId + '&FacType=' + r.facType + '&inv=1';
-  let html: string;
+  // A page can fail in two ways: the request fails, or it "succeeds" with
+  // something that isn't the establishment's page. Both get one retry, and
+  // then count as a failed establishment — never as "no inspections".
+  const read = async () => {
+    const html = await fetchPage(url);
+    const parsed = parseSweepsDetail(html);
+    const problem = detailProblem(html, parsed, r.score);
+    if (problem) throw new Error(problem + ' for ' + url);
+    return parsed;
+  };
   try {
-    html = await fetchPage(url);
+    return await read();
   } catch {
     await randomDelay(1500, 2500);
-    html = await fetchPage(url);
+    return await read();
   }
-  return parseSweepsDetail(html);
 }
 
 function calculateGrade(score: number | null): string {

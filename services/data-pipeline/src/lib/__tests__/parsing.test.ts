@@ -1,11 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
+  detailProblem,
   parseSweepsDetail,
   parseViolationCount,
   shouldFetchSweepsDetail,
   sweepsViolationCount,
 } from '../parsing';
-import { dohRunRecord } from '../run-record';
+import { dohRunComplete, dohRunRecord } from '../run-record';
 import { publishedSeverity } from '../store';
 
 describe('SD DOH violation count (R2)', () => {
@@ -23,7 +24,7 @@ describe('SD DOH violation count (R2)', () => {
   });
 });
 
-const detail = (blocks: string) => `<html><body nonformattednameaddress="X 1 MAIN Sioux Falls, SD 57104 (605) 555-0100 ">${blocks}</body></html>`;
+const detail = (blocks: string) => `<html><title>Food Service Inspections - City of Sioux Falls, SD</title><body nonformattednameaddress="X 1 MAIN Sioux Falls, SD 57104 (605) 555-0100 ">Facility: X ${blocks}</body></html>`;
 const inspection = (date: string, score: number, body = '') =>
   `<div class="inspection">Inspection Date: ${date}<br />Total Score: ${score}${body}</div>`;
 const critical = `<div class="violhead"><b>Critical Violations</b><table class="violations"><tr><td>4 points: <a href='x/violation/12'>Cold holding</a></td></tr><tr><td>Cooler at 46F</td></tr></table></div>`;
@@ -43,11 +44,44 @@ describe('SWEEPS detail parsing', () => {
     expect(inspections[0].violationCount).toBe(2);
   });
 
-  it('counts zero only when the score is 100; unread violations stay unknown (R2)', () => {
+  it('infers zero from a score of 100 only when the report lists nothing at all (R2)', () => {
     const { inspections } = parseSweepsDetail(detail(inspection('2/11/2026', 100) + inspection('1/5/2025', 93)));
     expect(inspections.map((i) => i.violationCount)).toEqual([0, null]);
     expect(sweepsViolationCount(0, null)).toBeNull();
     expect(sweepsViolationCount(3, 100)).toBe(3);
+  });
+
+  it('does not infer zero when violation markup is present but unreadable', () => {
+    const broken = '<div class="violhead"><b>Critical Violations</b><table class="violations"><tr><td>layout changed</td></tr></table></div>';
+    const { inspections } = parseSweepsDetail(detail(inspection('2/11/2026', 100, broken)));
+    expect(inspections[0].violationCount).toBeNull();
+  });
+
+  it('takes an explicit “No Violations” statement as zero at any score', () => {
+    const stated = '<table class="violations"><tr><td>No Violations</td></tr></table>';
+    const { inspections } = parseSweepsDetail(detail(inspection('2/11/2026', 98, stated)));
+    expect(inspections[0].violationCount).toBe(0);
+  });
+});
+
+describe('unreadable SWEEPS responses (R4)', () => {
+  it('rejects an HTTP-200 page that is not an establishment page', () => {
+    const html = '<html>temporarily unavailable</html>';
+    expect(detailProblem(html, parseSweepsDetail(html), 100)).toMatch(/not a SWEEPS establishment page/);
+  });
+
+  it('rejects a page with a listed score but no inspection, or an unreadable inspection block', () => {
+    const empty = detail('');
+    expect(detailProblem(empty, parseSweepsDetail(empty), 100)).toMatch(/no inspection/);
+    const garbled = detail('<div class="inspection">Inspection Date: soon</div>');
+    expect(detailProblem(garbled, parseSweepsDetail(garbled), null)).toMatch(/could not be read/);
+  });
+
+  it('accepts a real page, and an establishment with no score and no inspections yet', () => {
+    const ok = detail(inspection('2/11/2026', 100));
+    expect(detailProblem(ok, parseSweepsDetail(ok), 100)).toBeNull();
+    const none = detail('');
+    expect(detailProblem(none, parseSweepsDetail(none), null)).toBeNull();
   });
 });
 
@@ -83,11 +117,22 @@ describe('SWEEPS detail refresh (R3)', () => {
 
 describe('run records (R4)', () => {
   it('is a success only when every county was read', () => {
-    expect(dohRunRecord({ restaurants: 5, inspections: 9 }, [])).toMatchObject({ status: 'success', error: null });
+    expect(dohRunRecord({ restaurants: 5, inspections: 9 }, { failedCounties: [], failedRecords: [] })).toMatchObject({ status: 'success', error: null });
+  });
+
+  it('is partial when a single establishment, its violations, or its history could not be read', () => {
+    const run = dohRunRecord(
+      { restaurants: 5, inspections: 9 },
+      { failedCounties: [], failedRecords: ['ZESTO (establishment)', 'ARBYS 8261 (violations)'] }
+    );
+    expect(run.status).toBe('partial');
+    expect(run.error).toContain('2 record(s) could not be fully read: ZESTO (establishment); ARBYS 8261 (violations)');
+    expect(dohRunComplete({ failedCounties: [], failedRecords: ['x'] })).toBe(false);
+    expect(dohRunComplete({ failedCounties: [], failedRecords: [] })).toBe(true);
   });
 
   it('records a partial run and names what was missed', () => {
-    const run = dohRunRecord({ restaurants: 5, inspections: 9 }, ['Pennington', 'Hughes']);
+    const run = dohRunRecord({ restaurants: 5, inspections: 9 }, { failedCounties: ['Pennington', 'Hughes'] });
     expect(run.status).toBe('partial');
     expect(run.error).toContain('Pennington, Hughes');
     expect(run.restaurants_upserted).toBe(5); // progress is still reported

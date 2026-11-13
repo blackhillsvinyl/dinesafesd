@@ -5,7 +5,7 @@ import { fetchIndex } from '../lib/api';
 import { SourceNotices } from '../components/LoadError';
 import { sourceNotices } from '../lib/sourceHealth';
 import { SCORE_BANDS } from '../scoring';
-import { BASIS_EXPLANATION, SCORE_VS_CRITICAL } from '../lib/inspection';
+import { BASIS_EXPLANATION, SCORE_VS_CRITICAL, SWEEPS_ZERO_NOTE } from '../lib/inspection';
 import { SD_DOH_SEARCH, SWEEPS_HOME } from '../lib/sources';
 import { SAVE_HELP } from '../components/SaveButtons';
 import { HOME_INTRO } from '../lib/meta';
@@ -107,7 +107,7 @@ export default function AboutPage() {
       </ul>
       <p>
         When an inspection has no itemized violations in the official data, we say so rather
-        than describe it as clean.
+        than describe it as clean. {SWEEPS_ZERO_NOTE}
       </p>
 
       <h2 id="saved">Save and Watch</h2>

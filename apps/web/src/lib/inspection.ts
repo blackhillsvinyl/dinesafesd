@@ -111,11 +111,19 @@ export function inspectionFindings(
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
-/** One factual sentence (or two) about an inspection's findings. */
-export function findingsSentence(f: Findings): string {
+export const SWEEPS_ZERO_NOTE =
+  'The city’s report prints no violation count. Where it lists no violations and the score is 100, we read that as none, because the score is 100 minus the points deducted.';
+
+/**
+ * One factual sentence (or two) about an inspection's findings. `ctx` lets
+ * the full report say when a Sioux Falls zero is read from the score.
+ */
+export function findingsSentence(f: Findings, ctx: { source?: string; score?: number | null } = {}): string {
   switch (f.kind) {
     case 'none-recorded':
-      return 'No violations were recorded on this inspection.';
+      return ctx.source === 'sf_sweeps' && ctx.score === 100
+        ? 'No violations are listed on the city’s report for this inspection, which scored 100.'
+        : 'No violations were recorded on this inspection.';
     case 'itemized': {
       // When the source's count and its itemized rows disagree, state both:
       // the rows may be incomplete or grouped differently, and we can't tell.

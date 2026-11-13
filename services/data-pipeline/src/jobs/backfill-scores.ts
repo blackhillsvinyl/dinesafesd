@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { store, DATA_DIR } from '../lib/store.js';
-import { dohRunRecord } from '../lib/run-record.js';
+import { dohRunComplete, dohRunRecord } from '../lib/run-record.js';
 import { SDDOHSource } from '../sources/sd-doh.js';
 
 /**
@@ -47,9 +47,9 @@ async function main() {
   const startedAt = new Date();
   try {
     await pipeline.initialize();
-    const { failedCounties } = await pipeline.syncAll();
-    store.recordRun('sd_doh', dohRunRecord({ restaurants: 0, inspections: pipeline.getStats().inspections }, failedCounties));
-    if (failedCounties.length) process.exitCode = 1;
+    const failed = await pipeline.syncAll();
+    store.recordRun('sd_doh', dohRunRecord({ restaurants: 0, inspections: pipeline.getStats().inspections }, failed));
+    if (!dohRunComplete(failed)) process.exitCode = 1;
   } catch (error) {
     console.error('Backfill failed:', error);
     store.recordRun('sd_doh', {

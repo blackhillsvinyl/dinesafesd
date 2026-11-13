@@ -404,7 +404,7 @@ async function keyboardFlow(browser) {
   // Escape closes and focus returns to the map
   await page.keyboard.press('Escape');
   await step('card closes on Escape', page.waitForFunction(() => !document.querySelector('.quickview')));
-  await new Promise((r) => setTimeout(r, 150)); // focus restore runs on the next frame
+  await step('focus leaves the page body after the card closes', page.waitForFunction(() => document.activeElement && document.activeElement !== document.body, { timeout: 5000 })).catch(() => {});
   const back = await describeFocus(page);
   check('quick view: Escape closes and returns focus to the map', back.marker || /Map of South Dakota/.test(back.what), back.what);
 
@@ -444,7 +444,7 @@ async function keyboardFlow(browser) {
   await page.waitForFunction(() => document.querySelector('.quickview')?.contains(document.activeElement));
   await page.keyboard.press('Escape');
   await page.waitForFunction(() => !document.querySelector('.quickview'));
-  await new Promise((r) => setTimeout(r, 150)); // focus restore runs on the next frame
+  await page.waitForFunction(() => document.activeElement && document.activeElement !== document.body, { timeout: 5000 }).catch(() => {});
   const listBack = await describeFocus(page);
   check('text alternative: closing the card restores focus to the List button', listBack.what === 'List', listBack.what);
 
@@ -632,9 +632,10 @@ async function contentFlows(browser) {
   await page.waitForSelector('article.report');
   const sw = await page.evaluate(() => ({
     summary: document.querySelector('.latest-summary').innerText,
+    page: document.querySelector('article.report').innerText,
     link: [...document.querySelectorAll('article.report a')].find((a) => /official record/.test(a.textContent))?.href,
   }));
-  check('none recorded: stated only on an explicit zero count', /No violations were recorded on this inspection\./.test(sw.summary));
+  check('none recorded (Sioux Falls): stated, and says it is read from the score', /No violations are listed on the city’s report for this inspection, which scored 100\./.test(sw.summary) && /we read that as none, because the score is 100 minus the points deducted/.test(sw.page), sw.summary.replace(/\n/g, ' | ').slice(0, 160));
   check('source: Sioux Falls record deep link', sw.link === 'https://sweepsdata.siouxfalls.gov/Restaurant_Detail.aspx?SiteID=715&FacType=16F&inv=1', sw.link);
 
   // Latest: wording and city filter
@@ -700,9 +701,12 @@ async function contentFlows(browser) {
 
   // R7: an outage is reported as an outage, with a working retry
   let failing = true;
+  let htmlOutage = false;
   await page.setRequestInterception(true);
   const onRequest = (req) => {
-    if (failing && /\/data\/.*\.json$/.test(new URL(req.url()).pathname)) req.respond({ status: 503, contentType: 'text/plain', body: 'unavailable' });
+    if (req.isInterceptResolutionHandled()) return;
+    if (htmlOutage && /\/data\/r\/.*\.json$/.test(new URL(req.url()).pathname)) req.respond({ status: 200, contentType: 'text/html', body: '<html>Service temporarily unavailable</html>' });
+    else if (failing && /\/data\/.*\.json$/.test(new URL(req.url()).pathname)) req.respond({ status: 503, contentType: 'text/plain', body: 'unavailable' });
     else req.continue();
   };
   page.on('request', onRequest);
@@ -730,6 +734,17 @@ async function contentFlows(browser) {
   await page.click('.load-error button');
   await step('report recovers', page.waitForSelector('article.report', { timeout: 20000 }));
   check('outage: report recovers after retry', /RAPID CITY PIZZA RANCH/.test(await page.$eval('article.report h1', (e) => e.textContent)));
+  // An HTML page served with 200 (host or proxy error page) is an outage too
+  htmlOutage = true;
+  failing = false;
+  await page.goto(`${BASE}/r/${PIZZA}`, { waitUntil: 'domcontentloaded' });
+  await step('report HTML-outage message', page.waitForSelector('.load-error', { timeout: 20000 }));
+  const htmlOut = await page.evaluate(() => ({ text: document.querySelector('.page').innerText, robots: document.querySelector('meta[name="robots"]')?.content ?? null }));
+  check('outage: an HTML 200 response is an outage, not “not found” or noindex', !/not found/i.test(htmlOut.text) && htmlOut.robots === null, JSON.stringify({ robots: htmlOut.robots }));
+  htmlOutage = false;
+  await page.click('.load-error button');
+  await step('report recovers from HTML outage', page.waitForSelector('article.report', { timeout: 20000 }));
+
   failing = true;
   await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
   await step('map outage message', page.waitForSelector('.map-load-error', { timeout: 20000 }));

@@ -4,6 +4,7 @@ import {
   BASIS_EXPLANATION,
   BASIS_SHORT,
   SCORE_VS_CRITICAL,
+  SWEEPS_ZERO_NOTE,
   findingsSentence,
   inspectionFindings,
   publishedSeverity,
@@ -56,7 +57,7 @@ function InspectionCard({ inspection, source }: { inspection: Inspection; source
         <ScorePill score={inspection.score} />
       </div>
       {inspection.inspection_type && <p className="inspection-type">{inspection.inspection_type}</p>}
-      <p className="inspection-findings">{findingsSentence(findings)}</p>
+      <p className="inspection-findings">{findingsSentence(findings, { source, score: inspection.score })}</p>
       {inspection.violations.length > 0 && (
         <ul className="violation-list">
           {inspection.violations.map((v) => {
@@ -104,6 +105,9 @@ export default function RestaurantReport({ restaurant: r, dataUpdatedAt, actions
     inspections.some((i) => i.violations.some((v) => severityBasis(r.source, v.code) === b))
   );
   const source = officialSource(r);
+  const sweepsZero =
+    r.source === 'sf_sweeps' &&
+    inspections.some((i) => i.score === 100 && inspectionFindings(i, r.source).kind === 'none-recorded');
 
   return (
     <article className="page report">
@@ -166,7 +170,7 @@ export default function RestaurantReport({ restaurant: r, dataUpdatedAt, actions
               </div>
             ) : (
               <p className="status status-neutral">
-                {findingsSentence(latestFindings!)}
+                {findingsSentence(latestFindings!, { source: r.source, score: latest.score })}
                 {latestFindings?.kind === 'itemized' && latestFindings.unpublished > 0 && (
                   <>
                     {' '}
@@ -204,6 +208,11 @@ export default function RestaurantReport({ restaurant: r, dataUpdatedAt, actions
             </p>
           ))}
         </>
+      )}
+      {sweepsZero && (
+        <p className="detail-note">
+          <b>“No violations listed”:</b> {SWEEPS_ZERO_NOTE}
+        </p>
       )}
 
       <h2>Verify with the official source</h2>

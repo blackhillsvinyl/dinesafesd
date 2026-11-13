@@ -28,14 +28,38 @@ export interface SweepsInspection {
 }
 
 /**
- * SWEEPS prints no violation count. Parsed rows are a count; no rows are
- * only "zero" when the score is 100 (the score is 100 minus points deducted,
- * so 100 means nothing was deducted). No rows with a lower score means we
- * failed to read the page, which is unknown, not clean.
+ * SWEEPS prints no violation count, so the count is worked out:
+ *
+ * 1. Parsed violation rows are the count.
+ * 2. An explicit "No Violations" statement on the report is zero.
+ * 3. Otherwise zero is inferred only when the score is 100 AND the report
+ *    carries no violation markup at all. The score is 100 minus the points
+ *    deducted, so 100 with nothing listed means nothing was deducted. This
+ *    is an inference from the score (the city's page for a clean inspection
+ *    prints just the date and "Total Score:100"); the site says so.
+ * 4. Anything else — a lower score with no rows, or violation markup we
+ *    could not read — is unknown, not clean.
  */
-export function sweepsViolationCount(parsedRows: number, score: number | null): number | null {
+export function sweepsViolationCount(
+  parsedRows: number,
+  score: number | null,
+  report: { statesNoViolations: boolean; hasViolationMarkup: boolean } = {
+    statesNoViolations: false,
+    hasViolationMarkup: false,
+  }
+): number | null {
   if (parsedRows > 0) return parsedRows;
-  return score === 100 ? 0 : null;
+  if (report.statesNoViolations) return 0;
+  return score === 100 && !report.hasViolationMarkup ? 0 : null;
+}
+
+/**
+ * Is this actually a SWEEPS establishment page? An error page, a challenge
+ * page, or an empty body can arrive with HTTP 200; those must not be read
+ * as "no inspections".
+ */
+export function isSweepsDetailPage(html: string): boolean {
+  return /Food Service Inspections/i.test(html) && /Facility:/i.test(html);
 }
 
 /** Parse "1/28/2026" → "2026-01-28" */
@@ -51,19 +75,31 @@ export function parseUSDate(raw: string): string | null {
  * <div class="inspection"> header carrying the date and total score) and
  * the establishment phone number.
  */
-export function parseSweepsDetail(html: string): { inspections: SweepsInspection[]; phone: string | null } {
+export function parseSweepsDetail(html: string): {
+  inspections: SweepsInspection[];
+  phone: string | null;
+  /** Inspection blocks whose date/score header could not be read. */
+  unreadableBlocks: number;
+} {
   // Row attributes carry "NAME ADDRESS City, SD ZIP PHONE"
   const phone =
     html.match(/nonformattednameaddress="[^"]*?(\(?\d{3}\)?[ .-]?\d{3}[ .-]?\d{4})\s*"/i)?.[1] ?? null;
 
   const inspections: SweepsInspection[] = [];
+  let unreadableBlocks = 0;
   const blocks = html.split(/<div class="inspection">/i);
   for (let b = 1; b < blocks.length; b++) {
     const block = blocks[b];
     const header = block.match(/^\s*Inspection Date:\s*([\d/]+)\s*<br\s*\/?>\s*Total Score:\s*(\d+)/i);
-    if (!header) continue;
+    if (!header) {
+      unreadableBlocks++;
+      continue;
+    }
     const date = parseUSDate(header[1]);
-    if (!date) continue;
+    if (!date) {
+      unreadableBlocks++;
+      continue;
+    }
     const score = parseInt(header[2], 10);
 
     // Violations for this inspection are grouped under "Critical Violations" /
@@ -109,11 +145,29 @@ export function parseSweepsDetail(html: string): { inspections: SweepsInspection
       score,
       comments,
       violations,
-      violationCount: sweepsViolationCount(violations.length, score),
+      violationCount: sweepsViolationCount(violations.length, score, {
+        statesNoViolations: /\bNo Violations\b/i.test(block),
+        hasViolationMarkup: /class=["']viol(ations|head)["']/i.test(block),
+      }),
     });
   }
 
-  return { inspections, phone };
+  return { inspections, phone, unreadableBlocks };
+}
+
+/**
+ * Why a fetched detail page cannot be trusted, or null when it can.
+ * A listed score means at least one inspection must be on the page.
+ */
+export function detailProblem(
+  html: string,
+  parsed: { inspections: unknown[]; unreadableBlocks: number },
+  listScore: number | null
+): string | null {
+  if (!isSweepsDetailPage(html)) return 'Response is not a SWEEPS establishment page';
+  if (parsed.unreadableBlocks > 0) return `${parsed.unreadableBlocks} inspection block(s) could not be read`;
+  if (listScore !== null && parsed.inspections.length === 0) return 'List shows a score but the page shows no inspection';
+  return null;
 }
 
 export interface DetailFetchInput {

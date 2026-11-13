@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { SDDOHSource } from '../sources/sd-doh.js';
 import { store } from '../lib/store.js';
+import { dohRunComplete } from '../lib/run-record.js';
 
 // Comma-separated so multi-word names ("Fall River", "Oglala Lakota") survive
 // shell tokenization; plain space-separated single-word names still work.
@@ -23,12 +24,12 @@ async function main() {
 
   try {
     await pipeline.initialize();
-    const { failedCounties } = await pipeline.syncAll();
+    const failed = await pipeline.syncAll();
     const { restaurantsWritten } = store.save();
     console.log('Saved ' + restaurantsWritten + ' restaurant files');
-    if (failedCounties.length) {
+    if (!dohRunComplete(failed)) {
       // Progress is saved, but the run did not cover everything it was asked to
-      console.error('INCOMPLETE: could not read ' + failedCounties.join(', '));
+      console.error('INCOMPLETE: could not read ' + [...failed.failedCounties, ...failed.failedRecords].join('; '));
       process.exitCode = 1;
       return;
     }

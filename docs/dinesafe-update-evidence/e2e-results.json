@@ -1,7 +1,7 @@
 {
   "base": "http://127.0.0.1:8788",
-  "ranAt": "2026-11-13T05:22:45.551Z",
-  "passed": 286,
+  "ranAt": "2026-11-13T06:05:07.101Z",
+  "passed": 287,
   "failed": 0,
   "results": [
     {
@@ -365,9 +365,9 @@
       "detail": ""
     },
     {
-      "name": "none recorded: stated only on an explicit zero count",
+      "name": "none recorded (Sioux Falls): stated, and says it is read from the score",
       "ok": true,
-      "detail": ""
+      "detail": "LATEST INSPECTION |  | February 11, 2026 |  | 100 |  | Inspection score: 100 out of 100 |  | Average score 100.0 over 2 inspections on record |  | No violations"
     },
     {
       "name": "source: Sioux Falls record deep link",
@@ -453,6 +453,11 @@
       "name": "outage: report recovers after retry",
       "ok": true,
       "detail": ""
+    },
+    {
+      "name": "outage: an HTML 200 response is an outage, not “not found” or noindex",
+      "ok": true,
+      "detail": "{\"robots\":null}"
     },
     {
       "name": "outage: map stops saying “Loading” and offers a retry",
@@ -1469,7 +1474,7 @@
       "impact": "serious",
       "nodes": [
         {
-          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(67)",
+          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(53)",
           "summary": "Fix any of the following:\n  Target has insufficient size because it is partially obscured (smallest space is 16px by 32px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe c"
         }
       ],
@@ -1482,7 +1487,7 @@
       "impact": "serious",
       "nodes": [
         {
-          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(67)",
+          "target": ".map-marker-btn.maplibregl-marker.maplibregl-marker-anchor-center:nth-child(53)",
           "summary": "Fix any of the following:\n  Target has insufficient size because it is partially obscured (smallest space is 16px by 32px, should be at least 24px by 24px)\n  Target has insufficient space to its closest neighbors. Safe c"
         }
       ],

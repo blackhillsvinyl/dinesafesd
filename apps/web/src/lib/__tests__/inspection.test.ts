@@ -104,6 +104,17 @@ describe('source count versus itemized rows (R6)', () => {
   });
 });
 
+describe('Sioux Falls zero read from the score', () => {
+  it('says so on the report, and only for a 100 score from the city', () => {
+    const none = inspectionFindings({ violations: [], violation_count: 0 }, 'sf_sweeps');
+    expect(findingsSentence(none, { source: 'sf_sweeps', score: 100 })).toBe(
+      'No violations are listed on the city’s report for this inspection, which scored 100.'
+    );
+    expect(findingsSentence(none, { source: 'sf_sweeps', score: 98 })).toBe('No violations were recorded on this inspection.');
+    expect(findingsSentence(none, { source: 'sd_doh', score: 100 })).toBe('No violations were recorded on this inspection.');
+  });
+});
+
 describe('load failures (R7)', () => {
   it('never retries a missing record, and gives up on outages after two retries', () => {
     expect(shouldRetry(0, new NotFoundError('/r/x.json'))).toBe(false);

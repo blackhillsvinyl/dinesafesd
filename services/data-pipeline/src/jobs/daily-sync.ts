@@ -28,8 +28,8 @@ async function runSDDOH(full: boolean): Promise<boolean> {
 
   try {
     await pipeline.initialize();
-    const { failedCounties } = await pipeline.syncAll();
-    const run = dohRunRecord(pipeline.getStats(), failedCounties);
+    const failed = await pipeline.syncAll();
+    const run = dohRunRecord(pipeline.getStats(), failed);
     store.recordRun('sd_doh', run);
     return run.status === 'success';
   } catch (error) {

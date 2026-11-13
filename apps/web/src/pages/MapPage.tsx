@@ -173,6 +173,7 @@ export default function MapPage() {
   const cityBoundsRef = useRef<Map<string, CityEntry>>(new Map());
   const searchRef = useRef<CitySearchHandle>(null);
   const openerRef = useRef<HTMLElement | null>(null);
+  const restoreFocus = useRef(false);
   const triggerRefs = useRef<Partial<Record<Panel, HTMLButtonElement | null>>>({});
   const [selected, setSelected] = useState<Restaurant | null>(null);
   const [stack, setStack] = useState<Restaurant[] | null>(null);
@@ -743,13 +744,18 @@ export default function MapPage() {
     const hadFocus = viaKeyboard || (!!card && card.contains(document.activeElement));
     setSelected(null);
     setStack(null);
-    if (!hadFocus) return;
-    const opener = openerRef.current;
-    requestAnimationFrame(() => {
-      if (opener && opener.isConnected) opener.focus();
-      else mapRef.current?.getCanvas().focus();
-    });
+    if (hadFocus) restoreFocus.current = true;
   };
+  // Runs after React has removed the card. (An animation frame is not
+  // reliable here: frames don't fire in a background or throttled tab, which
+  // left focus on the page body.)
+  useEffect(() => {
+    if (selected || stack || !restoreFocus.current) return;
+    restoreFocus.current = false;
+    const opener = openerRef.current;
+    if (opener && opener.isConnected) opener.focus();
+    else mapRef.current?.getCanvas().focus();
+  }, [selected, stack]);
 
   const refreshed = index ? format(new Date(index.updated_at), 'MMM d, yyyy') : null;
   const panelButton = (p: Exclude<Panel, 'none'>, label: string) => (

@@ -19,10 +19,11 @@ async function fetchJson<T>(path: string): Promise<T> {
   const resp = await fetch(`/data${path}`);
   if (resp.status === 404) throw new NotFoundError(path);
   if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${path}`);
-  // A missing file can come back as an HTML page with 200 (SPA fallback on
-  // some hosts); that is "not found", not an outage.
+  // Only a 404 establishes that a record does not exist. A 200 that is not
+  // JSON (an error or maintenance page from the host or a proxy) is an
+  // outage: reporting it as "not found" would also mark a real page noindex.
   const type = resp.headers.get('content-type') ?? '';
-  if (!type.includes('json')) throw new NotFoundError(path);
+  if (!type.includes('json')) throw new Error(`Unexpected ${type || 'untyped'} response for ${path}`);
   return resp.json() as Promise<T>;
 }
 
