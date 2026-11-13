@@ -68,7 +68,15 @@ export type Findings =
    * marks; `unpublished` counts violations whose severity the source does
    * not state.
    */
-  | { kind: 'itemized'; count: number; critical: number; unpublished: number }
+  | {
+      kind: 'itemized';
+      /** Violations itemized in the record. */
+      count: number;
+      critical: number;
+      unpublished: number;
+      /** The source's own count when it differs from the itemized rows, else null. */
+      listed: number | null;
+    }
   /** Only a count is published; severity cannot be known. */
   | { kind: 'count-only'; count: number }
   /** Neither violations nor a count are published. */
@@ -88,6 +96,10 @@ export function inspectionFindings(
       count: i.violations.length,
       critical: kinds.filter((k) => k === 'critical').length,
       unpublished: kinds.filter((k) => k === 'not-published').length,
+      listed:
+        typeof i.violation_count === 'number' && i.violation_count !== i.violations.length
+          ? i.violation_count
+          : null,
     };
   }
   if (i.violation_count === 0) return { kind: 'none-recorded' };
@@ -105,14 +117,20 @@ export function findingsSentence(f: Findings): string {
     case 'none-recorded':
       return 'No violations were recorded on this inspection.';
     case 'itemized': {
-      const head = `${plural(f.count, 'violation')} recorded on this inspection`;
+      // When the source's count and its itemized rows disagree, state both:
+      // the rows may be incomplete or grouped differently, and we can't tell.
+      const split = f.listed !== null;
+      const head = split
+        ? `The official record counts ${plural(f.listed!, 'violation')} for this inspection and itemizes ${f.count}`
+        : `${plural(f.count, 'violation')} recorded on this inspection`;
+      const those = split ? 'the itemized ones' : f.count === 1 ? 'it' : 'them';
       if (f.unpublished === f.count) {
-        return `${head}. The state portal does not publish a severity for ${f.count === 1 ? 'it' : 'them'}.`;
+        return `${head}. The state portal does not publish a severity for ${those}.`;
       }
       const marked =
         f.critical === 0
-          ? `${head}; none marked critical.`
-          : f.critical === f.count
+          ? `${head}; none ${split ? 'of the itemized ones ' : ''}marked critical.`
+          : f.critical === f.count && !split
             ? `${head}, marked critical.`
             : `${head}, ${f.critical} marked critical.`;
       return f.unpublished > 0

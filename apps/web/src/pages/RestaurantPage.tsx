@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { fetchRestaurant } from '../lib/api';
+import { fetchRestaurant, NotFoundError } from '../lib/api';
+import LoadError from '../components/LoadError';
 import { hasNewReport, markSeen } from '../lib/saved';
 import { NOT_FOUND_META, restaurantMeta } from '../lib/meta';
 import { usePageMeta } from '../lib/usePageMeta';
@@ -16,7 +17,6 @@ function useRestaurant(id: string | undefined) {
     queryFn: (): Promise<RestaurantDetail> => fetchRestaurant(id!),
     enabled: !!id,
     staleTime: 1000 * 60 * 30,
-    retry: false,
   });
 }
 
@@ -111,12 +111,22 @@ function Report({ restaurant }: { restaurant: RestaurantDetail }) {
 
 export default function RestaurantPage() {
   const { id } = useParams<{ id: string }>();
-  const { data: restaurant, isLoading, error } = useRestaurant(id);
+  const { data: restaurant, isLoading, error, refetch, isFetching } = useRestaurant(id);
 
   if (isLoading) {
     return (
       <div className="center" role="status">
         Loading…
+      </div>
+    );
+  }
+  // Only a record that does not exist is "not found" (and noindex). An
+  // outage is reported as an outage, with a way to retry.
+  if (error && !(error instanceof NotFoundError)) {
+    return (
+      <div className="page">
+        <h1>Inspection report</h1>
+        <LoadError what="this inspection report" onRetry={() => refetch()} busy={isFetching} />
       </div>
     );
   }

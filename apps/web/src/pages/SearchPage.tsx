@@ -5,6 +5,8 @@ import { fetchIndex } from '../lib/api';
 import { buildCityOptions, buildSearchIndex, inCity, searchRestaurants, normalize } from '../lib/search';
 import ResultCard from '../components/ResultCard';
 import { CRITICAL_FILTER_NOTE } from '../lib/inspection';
+import LoadError, { SourceNotices } from '../components/LoadError';
+import { sourceNotices } from '../lib/sourceHealth';
 import {
   isFavorite,
   isWatched,
@@ -44,7 +46,8 @@ export default function SearchPage() {
   // The query and city live in the URL so Back from a report restores them
   const [params, setParams] = useSearchParams();
   const city = (params.get('city') ?? '').toLowerCase();
-  const setParam = (key: 'q' | 'city', value: string) => {
+  type ParamKey = 'q' | 'city' | 'score' | 'critical' | 'saved' | 'sort';
+  const setParam = (key: ParamKey, value: string) => {
     setParams(
       (prev) => {
         const next = new URLSearchParams(prev);
@@ -63,14 +66,24 @@ export default function SearchPage() {
     setParam('q', value.trim());
   };
 
-  const [score, setScore] = useState<ScoreFilter>('all');
-  const [criticalOnly, setCriticalOnly] = useState(false);
-  const [savedOnly, setSavedOnly] = useState<SavedFilter>('none');
-  const [sort, setSort] = useState<SortOrder>('relevance');
+  // Every filter and the sort order live in the URL, so Back from a report
+  // and a refresh restore exactly what was selected.
+  const scoreParam = params.get('score');
+  const score: ScoreFilter = scoreParam === '95' || scoreParam === '90' || scoreParam === 'below90' ? scoreParam : 'all';
+  const setScore = (v: ScoreFilter) => setParam('score', v === 'all' ? '' : v);
+  const criticalOnly = params.get('critical') === '1';
+  const setCriticalOnly = (v: boolean) => setParam('critical', v ? '1' : '');
+  const savedParam = params.get('saved');
+  const savedOnly: SavedFilter = savedParam === 'favorites' || savedParam === 'watching' ? savedParam : 'none';
+  const setSavedOnly = (v: SavedFilter) => setParam('saved', v === 'none' ? '' : v);
+  const sortParam = params.get('sort');
+  const sort: SortOrder =
+    sortParam === 'best' || sortParam === 'worst' || sortParam === 'recent' || sortParam === 'name' ? sortParam : 'relevance';
+  const setSort = (v: SortOrder) => setParam('sort', v === 'relevance' ? '' : v);
   const [moreOpen, setMoreOpen] = useState(false);
   const savedVersion = useSavedVersion();
 
-  const { data: index, isFetching } = useQuery({
+  const { data: index, isFetching, isError, refetch } = useQuery({
     queryKey: ['restaurant-index'],
     queryFn: fetchIndex,
     staleTime: 1000 * 60 * 60,
@@ -88,15 +101,17 @@ export default function SearchPage() {
     (score !== 'all' ? 1 : 0) + (criticalOnly ? 1 : 0) + (savedOnly !== 'none' ? 1 : 0);
   const hasFilter = city !== '' || secondaryCount > 0;
 
-  const clearSecondary = () => {
-    setScore('all');
-    setCriticalOnly(false);
-    setSavedOnly('none');
-  };
-  const clearFilters = () => {
-    clearSecondary();
-    setParam('city', '');
-  };
+  const clearParams = (keys: ParamKey[]) =>
+    setParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        for (const k of keys) next.delete(k);
+        return next;
+      },
+      { replace: true }
+    );
+  const clearSecondary = () => clearParams(['score', 'critical', 'saved']);
+  const clearFilters = () => clearParams(['score', 'critical', 'saved', 'city']);
 
   const { results, total } = useMemo(() => {
     if (!index || (!hasQuery && !hasFilter)) return { results: undefined, total: 0 };
@@ -232,7 +247,7 @@ export default function SearchPage() {
                 type="button"
                 className={`filter-chip${criticalOnly ? ' active' : ''}`}
                 aria-pressed={criticalOnly}
-                onClick={() => setCriticalOnly((v) => !v)}
+                onClick={() => setCriticalOnly(!criticalOnly)}
               >
                 <span aria-hidden="true">⚠</span>Critical violations
               </button>
@@ -246,7 +261,7 @@ export default function SearchPage() {
                 type="button"
                 className={`filter-chip${savedOnly === 'favorites' ? ' active' : ''}`}
                 aria-pressed={savedOnly === 'favorites'}
-                onClick={() => setSavedOnly((v) => (v === 'favorites' ? 'none' : 'favorites'))}
+                onClick={() => setSavedOnly(savedOnly === 'favorites' ? 'none' : 'favorites')}
               >
                 <span aria-hidden="true">♥</span>Favorites{favoriteCount() > 0 ? ` (${favoriteCount()})` : ''}
               </button>
@@ -254,7 +269,7 @@ export default function SearchPage() {
                 type="button"
                 className={`filter-chip${savedOnly === 'watching' ? ' active' : ''}`}
                 aria-pressed={savedOnly === 'watching'}
-                onClick={() => setSavedOnly((v) => (v === 'watching' ? 'none' : 'watching'))}
+                onClick={() => setSavedOnly(savedOnly === 'watching' ? 'none' : 'watching')}
               >
                 Watching{watchCount() > 0 ? ` (${watchCount()})` : ''}
               </button>
@@ -278,6 +293,11 @@ export default function SearchPage() {
             </button>
           )}
         </div>
+      )}
+
+      {index && <SourceNotices notices={sourceNotices(index)} />}
+      {isError && !index && (
+        <LoadError what="the restaurant list" onRetry={() => refetch()} busy={isFetching} />
       )}
 
       <p className="result-count" role="status">

@@ -88,7 +88,8 @@ export function restaurantMeta(r: RestaurantDetail): PageMeta {
     const bits = [`Latest inspection ${longDate(latest.date)}`];
     if (latest.score != null) bits.push(`score ${latest.score} out of 100`);
     if (f.kind === 'itemized' || f.kind === 'count-only') {
-      bits.push(`${f.count} violation${f.count === 1 ? '' : 's'} recorded`);
+      const n = f.kind === 'itemized' && f.listed !== null ? f.listed : f.count;
+      bits.push(`${n} violation${n === 1 ? '' : 's'} recorded`);
     } else if (f.kind === 'none-recorded') {
       bits.push('no violations recorded');
     }

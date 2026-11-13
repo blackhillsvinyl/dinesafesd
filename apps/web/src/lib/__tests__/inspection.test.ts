@@ -8,7 +8,8 @@ import {
   severityBasis,
   severityLabel,
 } from '../inspection';
-import { applySeverityRules } from '../api';
+import { applySeverityRules, NotFoundError, shouldRetry } from '../api';
+import { sourceNotices } from '../sourceHealth';
 import type { RestaurantIndex } from '../../types';
 import { officialSource } from '../sources';
 import { TIERS, NO_SCORE_THEME, contrastRatio, getScoreTheme } from '../../scoring';
@@ -49,7 +50,7 @@ describe('inspectionFindings', () => {
       { violations: [v('44:02:07:24', 'critical'), v('44:02:07:55', 'major')], violation_count: 2 },
       'sd_doh'
     );
-    expect(f).toEqual({ kind: 'itemized', count: 2, critical: 0, unpublished: 2 });
+    expect(f).toEqual({ kind: 'itemized', count: 2, critical: 0, unpublished: 2, listed: null });
     expect(findingsSentence(f)).toBe(
       '2 violations recorded on this inspection. The state portal does not publish a severity for them.'
     );
@@ -60,7 +61,7 @@ describe('inspectionFindings', () => {
       { violations: [v('30', 'critical'), v('23', 'minor')], violation_count: 2 },
       'sd_doh'
     );
-    expect(f).toEqual({ kind: 'itemized', count: 2, critical: 1, unpublished: 0 });
+    expect(f).toEqual({ kind: 'itemized', count: 2, critical: 1, unpublished: 0, listed: null });
     expect(findingsSentence(f)).toBe('2 violations recorded on this inspection, 1 marked critical.');
     const sf = inspectionFindings({ violations: [v('7', 'minor')], violation_count: 1 }, 'sf_sweeps');
     expect(findingsSentence(sf)).toBe('1 violation recorded on this inspection; none marked critical.');
@@ -76,6 +77,67 @@ describe('inspectionFindings', () => {
     const f = inspectionFindings({ violations: [], violation_count: 3 });
     expect(f).toEqual({ kind: 'count-only', count: 3 });
     expect(findingsSentence(f)).toMatch(/severity is unknown/);
+  });
+});
+
+describe('source count versus itemized rows (R6)', () => {
+  it('states both when the record counts more than it itemizes', () => {
+    const f = inspectionFindings(
+      { violations: [v('44:02:07:24', 'unclassified'), v('44:02:07:55', 'unclassified')], violation_count: 5 },
+      'sd_doh'
+    );
+    expect(f).toMatchObject({ count: 2, listed: 5 });
+    expect(findingsSentence(f)).toBe(
+      'The official record counts 5 violations for this inspection and itemizes 2. The state portal does not publish a severity for the itemized ones.'
+    );
+  });
+
+  it('states both when it itemizes more than it counts, without a blanket severity claim', () => {
+    const f = inspectionFindings({ violations: [v('30', 'critical'), v('23', 'minor')], violation_count: 1 }, 'sd_doh');
+    expect(findingsSentence(f)).toBe(
+      'The official record counts 1 violation for this inspection and itemizes 2, 1 marked critical.'
+    );
+    const none = inspectionFindings({ violations: [v('22', 'minor'), v('23', 'minor')], violation_count: 3 }, 'sd_doh');
+    expect(findingsSentence(none)).toBe(
+      'The official record counts 3 violations for this inspection and itemizes 2; none of the itemized ones marked critical.'
+    );
+  });
+});
+
+describe('load failures (R7)', () => {
+  it('never retries a missing record, and gives up on outages after two retries', () => {
+    expect(shouldRetry(0, new NotFoundError('/r/x.json'))).toBe(false);
+    expect(shouldRetry(0, new Error('HTTP 503'))).toBe(true);
+    expect(shouldRetry(1, new Error('HTTP 503'))).toBe(true);
+    expect(shouldRetry(2, new Error('HTTP 503'))).toBe(false);
+  });
+});
+
+describe('source health notices (R4)', () => {
+  const now = new Date('2026-11-12T12:00:00Z');
+  const run = (status: 'success' | 'partial' | 'failure', finished_at: string) => ({
+    status,
+    finished_at,
+    restaurants_upserted: 1,
+    inspections_upserted: 1,
+    error: 'internal detail that must not be shown: ECONNRESET at county Hughes',
+  });
+
+  it('is silent when every source was fully read recently', () => {
+    expect(sourceNotices({ sources: { sd_doh: run('success', '2026-11-12T06:00:00Z') } }, now)).toEqual([]);
+  });
+
+  it('says so, in plain words, when a source was only partly read or failed', () => {
+    const [partial] = sourceNotices({ sources: { sd_doh: run('partial', '2026-11-12T06:00:00Z') } }, now);
+    expect(partial).toMatch(/South Dakota Department of Health records .* could not read everything/);
+    expect(partial).not.toMatch(/ECONNRESET|Hughes/);
+    const [failed] = sourceNotices({ sources: { sf_sweeps: run('failure', '2026-11-12T06:00:00Z') } }, now);
+    expect(failed).toMatch(/City of Sioux Falls records .* failed/);
+  });
+
+  it('flags a source that has not been checked for days', () => {
+    const [stale] = sourceNotices({ sources: { sd_doh: run('success', '2026-11-08T18:24:05Z') } }, now);
+    expect(stale).toMatch(/last checked on November 8, 2026/);
   });
 });
 

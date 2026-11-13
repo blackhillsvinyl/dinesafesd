@@ -16,6 +16,7 @@ import { isFavorite, favoriteCount, useSavedVersion } from '../lib/saved';
 import { useEffectiveDark } from '../lib/theme';
 import { HOME_INTRO, STATIC_META } from '../lib/meta';
 import { CRITICAL_FILTER_NOTE } from '../lib/inspection';
+import { sourceNotices } from '../lib/sourceHealth';
 import { usePageMeta } from '../lib/usePageMeta';
 import type { Restaurant } from '../types';
 
@@ -138,6 +139,9 @@ const savedView: {
   selectedId: string | null;
 } = { center: DEFAULT_CENTER, zoom: 6.4, selectedId: null };
 
+// Like the camera, the chosen filters survive a trip to a report and back
+let savedFilters: MapFilters = NO_FILTERS;
+
 type Panel = 'none' | 'filters' | 'legend' | 'list';
 
 const INTRO_KEY = 'dinesafe:intro-hidden';
@@ -172,7 +176,10 @@ export default function MapPage() {
   const triggerRefs = useRef<Partial<Record<Panel, HTMLButtonElement | null>>>({});
   const [selected, setSelected] = useState<Restaurant | null>(null);
   const [stack, setStack] = useState<Restaurant[] | null>(null);
-  const [filters, setFilters] = useState<MapFilters>(NO_FILTERS);
+  const [filters, setFilters] = useState<MapFilters>(savedFilters);
+  useEffect(() => {
+    savedFilters = filters;
+  }, [filters]);
   // First-time visitors on a wide screen get the legend open once; it is
   // not reopened on every return to the map.
   const [panel, setPanel] = useState<Panel>(() => {
@@ -202,7 +209,7 @@ export default function MapPage() {
   const panelRef = useRef(panel);
   panelRef.current = panel;
 
-  const { data: index } = useQuery({
+  const { data: index, isError, isFetching, refetch } = useQuery({
     queryKey: ['restaurant-index'],
     queryFn: fetchIndex,
     staleTime: 1000 * 60 * 60,
@@ -936,6 +943,12 @@ export default function MapPage() {
                   Data refreshed {refreshed}. Each restaurant shows its own inspection date.
                 </p>
               )}
+              {index &&
+                sourceNotices(index).map((n) => (
+                  <p key={n} className="legend-note source-warn">
+                    {n}
+                  </p>
+                ))}
               <div className="panel-foot">
                 <button type="button" className="filter-chip" onClick={() => closePanel(true)}>
                   Close legend
@@ -1011,6 +1024,17 @@ export default function MapPage() {
         <div className="map-notice" role="alert">
           {notice}
         </div>
+        {isError && !index && (
+          <div className="map-load-error" role="alert">
+            <p>
+              <strong>We couldn’t load the restaurants.</strong> This looks like a temporary
+              connection or server problem.
+            </p>
+            <button type="button" className="filter-chip" onClick={() => refetch()} disabled={isFetching}>
+              {isFetching ? 'Trying again…' : 'Try again'}
+            </button>
+          </div>
+        )}
         {selected ? (
           <QuickView restaurant={selected} onClose={() => closeCard()} />
         ) : stack ? (
@@ -1025,7 +1049,11 @@ export default function MapPage() {
         ) : null}
         <p className={`map-status${selected || stack ? ' covered' : ''}`} role="status">
           {shownCount === null ? (
-            'Loading restaurants…'
+            isError ? (
+              'Restaurants could not be loaded.'
+            ) : (
+              'Loading restaurants…'
+            )
           ) : (
             <>
               {shownCount.toLocaleString()} restaurant{shownCount === 1 ? '' : 's'} on the map

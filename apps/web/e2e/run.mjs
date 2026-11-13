@@ -668,6 +668,98 @@ async function contentFlows(browser) {
   const nf = await page.evaluate(() => ({ h1: document.querySelector('.page h1').textContent, title: document.title, robots: document.querySelector('meta[name="robots"]')?.content }));
   check('missing restaurant: clear message, not-found title, noindex', nf.h1 === 'Restaurant not found' && /not found/i.test(nf.title) && nf.robots === 'noindex', JSON.stringify(nf));
 
+  // R6: source count and itemized rows disagree → both are stated
+  await page.goto(`${BASE}/r/sd_doh_2nd-street-diner-610-s-washington-madison`, { waitUntil: 'networkidle0' });
+  await page.waitForSelector('article.report');
+  const split = await page.evaluate(() =>
+    [...document.querySelectorAll('.inspection-card')].map((c) => c.querySelector('.inspection-findings').textContent).find((t) => /counts 5 violations/.test(t)) ?? ''
+  );
+  check('report: states the official count and the itemized rows when they differ', /The official record counts 5 violations for this inspection and itemizes 4/.test(split), split);
+
+  // R8: every Search filter and the sort survive Back and refresh
+  await page.goto(`${BASE}/search?q=pizza+ranch&city=rapid+city`, { waitUntil: 'networkidle0' });
+  await page.waitForSelector('.result-card');
+  await page.click('[aria-controls="more-filters"]');
+  await page.evaluate(() => [...document.querySelectorAll('#more-filters .filter-chip')].find((c) => c.textContent.trim() === '95+').click());
+  await page.select('.filter-row select', 'name');
+  await page.waitForFunction(() => /score=95/.test(location.search) && /sort=name/.test(location.search));
+  const beforeNav = await page.$eval('.result-count', (e) => e.textContent);
+  await page.click('.result-card');
+  await page.waitForSelector('article.report');
+  await page.goBack();
+  await page.waitForSelector('.result-card');
+  const restored = await page.evaluate(() => ({
+    chips: document.querySelector('.active-filters')?.innerText.replace(/\n/g, ' ') ?? '',
+    sort: document.querySelector('.filter-row select').value,
+    count: document.querySelector('.result-count').textContent,
+  }));
+  check('search: score filter and sort survive Back from a report', /Score 95\+/.test(restored.chips) && restored.sort === 'name' && restored.count === beforeNav, JSON.stringify(restored));
+  await page.reload({ waitUntil: 'networkidle0' });
+  await page.waitForSelector('.result-card');
+  check('search: filters survive refresh', /Score 95\+/.test(await page.$eval('.active-filters', (e) => e.innerText)));
+
+  // R7: an outage is reported as an outage, with a working retry
+  let failing = true;
+  await page.setRequestInterception(true);
+  const onRequest = (req) => {
+    if (failing && /\/data\/.*\.json$/.test(new URL(req.url()).pathname)) req.respond({ status: 503, contentType: 'text/plain', body: 'unavailable' });
+    else req.continue();
+  };
+  page.on('request', onRequest);
+  for (const [route, what] of [['/search?q=pizza', 'search'], ['/latest', 'latest']]) {
+    failing = true;
+    await page.goto(BASE + route, { waitUntil: 'domcontentloaded' });
+    await step(`${what} outage message`, page.waitForSelector('.load-error', { timeout: 20000 }));
+    const msg = await page.$eval('.load-error', (e) => `${e.getAttribute('role')}: ${e.innerText.replace(/\n/g, ' ')}`);
+    check(`outage: ${what} says it could not load and offers a retry`, /^alert: We couldn’t load/.test(msg) && /Try again/.test(msg), msg.slice(0, 110));
+    failing = false;
+    await page.click('.load-error button');
+    await step(`${what} recovers`, page.waitForSelector('.result-card', { timeout: 20000 }));
+    check(`outage: ${what} recovers after retry`, !(await page.$('.load-error')));
+  }
+  failing = true;
+  await page.goto(`${BASE}/r/${PIZZA}`, { waitUntil: 'domcontentloaded' });
+  await step('report outage message', page.waitForSelector('.load-error', { timeout: 20000 }));
+  const outage = await page.evaluate(() => ({
+    text: document.querySelector('.page').innerText,
+    robots: document.querySelector('meta[name="robots"]')?.content ?? null,
+    title: document.title,
+  }));
+  check('outage: an existing report is not called “not found” and is not noindex', !/not found/i.test(outage.text) && outage.robots === null && !/not found/i.test(outage.title), JSON.stringify({ robots: outage.robots, title: outage.title }));
+  failing = false;
+  await page.click('.load-error button');
+  await step('report recovers', page.waitForSelector('article.report', { timeout: 20000 }));
+  check('outage: report recovers after retry', /RAPID CITY PIZZA RANCH/.test(await page.$eval('article.report h1', (e) => e.textContent)));
+  failing = true;
+  await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
+  await step('map outage message', page.waitForSelector('.map-load-error', { timeout: 20000 }));
+  const mapMsg = await page.evaluate(() => ({ err: document.querySelector('.map-load-error').innerText, status: document.querySelector('.map-status').textContent }));
+  check('outage: map stops saying “Loading” and offers a retry', /couldn’t load the restaurants/.test(mapMsg.err) && !/Loading/.test(mapMsg.status), mapMsg.status);
+  failing = false;
+  await page.click('.map-load-error button');
+  await step('map recovers', waitForMap(page));
+  check('outage: map recovers after retry', !(await page.$('.map-load-error')));
+  page.off('request', onRequest);
+  await page.setRequestInterception(false);
+
+  // R8 (map): filters survive a trip to a report and back
+  await page.evaluate(() => [...document.querySelectorAll('.map-btn')].find((b) => /^Filters/.test(b.textContent.trim())).click());
+  await page.waitForSelector('#map-panel-filters');
+  await page.evaluate(() => [...document.querySelectorAll('#map-panel-filters .filter-chip')].find((c) => c.textContent.trim() === '95+').click());
+  await page.waitForFunction(() => /\(filtered\)/.test(document.querySelector('.map-status').textContent));
+  const filteredCount = await page.$eval('.map-status', (e) => e.textContent);
+  await page.evaluate(() => document.querySelector('.header .nav a[href="/about"]').click());
+  await page.waitForFunction(() => location.pathname === '/about');
+  await page.goBack();
+  await waitForMap(page);
+  check('map: filters survive leaving the map and coming back', (await page.$eval('.map-status', (e) => e.textContent)) === filteredCount, filteredCount);
+  await page.evaluate(() => {
+    [...document.querySelectorAll('.map-btn')].find((b) => /^Filters/.test(b.textContent.trim())).click();
+  });
+  await page.waitForSelector('#map-panel-filters');
+  await page.evaluate(() => [...document.querySelectorAll('#map-panel-filters .filter-chip')].find((c) => c.textContent.trim() === 'Reset filters').click());
+  await page.keyboard.press('Escape');
+
   // touch targets on a phone
   await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
   await waitForMap(page);

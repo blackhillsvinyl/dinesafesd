@@ -62,7 +62,8 @@ export interface RestaurantDetail extends Restaurant {
 }
 
 export interface SourceRun {
-  status: 'success' | 'failure';
+  // 'partial': the run saved what it read but could not read everything
+  status: 'success' | 'partial' | 'failure';
   finished_at: string;
   restaurants_upserted: number | null;
   inspections_upserted: number | null;

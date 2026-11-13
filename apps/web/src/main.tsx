@@ -3,13 +3,13 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import App from './App';
-import { fetchRestaurant } from './lib/api';
+import { fetchRestaurant, shouldRetry } from './lib/api';
 import { prerenderedUpdatedAt } from './lib/prerendered';
 import './styles.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: { staleTime: 1000 * 60 * 5, gcTime: 1000 * 60 * 30 },
+    queries: { staleTime: 1000 * 60 * 5, gcTime: 1000 * 60 * 30, retry: shouldRetry },
   },
 });
 
@@ -42,6 +42,7 @@ if (prerenderedId) {
       queryKey: ['restaurant', id],
       queryFn: () => fetchRestaurant(id),
       staleTime: 1000 * 60 * 30,
+      retry: false, // don't hold the prerendered page hostage; the page retries
     })
     .finally(mount);
 } else {

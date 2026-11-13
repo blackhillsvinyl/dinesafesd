@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { format } from 'date-fns';
 import { fetchIndex } from '../lib/api';
+import { SourceNotices } from '../components/LoadError';
+import { sourceNotices } from '../lib/sourceHealth';
 import { SCORE_BANDS } from '../scoring';
 import { BASIS_EXPLANATION, SCORE_VS_CRITICAL } from '../lib/inspection';
 import { SD_DOH_SEARCH, SWEEPS_HOME } from '../lib/sources';
@@ -13,12 +15,13 @@ function useDataFreshness() {
     queryKey: ['restaurant-index'],
     queryFn: fetchIndex,
     staleTime: 1000 * 60 * 60,
-    select: (index) => new Date(index.updated_at),
+    select: (index) => ({ updated: new Date(index.updated_at), notices: sourceNotices(index) }),
   });
 }
 
 export default function AboutPage() {
-  const { data: lastUpdated } = useDataFreshness();
+  const { data: freshness } = useDataFreshness();
+  const lastUpdated = freshness?.updated;
 
   return (
     <div className="page">
@@ -34,6 +37,7 @@ export default function AboutPage() {
         That refresh date is not an inspection date: every restaurant shows the date of its own
         latest inspection.
       </p>
+      <SourceNotices notices={freshness?.notices ?? []} />
       <p>
         You can always consult the unadulterated official records directly:{' '}
         <a href={SD_DOH_SEARCH} target="_blank" rel="noopener noreferrer">

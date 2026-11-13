@@ -6,13 +6,15 @@ import { fetchIndex } from '../lib/api';
 import { buildCityOptions, inCity } from '../lib/search';
 import { useSavedVersion } from '../lib/saved';
 import ResultCard from '../components/ResultCard';
+import LoadError, { SourceNotices } from '../components/LoadError';
+import { sourceNotices } from '../lib/sourceHealth';
 import type { Restaurant } from '../types';
 
 const FEED_SIZE = 150;
 
 /** Stream of the most recent inspection reports, newest day first, optionally for one city. */
 export default function LatestPage() {
-  const { data: index, isFetching } = useQuery({
+  const { data: index, isFetching, isError, refetch } = useQuery({
     queryKey: ['restaurant-index'],
     queryFn: fetchIndex,
     staleTime: 1000 * 60 * 60,
@@ -64,6 +66,11 @@ export default function LatestPage() {
           <> DineSafeSD last refreshed its data on {format(new Date(index.updated_at), 'MMMM d, yyyy')}.</>
         )}
       </p>
+
+      {index && <SourceNotices notices={sourceNotices(index)} />}
+      {isError && !index && (
+        <LoadError what="the latest inspection reports" onRetry={() => refetch()} busy={isFetching} />
+      )}
 
       <div className="field-row">
         <label className="field">

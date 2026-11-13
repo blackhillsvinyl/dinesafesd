@@ -1,14 +1,28 @@
 import type { RestaurantDetail, RestaurantIndex } from '../types';
 
+/** The data file does not exist — as opposed to a network or server failure. */
+export class NotFoundError extends Error {
+  constructor(path: string) {
+    super(`Not found: ${path}`);
+    this.name = 'NotFoundError';
+  }
+}
+
+/** Retry temporary failures a couple of times; never retry "does not exist". */
+export function shouldRetry(failureCount: number, error: unknown): boolean {
+  return !(error instanceof NotFoundError) && failureCount < 2;
+}
+
 // Static data published by the pipeline into public/data/ — served by this
 // same site, so all fetches are relative.
 async function fetchJson<T>(path: string): Promise<T> {
   const resp = await fetch(`/data${path}`);
+  if (resp.status === 404) throw new NotFoundError(path);
   if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${path}`);
-  // A missing file can come back as an HTML page (SPA fallback on some
-  // hosts); treat anything that isn't JSON as not found.
+  // A missing file can come back as an HTML page with 200 (SPA fallback on
+  // some hosts); that is "not found", not an outage.
   const type = resp.headers.get('content-type') ?? '';
-  if (!type.includes('json')) throw new Error(`Not JSON for ${path}`);
+  if (!type.includes('json')) throw new NotFoundError(path);
   return resp.json() as Promise<T>;
 }
 

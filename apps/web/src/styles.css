@@ -1803,3 +1803,54 @@ button {
     max-width: calc(100% - 60px);
   }
 }
+
+/* ---------- Load failures and source-health notices ---------- */
+.source-notice {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-left: 4px solid #b45309;
+  border-radius: 8px;
+  background: var(--chip-bg);
+}
+
+.page .source-notice p,
+.page .load-error p {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--body);
+}
+
+.source-warn {
+  border-left: 3px solid #b45309;
+  padding-left: 8px;
+}
+
+.load-error {
+  margin-top: 12px;
+}
+
+.filter-chip:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.map-load-error {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 7;
+  width: min(360px, calc(100% - 32px));
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.2);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--body);
+}
