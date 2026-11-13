@@ -32,7 +32,7 @@ than today's default date. `npm run test:e2e` writes `apps/web/e2e/results.json`
 | Pipeline unit tests | `npm test` in `services/data-pipeline` | 24 passed, 0 failed, including a run of the real `syncAll` loop with a stubbed page and a throwaway data directory |
 | Pipeline type-check | `npx tsc --noEmit -p services/data-pipeline` | passed |
 | Production build | `npm run build` | passed; 4,486 restaurant pages + 7 static pages + 404 + sitemap (4,493 URLs) + robots in about 1.8 s |
-| Browser suite | `npm run test:e2e` | 287 passed, 0 failed; keyboard group rerun twice more, 20 of 20 each time |
+| Browser suite | `npm run test:e2e` | 287 passed, 0 failed; keyboard group rerun twice more, 19 of 19 each time |
 | Automated accessibility | axe-core 4.14, WCAG 2.0/2.1/2.2 A+AA tags, inside the browser suite | 48 runs (6 screens × 4 widths × 2 themes), 0 violations counted; map-marker spacing noted as exempt (see Remaining issues) |
 | Live Sioux Falls parse | refactored parser against the live city pages for sites 144, 715, 2400 | all three match the stored records |
 | Live state sync | one county (Hughes), last 45 days, against a temporary copy of the data | 7 establishments, 35 violations, no failed counties; output byte-identical to the stored data |
