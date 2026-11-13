@@ -1,14 +1,12 @@
 import { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { fetchIndex } from '../lib/api';
-import { buildSearchIndex, searchRestaurants, normalize } from '../lib/search';
-import { getScoreTheme } from '../scoring';
-import TrendCue from '../components/TrendCue';
+import { buildCityOptions, buildSearchIndex, inCity, searchRestaurants, normalize } from '../lib/search';
+import ResultCard from '../components/ResultCard';
 import {
   isFavorite,
   isWatched,
-  hasNewReport,
   favoriteCount,
   watchCount,
   useSavedVersion,
@@ -17,6 +15,7 @@ import type { Restaurant } from '../types';
 
 type ScoreFilter = 'all' | '95' | '90' | 'below90';
 type SortOrder = 'relevance' | 'best' | 'worst' | 'recent' | 'name';
+type SavedFilter = 'none' | 'favorites' | 'watching';
 
 const SCORE_FILTERS: { key: ScoreFilter; label: string }[] = [
   { key: 'all', label: 'Any score' },
@@ -24,6 +23,14 @@ const SCORE_FILTERS: { key: ScoreFilter; label: string }[] = [
   { key: '90', label: '90+' },
   { key: 'below90', label: 'Below 90' },
 ];
+const SCORE_LABEL: Record<ScoreFilter, string> = {
+  all: 'Any score',
+  '95': 'Score 95+',
+  '90': 'Score 90+',
+  below90: 'Score below 90',
+};
+
+const RESULT_LIMIT = 100;
 
 function matchesScore(r: Restaurant, f: ScoreFilter): boolean {
   if (f === 'all') return true;
@@ -32,20 +39,34 @@ function matchesScore(r: Restaurant, f: ScoreFilter): boolean {
   return r.latest_score >= Number(f);
 }
 
-const RECENT_DAYS = 365;
-
-function isRecent(r: Restaurant): boolean {
-  if (!r.latest_inspection_date) return false;
-  return Date.now() - new Date(r.latest_inspection_date).getTime() < RECENT_DAYS * 86400_000;
-}
-
 export default function SearchPage() {
-  const [query, setQuery] = useState('');
-  const [city, setCity] = useState('');
+  // The query and city live in the URL so Back from a report restores them
+  const [params, setParams] = useSearchParams();
+  const city = (params.get('city') ?? '').toLowerCase();
+  const setParam = (key: 'q' | 'city', value: string) => {
+    setParams(
+      (prev) => {
+        const next = new URLSearchParams(prev);
+        if (value) next.set(key, value);
+        else next.delete(key);
+        return next;
+      },
+      { replace: true }
+    );
+  };
+  // The text box owns its value (a URL-bound input drops fast keystrokes);
+  // the URL follows it.
+  const [query, setQueryState] = useState(() => params.get('q') ?? '');
+  const setQuery = (value: string) => {
+    setQueryState(value);
+    setParam('q', value.trim());
+  };
+
   const [score, setScore] = useState<ScoreFilter>('all');
   const [criticalOnly, setCriticalOnly] = useState(false);
-  const [savedOnly, setSavedOnly] = useState<'none' | 'favorites' | 'watching'>('none');
+  const [savedOnly, setSavedOnly] = useState<SavedFilter>('none');
   const [sort, setSort] = useState<SortOrder>('relevance');
+  const [moreOpen, setMoreOpen] = useState(false);
   const savedVersion = useSavedVersion();
 
   const { data: index, isFetching } = useQuery({
@@ -58,30 +79,30 @@ export default function SearchPage() {
     () => (index ? buildSearchIndex(index.restaurants) : []),
     [index]
   );
-
-  // City dropdown options, biggest first
-  const cities = useMemo(() => {
-    const counts = new Map<string, { name: string; count: number }>();
-    for (const r of index?.restaurants ?? []) {
-      const name = (r.city ?? '').trim();
-      if (!name || /\d/.test(name) || name.length > 30) continue;
-      const key = name.toLowerCase();
-      const c = counts.get(key);
-      if (c) c.count++;
-      else counts.set(key, { name, count: 1 });
-    }
-    return [...counts.values()].filter((c) => c.count >= 3).sort((a, b) => b.count - a.count);
-  }, [index]);
+  const cities = useMemo(() => buildCityOptions(index?.restaurants ?? []), [index]);
+  const cityName = cities.find((c) => c.key === city)?.name ?? (city ? params.get('city') : null);
 
   const hasQuery = normalize(query).length >= 2;
-  const hasFilter = city !== '' || score !== 'all' || criticalOnly || savedOnly !== 'none';
+  const secondaryCount =
+    (score !== 'all' ? 1 : 0) + (criticalOnly ? 1 : 0) + (savedOnly !== 'none' ? 1 : 0);
+  const hasFilter = city !== '' || secondaryCount > 0;
 
-  const results = useMemo(() => {
-    if (!index || (!hasQuery && !hasFilter)) return undefined;
+  const clearSecondary = () => {
+    setScore('all');
+    setCriticalOnly(false);
+    setSavedOnly('none');
+  };
+  const clearFilters = () => {
+    clearSecondary();
+    setParam('city', '');
+  };
+
+  const { results, total } = useMemo(() => {
+    if (!index || (!hasQuery && !hasFilter)) return { results: undefined, total: 0 };
     let list = hasQuery
       ? searchRestaurants(searchIndex, query, Infinity)
       : [...index.restaurants];
-    if (city) list = list.filter((r) => (r.city ?? '').toLowerCase() === city);
+    if (city) list = list.filter((r) => inCity(r, city));
     if (criticalOnly) list = list.filter((r) => r.has_critical_violations);
     if (savedOnly === 'favorites') list = list.filter((r) => isFavorite(r.id));
     if (savedOnly === 'watching') list = list.filter((r) => isWatched(r.id));
@@ -92,110 +113,224 @@ export default function SearchPage() {
     else if (effectiveSort === 'name') list.sort((a, b) => a.name.localeCompare(b.name));
     else if (effectiveSort === 'recent')
       list.sort((a, b) => (b.latest_inspection_date ?? '').localeCompare(a.latest_inspection_date ?? ''));
-    return list.slice(0, 100);
+    return { results: list.slice(0, RESULT_LIMIT), total: list.length };
     // savedVersion re-filters when hearts/watches change
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index, searchIndex, query, hasQuery, hasFilter, city, score, criticalOnly, savedOnly, sort, savedVersion]);
 
+  // Active selections stay visible (and removable) even with "More filters" closed
+  const active: { label: string; remove: () => void }[] = [];
+  if (city) active.push({ label: `City: ${cityName}`, remove: () => setParam('city', '') });
+  if (score !== 'all') active.push({ label: SCORE_LABEL[score], remove: () => setScore('all') });
+  if (criticalOnly)
+    active.push({ label: 'Critical violations on latest inspection', remove: () => setCriticalOnly(false) });
+  if (savedOnly !== 'none')
+    active.push({
+      label: savedOnly === 'favorites' ? 'Favorites' : 'Watching',
+      remove: () => setSavedOnly('none'),
+    });
+
+  const countText = !index
+    ? isFetching
+      ? 'Loading…'
+      : ''
+    : results === undefined
+      ? ''
+      : total === 0
+        ? 'No restaurants match.'
+        : total > RESULT_LIMIT
+          ? `Showing the first ${RESULT_LIMIT} of ${total.toLocaleString()} restaurants. Add a word or a filter to narrow.`
+          : `${total} restaurant${total === 1 ? '' : 's'} found.`;
+
+  const emptySaved =
+    savedOnly === 'favorites' ? favoriteCount() === 0 : savedOnly === 'watching' ? watchCount() === 0 : false;
+
   return (
     <div className="page">
       <h1>Search restaurants</h1>
-      <input
-        className="search-input"
-        placeholder="Name, city, or address — e.g. “pizza ranch rapid city”"
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        autoFocus
-      />
+      <div className="search-primary">
+        <label className="field field-grow">
+          <span className="field-label">Name, address, or ZIP</span>
+          <input
+            className="search-input"
+            type="text"
+            inputMode="search"
+            enterKeyHint="search"
+            autoComplete="off"
+            placeholder="e.g. pizza ranch"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            autoFocus
+          />
+        </label>
+        <label className="field">
+          <span className="field-label">City</span>
+          <select
+            className="filter-select"
+            value={cities.some((c) => c.key === city) ? city : ''}
+            onChange={(e) => setParam('city', e.target.value)}
+          >
+            <option value="">All cities</option>
+            {cities.map((c) => (
+              <option key={c.key} value={c.key}>
+                {c.name} ({c.count})
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
 
       <div className="filter-row">
-        <select className="filter-select" value={city} onChange={(e) => setCity(e.target.value)} aria-label="City">
-          <option value="">All cities</option>
-          {cities.map((c) => (
-            <option key={c.name} value={c.name.toLowerCase()}>
-              {c.name} ({c.count})
-            </option>
-          ))}
-        </select>
-        {SCORE_FILTERS.map((f) => (
-          <button
-            key={f.key}
-            className={`filter-chip${score === f.key ? ' active' : ''}`}
-            onClick={() => setScore(f.key)}
+        <button
+          type="button"
+          className={`filter-chip${moreOpen ? ' open' : ''}`}
+          aria-expanded={moreOpen}
+          aria-controls="more-filters"
+          onClick={() => setMoreOpen((v) => !v)}
+        >
+          More filters{secondaryCount ? ` (${secondaryCount})` : ''}
+        </button>
+        <label className="field field-inline">
+          <span className="field-label">Sort</span>
+          <select
+            className="filter-select"
+            value={sort}
+            onChange={(e) => setSort(e.target.value as SortOrder)}
           >
-            {f.label}
-          </button>
-        ))}
-        <button
-          className={`filter-chip${criticalOnly ? ' active' : ''}`}
-          onClick={() => setCriticalOnly((v) => !v)}
-        >
-          ⚠ Critical violations
-        </button>
-        <button
-          className={`filter-chip${savedOnly === 'favorites' ? ' active' : ''}`}
-          onClick={() => setSavedOnly((v) => (v === 'favorites' ? 'none' : 'favorites'))}
-        >
-          ♥ Favorites{favoriteCount() > 0 ? ` (${favoriteCount()})` : ''}
-        </button>
-        <button
-          className={`filter-chip${savedOnly === 'watching' ? ' active' : ''}`}
-          onClick={() => setSavedOnly((v) => (v === 'watching' ? 'none' : 'watching'))}
-        >
-          👁 Watching{watchCount() > 0 ? ` (${watchCount()})` : ''}
-        </button>
-        <select
-          className="filter-select"
-          value={sort}
-          onChange={(e) => setSort(e.target.value as SortOrder)}
-          aria-label="Sort order"
-        >
-          <option value="relevance">Best match</option>
-          <option value="best">Highest score</option>
-          <option value="worst">Lowest score</option>
-          <option value="recent">Recently inspected</option>
-          <option value="name">Name A–Z</option>
-        </select>
+            <option value="relevance">Best match</option>
+            <option value="best">Highest score</option>
+            <option value="worst">Lowest score</option>
+            <option value="recent">Recently inspected</option>
+            <option value="name">Name A–Z</option>
+          </select>
+        </label>
       </div>
 
+      {moreOpen && (
+        <div className="more-filters" id="more-filters">
+          <div role="group" aria-labelledby="sf-score">
+            <div className="mf-label" id="sf-score">Latest score</div>
+            <div className="mf-chips">
+              {SCORE_FILTERS.map((f) => (
+                <button
+                  type="button"
+                  key={f.key}
+                  className={`filter-chip${score === f.key ? ' active' : ''}`}
+                  aria-pressed={score === f.key}
+                  onClick={() => setScore(f.key)}
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div role="group" aria-labelledby="sf-insp">
+            <div className="mf-label" id="sf-insp">Latest inspection</div>
+            <div className="mf-chips">
+              <button
+                type="button"
+                className={`filter-chip${criticalOnly ? ' active' : ''}`}
+                aria-pressed={criticalOnly}
+                onClick={() => setCriticalOnly((v) => !v)}
+              >
+                <span aria-hidden="true">⚠</span>Critical violations
+              </button>
+            </div>
+          </div>
+          <div role="group" aria-labelledby="sf-saved">
+            <div className="mf-label" id="sf-saved">Saved on this device</div>
+            <div className="mf-chips">
+              <button
+                type="button"
+                className={`filter-chip${savedOnly === 'favorites' ? ' active' : ''}`}
+                aria-pressed={savedOnly === 'favorites'}
+                onClick={() => setSavedOnly((v) => (v === 'favorites' ? 'none' : 'favorites'))}
+              >
+                <span aria-hidden="true">♥</span>Favorites{favoriteCount() > 0 ? ` (${favoriteCount()})` : ''}
+              </button>
+              <button
+                type="button"
+                className={`filter-chip${savedOnly === 'watching' ? ' active' : ''}`}
+                aria-pressed={savedOnly === 'watching'}
+                onClick={() => setSavedOnly((v) => (v === 'watching' ? 'none' : 'watching'))}
+              >
+                Watching{watchCount() > 0 ? ` (${watchCount()})` : ''}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {active.length > 0 && (
+        <div className="active-filters" role="group" aria-label="Active filters">
+          {active.map((a) => (
+            <button type="button" key={a.label} className="filter-chip active removable" onClick={a.remove}>
+              <span className="sr-only">Remove filter: </span>
+              {a.label}
+              <span aria-hidden="true"> ✕</span>
+            </button>
+          ))}
+          {active.length > 1 && (
+            <button type="button" className="link-btn" onClick={clearFilters}>
+              Clear all filters
+            </button>
+          )}
+        </div>
+      )}
+
+      <p className="result-count" role="status">
+        {countText}
+      </p>
+
       <div className="result-list">
-        {isFetching && !index && <p className="small">Loading…</p>}
-        {results?.map((r) => {
-          const theme = getScoreTheme(r.latest_score);
-          return (
-            <Link key={r.id} to={`/r/${r.id}`} className="result-card">
-              <div className="result-info">
-                <div className="result-name">
-                  {r.name}
-                  {isFavorite(r.id) && <span className="saved-mark"> ♥</span>}
-                  {hasNewReport(r.id, r.latest_inspection_date) && (
-                    <span className="new-report-badge">New report</span>
-                  )}
-                </div>
-                <div className="result-addr">
-                  {r.address}, {r.city}, {r.state}
-                  {!isRecent(r) && r.latest_inspection_date && (
-                    <span className="result-stale"> · last inspected {r.latest_inspection_date.slice(0, 4)}</span>
-                  )}
-                </div>
-                <TrendCue
-                  scoreHistory={r.score_history}
-                  scoreTrend={r.score_trend}
-                  violationHistory={r.violation_history}
-                  violationTrend={r.violation_trend}
-                />
-              </div>
-              <div className="score-pill" style={{ background: theme.markerColor }}>
-                {r.latest_score ?? '—'}
-              </div>
-            </Link>
-          );
-        })}
-        {results && results.length === 0 && <p className="small">No restaurants found.</p>}
-        {results === undefined && !isFetching && (
-          <p className="small">Type a name or city, or pick a filter to browse.</p>
-        )}
+        {results?.map((r) => <ResultCard key={r.id} restaurant={r} date />)}
       </div>
+
+      {results && results.length === 0 && (
+        <div className="empty-state">
+          <p className="empty-title">
+            No restaurants match
+            {hasQuery ? <> “{query.trim()}”</> : null}
+            {active.length > 0 ? <> with {active.map((a) => a.label).join(', ')}</> : null}.
+          </p>
+          {emptySaved ? (
+            <p>
+              You haven’t {savedOnly === 'favorites' ? 'saved any favorites' : 'watched any restaurants'}{' '}
+              on this device yet. Use Save or Watch on a restaurant to add one.
+            </p>
+          ) : (
+            <p>
+              {hasQuery
+                ? 'Check the spelling, try fewer words, or search by city or ZIP instead.'
+                : 'Try removing a filter.'}
+            </p>
+          )}
+          <div className="empty-actions">
+            {city && hasQuery && (
+              <button type="button" className="filter-chip" onClick={() => setParam('city', '')}>
+                Search all cities
+              </button>
+            )}
+            {secondaryCount > 0 && (
+              <button type="button" className="filter-chip" onClick={clearSecondary}>
+                Clear {city ? 'other ' : ''}filters
+              </button>
+            )}
+            {hasQuery && hasFilter && (
+              <button type="button" className="filter-chip" onClick={() => setQuery('')}>
+                Clear search text
+              </button>
+            )}
+            <Link className="filter-chip" to="/">
+              Browse the map
+            </Link>
+          </div>
+        </div>
+      )}
+
+      {results === undefined && index && (
+        <p className="page-lede">Type a name, pick a city, or open More filters to browse.</p>
+      )}
     </div>
   );
 }

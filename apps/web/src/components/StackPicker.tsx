@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react';
 import { getScoreTheme } from '../scoring';
 import type { Restaurant } from '../types';
 
@@ -23,13 +24,29 @@ export default function StackPicker({ restaurants, onPick, onClose }: Props) {
       : cities.size === 1
         ? `Near each other in ${restaurants[0].city}`
         : 'Grouped on the map — tap one for details';
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    ref.current?.focus({ preventScroll: true });
+  }, [restaurants]);
   return (
-    <div className="quickview stack-picker" role="dialog" aria-label="Restaurants at this location">
-      <button className="qv-close" onClick={onClose} aria-label="Close">
-        ×
+    <div
+      ref={ref}
+      className="quickview stack-picker"
+      role="dialog"
+      aria-labelledby="sp-title"
+      tabIndex={-1}
+      onKeyDown={(e) => {
+        if (e.key === 'Escape') {
+          e.stopPropagation();
+          onClose();
+        }
+      }}
+    >
+      <button type="button" className="qv-close" onClick={onClose} aria-label="Close restaurant list">
+        <span aria-hidden="true">×</span>
       </button>
       <div className="sp-head">
-        <div className="sp-title">
+        <div className="sp-title" id="sp-title">
           {restaurants.length} restaurants {addresses.size === 1 ? 'here' : 'in this group'}
         </div>
         <div className="sp-addr">{subtitle}</div>
@@ -38,10 +55,11 @@ export default function StackPicker({ restaurants, onPick, onClose }: Props) {
         {restaurants.map((r) => {
           const theme = getScoreTheme(r.latest_score);
           return (
-            <button key={r.id} className="sp-row" onClick={() => onPick(r)}>
+            <button type="button" key={r.id} className="sp-row" onClick={() => onPick(r)}>
               <span className="sp-name">{r.name}</span>
-              <span className="sp-score" style={{ background: theme.markerColor }}>
-                {r.latest_score ?? '—'}
+              <span className="sp-score" style={{ background: theme.markerColor, color: theme.onMarker }}>
+                {r.latest_score ?? <span aria-hidden="true">—</span>}
+                <span className="sr-only">{r.latest_score != null ? ' out of 100' : 'No score published'}</span>
               </span>
             </button>
           );

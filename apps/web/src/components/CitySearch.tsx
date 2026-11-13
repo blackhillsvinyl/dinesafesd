@@ -1,4 +1,5 @@
-import { useMemo, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { buildSearchIndex, searchRestaurants, normalize } from '../lib/search';
 import { getScoreTheme } from '../scoring';
 import type { Restaurant } from '../types';
@@ -78,12 +79,32 @@ interface Props {
   restaurants: Restaurant[];
   onPick: (city: CityEntry) => void;
   onPickRestaurant: (restaurant: Restaurant) => void;
+  /** Lets the map hide competing panels while suggestions are showing. */
+  onOpenChange?: (open: boolean) => void;
 }
 
-export default function CitySearch({ restaurants, onPick, onPickRestaurant }: Props) {
+export interface CitySearchHandle {
+  focus: () => void;
+}
+
+type Option =
+  | { kind: 'area'; id: string; label: string; detail: string; entry: CityEntry }
+  | { kind: 'restaurant'; id: string; label: string; detail: string; restaurant: Restaurant };
+
+/**
+ * Map search: an ARIA combobox over cities, ZIP codes, and restaurants.
+ * Arrow keys move through suggestions, Enter picks, Escape closes.
+ */
+const CitySearch = forwardRef<CitySearchHandle, Props>(function CitySearch(
+  { restaurants, onPick, onPickRestaurant, onOpenChange },
+  handle
+) {
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState(-1);
   const inputRef = useRef<HTMLInputElement>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  useImperativeHandle(handle, () => ({ focus: () => inputRef.current?.focus() }));
   const cities = useMemo(() => buildCityList(restaurants), [restaurants]);
   const searchIndex = useMemo(() => buildSearchIndex(restaurants), [restaurants]);
 
@@ -120,85 +141,154 @@ export default function CitySearch({ restaurants, onPick, onPickRestaurant }: Pr
   }, [restaurants]);
 
   const q = normalize(query);
-  const zipMatches = /^\d{3,5}$/.test(q)
-    ? zips.filter((z) => z.name.startsWith(q)).slice(0, 3)
-    : [];
-  const cityMatches = q
-    ? cities.filter((c) => normalize(c.name).includes(q)).slice(0, 3)
-    : [];
-  const restaurantMatches = q.length >= 2 ? searchRestaurants(searchIndex, query, 5) : [];
+  const options = useMemo<Option[]>(() => {
+    if (!q) return [];
+    const out: Option[] = [];
+    if (/^\d{3,5}$/.test(q)) {
+      for (const z of zips.filter((z) => z.name.startsWith(q)).slice(0, 3)) {
+        out.push({ kind: 'area', id: `zip-${z.name}`, label: `ZIP ${z.name}`, detail: `${z.count} on map`, entry: z });
+      }
+    }
+    for (const c of cities.filter((c) => normalize(c.name).includes(q)).slice(0, 3)) {
+      out.push({ kind: 'area', id: `city-${c.name}`, label: c.name, detail: `${c.count} restaurants`, entry: c });
+    }
+    if (q.length >= 2) {
+      for (const r of searchRestaurants(searchIndex, query, 5)) {
+        out.push({ kind: 'restaurant', id: `r-${r.id}`, label: r.name, detail: r.city, restaurant: r });
+      }
+    }
+    return out;
+  }, [q, query, zips, cities, searchIndex]);
 
-  const close = () => {
-    setQuery('');
+  const showList = open && q.length > 0;
+  const noMatches = showList && q.length >= 2 && options.length === 0;
+
+  useEffect(() => {
+    onOpenChange?.(showList);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showList]);
+
+  useEffect(() => {
+    setActive(-1);
+  }, [q]);
+
+  const close = (clear: boolean) => {
+    if (clear) setQuery('');
     setOpen(false);
-    inputRef.current?.blur();
+    setActive(-1);
   };
 
-  const pick = (c: CityEntry) => {
-    onPick(c);
-    close();
+  const pick = (o: Option) => {
+    if (o.kind === 'area') onPick(o.entry);
+    else onPickRestaurant(o.restaurant);
+    close(true);
   };
 
-  const pickRestaurant = (r: Restaurant) => {
-    onPickRestaurant(r);
-    close();
-  };
+  const optionId = (i: number) => `cs-opt-${i}`;
 
   return (
-    <div className="city-search">
-      <input
-        ref={inputRef}
-        className="cs-input"
-        type="search"
-        placeholder="City, ZIP, address, or restaurant…"
-        value={query}
-        onChange={(e) => {
-          setQuery(e.target.value);
-          setOpen(true);
-        }}
-        onFocus={() => setOpen(true)}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter') {
-            if (zipMatches[0]) pick(zipMatches[0]);
-            else if (cityMatches[0]) pick(cityMatches[0]);
-            else if (restaurantMatches[0]) pickRestaurant(restaurantMatches[0]);
-          }
-          if (e.key === 'Escape') close();
-        }}
-        aria-label="Search city or restaurant"
-      />
-      {open && (zipMatches.length > 0 || cityMatches.length > 0 || restaurantMatches.length > 0) && (
-        <div className="cs-list" role="listbox">
-          {zipMatches.map((z) => (
-            <button key={z.name} className="cs-row" onClick={() => pick(z)} role="option" aria-selected={false}>
-              <span className="cs-name">ZIP {z.name}</span>
-              <span className="cs-count">{z.count}</span>
-            </button>
-          ))}
-          {cityMatches.map((c) => (
-            <button key={c.name} className="cs-row" onClick={() => pick(c)} role="option" aria-selected={false}>
-              <span className="cs-name">{c.name}</span>
-              <span className="cs-count">{c.count}</span>
-            </button>
-          ))}
-          {restaurantMatches.map((r) => (
-            <button
-              key={r.id}
-              className="cs-row"
-              onClick={() => pickRestaurant(r)}
+    <div
+      className="city-search"
+      ref={rootRef}
+      onBlur={(e) => {
+        if (!rootRef.current?.contains(e.relatedTarget as Node | null)) close(false);
+      }}
+    >
+      <div className="cs-field">
+        <label className="cs-label" htmlFor="map-search">
+          Search
+        </label>
+        <input
+          ref={inputRef}
+          id="map-search"
+          className="cs-input"
+          type="text"
+          inputMode="search"
+          enterKeyHint="search"
+          autoComplete="off"
+          spellCheck={false}
+          placeholder="City, ZIP, or restaurant"
+          value={query}
+          role="combobox"
+          aria-expanded={showList}
+          aria-controls="cs-listbox"
+          aria-autocomplete="list"
+          aria-activedescendant={showList && active >= 0 ? optionId(active) : undefined}
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setOpen(true);
+          }}
+          onFocus={() => setOpen(true)}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowDown' && options.length) {
+              e.preventDefault();
+              setOpen(true);
+              setActive((a) => (a + 1) % options.length);
+            } else if (e.key === 'ArrowUp' && options.length) {
+              e.preventDefault();
+              setOpen(true);
+              setActive((a) => (a <= 0 ? options.length - 1 : a - 1));
+            } else if (e.key === 'Enter') {
+              const o = options[active >= 0 ? active : 0];
+              if (o) pick(o);
+            } else if (e.key === 'Escape' && (showList || query)) {
+              e.stopPropagation();
+              close(true);
+            }
+          }}
+        />
+      </div>
+      <ul
+        id="cs-listbox"
+        className="cs-list"
+        role="listbox"
+        aria-label="Search suggestions"
+        hidden={!showList || options.length === 0}
+      >
+        {showList &&
+          options.map((o, i) => (
+            <li
+              key={o.id}
+              id={optionId(i)}
+              className={`cs-row${i === active ? ' active' : ''}`}
               role="option"
-              aria-selected={false}
+              aria-selected={i === active}
+              // Keep focus in the input so the list doesn't close mid-click
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => pick(o)}
             >
-              <span
-                className="cs-dot"
-                style={{ background: getScoreTheme(r.latest_score).markerColor }}
-              />
-              <span className="cs-name">{r.name}</span>
-              <span className="cs-count">{r.city}</span>
-            </button>
+              {o.kind === 'restaurant' && (
+                <span
+                  className="cs-dot"
+                  aria-hidden="true"
+                  style={{ background: getScoreTheme(o.restaurant.latest_score).markerColor }}
+                />
+              )}
+              <span className="cs-name">{o.label}</span>
+              <span className="cs-count">{o.detail}</span>
+            </li>
           ))}
+      </ul>
+      {noMatches && (
+        <div className="cs-list cs-empty">
+          <p>No city, ZIP, or restaurant matches “{query.trim()}”.</p>
+          <p>
+            Check the spelling or try fewer words, or{' '}
+            <Link to={`/search?q=${encodeURIComponent(query.trim())}`}>open full search</Link>.
+          </p>
         </div>
       )}
+      <span className="sr-only" role="status">
+        {showList
+          ? options.length
+            ? `${options.length} suggestion${options.length === 1 ? '' : 's'}. Use the arrow keys to choose.`
+            : noMatches
+              ? 'No matches.'
+              : ''
+          : ''}
+      </span>
     </div>
   );
-}
+});
+
+export default CitySearch;

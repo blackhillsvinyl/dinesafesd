@@ -2,7 +2,7 @@ export default function PrivacyPage() {
   return (
     <div className="page">
       <h1>Privacy Policy</h1>
-      <p className="small">Last updated: October 23, 2026</p>
+      <p className="small">Last updated: November 12, 2026</p>
 
       <p>
         DineSafeSD (&quot;the app&quot;) is a free service that displays public-record restaurant
@@ -25,8 +25,10 @@ export default function PrivacyPage() {
 
       <h2>Saved restaurants</h2>
       <p>
-        Restaurants you save or watch are stored only on your device. They are not synced to
-        any server and are deleted when you uninstall the app.
+        Restaurants you save or watch, your theme choice, and whether you hid the map
+        introduction are stored only in your browser on your device. They are not synced to any
+        server, and no emails or notifications are sent. Clearing this site&apos;s data in your
+        browser (or uninstalling the app) deletes them.
       </p>
 
       <h2>Data requests</h2>

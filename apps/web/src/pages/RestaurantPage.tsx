@@ -1,13 +1,14 @@
-import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useQuery } from '@tanstack/react-query';
-import { format, parseISO } from 'date-fns';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchRestaurant } from '../lib/api';
-import { getScoreTheme } from '../scoring';
-import { markSeen } from '../lib/saved';
-import { locationReportMailto } from '../lib/report';
+import { hasNewReport, markSeen } from '../lib/saved';
+import { NOT_FOUND_META, restaurantMeta } from '../lib/meta';
+import { usePageMeta } from '../lib/usePageMeta';
+import { prerenderedUpdatedAt } from '../lib/prerendered';
 import SaveButtons from '../components/SaveButtons';
-import type { RestaurantDetail, Inspection, Violation } from '../types';
+import RestaurantReport from '../components/RestaurantReport';
+import type { RestaurantDetail, RestaurantIndex } from '../types';
 
 function useRestaurant(id: string | undefined) {
   return useQuery({
@@ -15,129 +16,110 @@ function useRestaurant(id: string | undefined) {
     queryFn: (): Promise<RestaurantDetail> => fetchRestaurant(id!),
     enabled: !!id,
     staleTime: 1000 * 60 * 30,
+    retry: false,
   });
 }
 
-const SEVERITY_COLORS: Record<string, string> = {
-  critical: '#ef4444',
-  major: '#f97316',
-  minor: '#eab308',
-};
+function CopyName({ name }: { name: string }) {
+  const [state, setState] = useState<'idle' | 'copied' | 'failed'>('idle');
+  return (
+    <>
+      <button
+        type="button"
+        className="copy-btn"
+        onClick={async () => {
+          try {
+            await navigator.clipboard.writeText(name);
+            setState('copied');
+          } catch {
+            // Older browsers and locked-down contexts: copy via a selection
+            const area = document.createElement('textarea');
+            area.value = name;
+            area.setAttribute('readonly', '');
+            area.style.position = 'fixed';
+            area.style.opacity = '0';
+            document.body.appendChild(area);
+            area.select();
+            let ok = false;
+            try {
+              ok = document.execCommand('copy');
+            } catch {
+              ok = false;
+            }
+            area.remove();
+            setState(ok ? 'copied' : 'failed');
+          }
+        }}
+      >
+        Copy name
+      </button>
+      <span className="copy-status" role="status">
+        {state === 'copied' ? 'Copied.' : state === 'failed' ? 'Copy not available — select the name and copy it.' : ''}
+      </span>
+    </>
+  );
+}
+
+function NotFound() {
+  usePageMeta(NOT_FOUND_META);
+  return (
+    <div className="page">
+      <h1>Restaurant not found</h1>
+      <p>
+        We don’t have an inspection record at this address. The link may be mistyped, or the
+        record may have been renamed in the official data.
+      </p>
+      <p>
+        <Link to="/search">Search restaurants</Link> · <Link to="/">Back to the map</Link>
+      </p>
+    </div>
+  );
+}
+
+function Report({ restaurant }: { restaurant: RestaurantDetail }) {
+  usePageMeta(restaurantMeta(restaurant));
+  const queryClient = useQueryClient();
+  const index = queryClient.getQueryData<RestaurantIndex>(['restaurant-index']);
+  const updatedAt = index?.updated_at ?? prerenderedUpdatedAt();
+
+  // Reading the full report catches a watch up to the latest inspection.
+  // Remember whether it was new first, so the page can say so once.
+  const wasNew = useRef(hasNewReport(restaurant.id, restaurant.latest_inspection_date));
+  useEffect(() => {
+    markSeen(restaurant.id, restaurant.latest_inspection_date);
+  }, [restaurant]);
+
+  return (
+    <RestaurantReport
+      restaurant={restaurant}
+      dataUpdatedAt={updatedAt}
+      actions={
+        <>
+          {wasNew.current && (
+            <p className="new-report-note" role="status">
+              <span className="new-report-badge">New report</span> A newer inspection has been
+              published since you last viewed this watched restaurant.
+            </p>
+          )}
+          <SaveButtons restaurant={restaurant} size="lg" />
+        </>
+      }
+      copyName={<CopyName name={restaurant.name} />}
+    />
+  );
+}
 
 export default function RestaurantPage() {
   const { id } = useParams<{ id: string }>();
   const { data: restaurant, isLoading, error } = useRestaurant(id);
 
-  // Reading the full report catches a watch up to the latest inspection
-  useEffect(() => {
-    if (restaurant) markSeen(restaurant.id, restaurant.latest_inspection_date);
-  }, [restaurant]);
-
-  if (isLoading) return <div className="center">Loading…</div>;
-  if (error || !restaurant) return <div className="center">Restaurant not found.</div>;
-
-  const theme = getScoreTheme(restaurant.latest_score);
-  const inspections = restaurant.inspections; // already newest-first
-
-  return (
-    <div className="page">
-      <div className="detail-header">
-        <div className="detail-title">
-          <h1>{restaurant.name}</h1>
-          <SaveButtons restaurant={restaurant} size="lg" />
-        </div>
-        <p className="small">
-          {restaurant.address}, {restaurant.city}, {restaurant.state}
-        </p>
-        <div className="detail-score">
-          <div className="score-badge-lg" style={{ background: theme.markerColor }}>
-            {restaurant.latest_score ?? '—'}
-          </div>
-          <div>
-            {restaurant.latest_inspection_date && (
-              <p>
-                Last inspected{' '}
-                {format(parseISO(restaurant.latest_inspection_date), 'MMMM d, yyyy')}
-              </p>
-            )}
-            {restaurant.average_score != null && (
-              <p className="small">
-                Average score {restaurant.average_score.toFixed(1)} over{' '}
-                {restaurant.inspection_count} inspection
-                {restaurant.inspection_count === 1 ? '' : 's'}
-              </p>
-            )}
-          </div>
-        </div>
+  if (isLoading) {
+    return (
+      <div className="center" role="status">
+        Loading…
       </div>
-
-      <h2>Inspection history</h2>
-      {inspections.length === 0 && <p className="small">No inspections on record.</p>}
-      {inspections.map((inspection: Inspection) => (
-        <div key={inspection.date} className="inspection-card">
-          <div className="inspection-head">
-            <span className="inspection-date">
-              {format(parseISO(inspection.date), 'MMMM d, yyyy')}
-            </span>
-            <span
-              className="score-pill-sm"
-              style={{ background: getScoreTheme(inspection.score ?? null).markerColor }}
-            >
-              {inspection.score ?? '—'}
-            </span>
-          </div>
-          {inspection.inspection_type && (
-            <p className="small" style={{ marginTop: 4 }}>
-              {inspection.inspection_type}
-            </p>
-          )}
-          {inspection.violations.map((v: Violation) => (
-            <div key={v.code} className="violation">
-              <div
-                className="violation-bar"
-                style={{ background: SEVERITY_COLORS[v.severity] ?? '#eab308' }}
-              />
-              <div>
-                <div className="violation-code">{v.code}</div>
-                <div className="violation-desc">{v.description}</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      ))}
-
-      <h2>Source data</h2>
-      <p className="small">
-        {restaurant.source === 'sf_sweeps' ? (
-          <>
-            This establishment is inspected by the City of Sioux Falls Health Department. View
-            the official records in the{' '}
-            <a href="https://sweepsdata.siouxfalls.gov/" target="_blank" rel="noopener noreferrer">
-              Sioux Falls SWEEPS database
-            </a>{' '}
-            (search for “{restaurant.name}”).
-          </>
-        ) : (
-          <>
-            This establishment is inspected by the South Dakota Department of Health. View the
-            official records — including original report PDFs — in the{' '}
-            <a href="https://sddoh.safefoodinspection.com/" target="_blank" rel="noopener noreferrer">
-              SD DOH food inspection portal
-            </a>{' '}
-            (search for “{restaurant.name}”).
-          </>
-        )}
-      </p>
-
-      <p className="small">
-        <a href={locationReportMailto(restaurant)}>Is this place pinned at the wrong spot on the map? Tell us</a> —
-        confirmed reports are fixed in the next data update.
-      </p>
-
-      <p className="small" style={{ marginTop: 24 }}>
-        Data provided by state and local health departments. Inspections are a snapshot in
-        time and violations may have been corrected on-site.
-      </p>
-    </div>
-  );
+    );
+  }
+  if (error || !restaurant) return <NotFound />;
+  return <Report key={restaurant.id} restaurant={restaurant} />;
 }

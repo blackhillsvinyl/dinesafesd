@@ -30,21 +30,24 @@ function loadWatches(): Watches {
 let favs = loadFavs();
 let watches = loadWatches();
 let version = 0;
+let persisted = true;
 const listeners = new Set<() => void>();
 
 function persist() {
   try {
     localStorage.setItem(FAV_KEY, JSON.stringify([...favs]));
     localStorage.setItem(WATCH_KEY, JSON.stringify(watches));
+    persisted = true;
   } catch {
     /* storage full/blocked — keep in-memory state */
+    persisted = false;
   }
   version++;
   listeners.forEach((l) => l());
 }
 
 // Cross-tab sync
-window.addEventListener('storage', (e) => {
+if (typeof window !== 'undefined') window.addEventListener('storage', (e) => {
   if (e.key === FAV_KEY || e.key === WATCH_KEY) {
     favs = loadFavs();
     watches = loadWatches();
@@ -97,6 +100,11 @@ export function markSeen(id: string, latestInspectionDate: string | null): void 
   if (watches[id] === d) return;
   watches[id] = d;
   persist();
+}
+
+/** False when the last change could not be written to this device's storage. */
+export function lastChangePersisted(): boolean {
+  return persisted;
 }
 
 export function favoriteCount(): number {

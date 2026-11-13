@@ -120,3 +120,28 @@ export function searchRestaurants(
     .slice(0, limit)
     .map((x) => x.r);
 }
+
+export interface CityOption {
+  /** Lower-cased key used for matching and in URLs. */
+  key: string;
+  name: string;
+  count: number;
+}
+
+/** City filter options, biggest first. Skips address fragments that leaked into the city field. */
+export function buildCityOptions(restaurants: Restaurant[], minCount = 3): CityOption[] {
+  const counts = new Map<string, CityOption>();
+  for (const r of restaurants) {
+    const name = (r.city ?? '').trim();
+    if (!name || /\d/.test(name) || name.length > 30) continue;
+    const key = name.toLowerCase();
+    const c = counts.get(key);
+    if (c) c.count++;
+    else counts.set(key, { key, name, count: 1 });
+  }
+  return [...counts.values()].filter((c) => c.count >= minCount).sort((a, b) => b.count - a.count);
+}
+
+export function inCity(r: Pick<Restaurant, 'city'>, cityKey: string): boolean {
+  return (r.city ?? '').trim().toLowerCase() === cityKey;
+}

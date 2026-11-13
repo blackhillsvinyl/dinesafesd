@@ -5,6 +5,10 @@ import type { RestaurantDetail, RestaurantIndex } from '../types';
 async function fetchJson<T>(path: string): Promise<T> {
   const resp = await fetch(`/data${path}`);
   if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${path}`);
+  // A missing file can come back as an HTML page (SPA fallback on some
+  // hosts); treat anything that isn't JSON as not found.
+  const type = resp.headers.get('content-type') ?? '';
+  if (!type.includes('json')) throw new Error(`Not JSON for ${path}`);
   return resp.json() as Promise<T>;
 }
 
