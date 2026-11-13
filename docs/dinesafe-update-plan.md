@@ -182,13 +182,8 @@ screenshots `report-saved-390-light.jpg`, `search-new-report-390-light.jpg`,
 
 ## Remaining issues
 
-1. **Decision needed: the rule-section severity mapping.** `mapSDCodeToSeverity` assigns
-   Critical/Major/Minor from ARSD section ranges. I could not confirm those ranges against the
-   rule text. The UI now labels them as DineSafeSD's classification, but the map card, the
-   "Hide places with critical violations" filter, and the Search "Critical violations" filter
-   still use `has_critical_violations`, which includes them. 2,782 stored violations are
-   affected. Options: verify the ranges against ARSD 44:02:07, or stop classifying portal
-   citations. Either is a pipeline change and was out of scope here.
+1. **The rule-section severity mapping failed verification (2026-11-12). Decision needed.**
+   See "Severity mapping verification" below.
 2. **Screen reader and real-device testing not done** (see "Automated versus manual").
 3. **Map marker spacing.** axe reports two overlapping markers at 390 px. WCAG 2.5.8 exempts
    targets whose position is essential and names map pins; recorded as exempt, not fixed.
@@ -205,6 +200,55 @@ screenshots `report-saved-390-light.jpg`, `search-new-report-390-light.jpg`,
 9. **CI** does not run `npm test` or the browser suite. Not changed; assign if wanted.
 10. Static pages other than restaurants (About, Privacy, and so on) prerender a heading and
     description only; their full text still needs JavaScript.
+
+## Severity mapping verification (2026-11-12)
+
+Question: are the section ranges in `mapSDCodeToSeverity` (`services/data-pipeline/src/sources/sd-doh.ts`)
+supported by the rule text?
+
+Sources: ARSD chapter 44:02:07 as published by the SD Legislature
+(`https://sdlegislature.gov/api/Rules/44:02:07`, fetched 2026-11-12), and the critical marks on
+the state's own scoresheet items as stored in this repo's data (codes 1–44).
+
+Findings:
+
+1. **The rule does not designate sections as critical.** 44:02:07:01(12) defines "critical item"
+   in general terms. No section is marked critical, and "major" and "minor" do not appear as
+   categories. The ranges cannot be derived from the rule text.
+2. **The topics the code comment assigns to each range do not match the section titles.**
+   The comment says :09–:14 is temperature control and :32–:46 is toxic substances. In the rule,
+   :09–:12 are employee exclusions, :32 is cooling, :33 is reheating, and toxic materials are :85–:86.
+3. **The mapping disagrees with the state's scoresheet in both directions.** The item-to-section
+   pairing below is by topic and is my reading; there is no official crosswalk.
+
+   | Rule section | Mapping says | State scoresheet item on the same topic |
+   |---|---|---|
+   | :24 contamination from equipment, utensils, wiping cloths (739 violations, the Pizza Ranch case) | Critical | 10, not critical |
+   | :59, :60 storage and handling of clean equipment | Critical | 31, not critical |
+   | :22 contamination during storage | Critical | 7, not critical (8, separation, is critical) |
+   | :32 cooling, :33 reheating | Major | 16 and 14, critical |
+   | :68, :69 handwashing lavatories and supplies (739 violations) | Minor | 37, critical |
+   | :85, :86 poisonous and toxic materials | Minor | 43, critical |
+   | :67 backflow, :64 water supply | Minor, Major | 36 and 34, critical |
+   | :03–:05 person in charge | Minor | 1, critical |
+
+4. **Stored data is inconsistent.** About 830 portal inspections dated before early 2026 are stored
+   with every violation "minor", from before the mapping existed, so the same section carries two
+   labels (for example :13 is critical 191 times and minor 70 times).
+
+Effect on the site today: 1,329 state-inspected restaurants show a critical flag, and every one of
+those flags rests only on this mapping. About 316 more cite a topic the state form marks critical
+and are not flagged.
+
+Conclusion: the ranges are not verified and should not be presented as severity.
+
+Options (not implemented; both rewrite published data, so they belong in the pipeline workflow):
+
+- **A (recommended).** Stop classifying portal citations. Store them as unclassified, recompute
+  `has_critical_violations` from official marks only (Sioux Falls headings, scoresheet marks), and
+  have the site say "The state portal does not publish a severity for this violation."
+- **B.** Replace the ranges with a section-to-scoresheet-item crosswalk confirmed by SD DOH, and
+  label the result as derived from the state form. Needs the department to confirm the crosswalk.
 
 ## Codex review
 
