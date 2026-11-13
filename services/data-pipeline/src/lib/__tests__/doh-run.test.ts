@@ -3,6 +3,16 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
 
+// Stand-in for the PDF parser so each stubbed "PDF" has a known outcome
+vi.mock('../../sources/pdf-parser', () => ({
+  parseInspectionPDF: async (buf: Buffer) => {
+    const text = buf.toString();
+    if (text === 'not a PDF') throw new Error('InvalidPDFException: Invalid PDF structure');
+    if (text === 'no score') return { date: new Date(), score: null, violations: [], comments: '' };
+    return { date: new Date(), score: 95, violations: [], comments: '' };
+  },
+}));
+
 // The real syncAll → syncByCounty loop with a stubbed browser page and a
 // throwaway data directory: no network, no published data touched.
 process.env.DATA_DIR = mkdtempSync(path.join(tmpdir(), 'dinesafe-doh-run-'));
@@ -88,5 +98,79 @@ describe('SD DOH run outcome (R4)', () => {
     (source as unknown as Record<string, unknown>).page = page;
     const failed = await source.syncAll();
     expect(failed.failedCounties).toEqual(['Nowhere']);
+  });
+});
+
+describe('score backfill outcome (review finding B)', () => {
+  beforeAll(() => {
+    vi.stubGlobal('setTimeout', (fn: () => void) => {
+      queueMicrotask(fn);
+      return 0;
+    });
+  });
+  afterAll(() => vi.unstubAllGlobals());
+
+  // One establishment with three scoreless past inspections, each of whose
+  // report "PDF" is decided by the test.
+  let fixture = 0;
+  async function backfill(pdfs: Record<string, unknown>) {
+    const { SDDOHSource } = await import('../../sources/sd-doh');
+    const { store } = await import('../store');
+    const { dohRunRecord, dohRunComplete } = await import('../run-record');
+    const est = { ...establishment('BACKFILL CAFE ' + ++fixture) /* a fresh record per test: the store is shared */, inspectionDate: '', pastInspectionsLinkId: 'past_0' };
+    const probe = new SDDOHSource({ mode: 'backfill-scores' }) as unknown as { generateExternalId(e: unknown): string };
+    const id = probe.generateExternalId(est);
+    store.upsertRestaurant({
+      external_id: id, name: est.name, address: est.address, city: est.city, state: 'SD',
+      latitude: 44.37, longitude: -100.35, source: 'sd_doh',
+    });
+    const dates = ['2025-01-10', '2025-02-10', '2025-03-10'];
+    for (const date of dates) store.upsertInspection(id, { date, score: null });
+    const source = new SDDOHSource({ mode: 'backfill-scores', counties: ['Hughes'], backfillTargets: new Map([[id, new Set(dates)]]) });
+    const s = source as unknown as Record<string, unknown>;
+    s.page = stubPage();
+    s.extractEstablishments = async () => [est];
+    s.goToNextPage = async () => false;
+    s.extractPastInspections = async () => [
+      { date: '01/10/2025', type: 'Routine', violationCount: 0, reportButtonId: 'a' },
+      { date: '02/10/2025', type: 'Routine', violationCount: 0, reportButtonId: 'b' },
+      { date: '03/10/2025', type: 'Routine', violationCount: 0, reportButtonId: 'c' },
+    ];
+    s.fetchPdfViaPostback = async (buttonId: string) => {
+      const outcome = pdfs[buttonId];
+      if (outcome instanceof Error) throw outcome;
+      return typeof outcome === 'string' ? { kind: 'pdf', buffer: Buffer.from(outcome) } : outcome;
+    };
+    const failed = await source.syncAll();
+    const scores = Object.fromEntries(store.getRestaurant(id)!.inspections.map((i) => [i.date, i.score]));
+    return { failed, scores, stats: source.getStats(), record: dohRunRecord(source.getStats(), failed), complete: dohRunComplete(failed) };
+  }
+
+  it('an invalid PDF makes the run partial while a valid one still fills its score', async () => {
+    const { failed, scores, record, complete } = await backfill({ a: 'not a PDF', b: 'valid', c: 'valid' });
+    expect(scores).toEqual({ '2025-01-10': null, '2025-02-10': 95, '2025-03-10': 95 });
+    expect(failed.failedRecords).toHaveLength(1);
+    expect(failed.failedRecords[0]).toMatch(/report PDF for 2025-01-10/);
+    expect(record.status).toBe('partial');
+    expect(complete).toBe(false); // the job exits non-zero
+  });
+
+  it('a PDF with no readable score, a failed download, and a thrown request are all failures', async () => {
+    const { failed, scores, record } = await backfill({
+      a: 'no score',
+      b: { kind: 'failed', reason: 'report download returned HTTP 500' },
+      c: new Error('Execution context was destroyed'),
+    });
+    expect(Object.values(scores)).toEqual([null, null, null]);
+    expect(failed.failedRecords).toHaveLength(3);
+    expect(record.status).toBe('partial');
+  });
+
+  it('a report the portal does not offer is counted, not treated as a failure', async () => {
+    const { failed, stats, record, complete } = await backfill({ a: { kind: 'not-offered' }, b: 'valid', c: { kind: 'not-offered' } });
+    expect(failed.failedRecords).toEqual([]);
+    expect(stats.reportsNotOffered).toBe(2);
+    expect(record.status).toBe('success');
+    expect(complete).toBe(true);
   });
 });

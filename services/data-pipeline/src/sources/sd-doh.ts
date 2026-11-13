@@ -30,6 +30,14 @@ interface EstablishmentResult {
   pastInspectionsLinkId: string | null;
 }
 
+/** Outcome of asking the portal for one inspection's report PDF. */
+type PdfFetch =
+  | { kind: 'pdf'; buffer: Buffer }
+  /** The portal answered normally and offered no report for this inspection. */
+  | { kind: 'not-offered' }
+  /** The report could not be retrieved (request, download, or markup problem). */
+  | { kind: 'failed'; reason: string };
+
 // Selectors matching the current SafeFoodInspection.com ASP.NET WebForms layout
 const SELECTORS = {
   countyDropdown: '#MainContent_wucStateCountiesFS_ddlCounty',
@@ -72,7 +80,7 @@ export class SDDOHSource {
   private browser: Browser | null = null;
   private page: Page | null = null;
   private config: SourceConfig;
-  private stats = { restaurants: 0, inspections: 0, violations: 0 };
+  private stats = { restaurants: 0, inspections: 0, violations: 0, reportsNotOffered: 0 };
   // Records the run could not fully read (a whole establishment, or its
   // violations or history). The run carries on, but is not a success.
   private failedRecords: string[] = [];
@@ -86,7 +94,7 @@ export class SDDOHSource {
     this.config = config;
   }
 
-  getStats(): { restaurants: number; inspections: number; violations: number } {
+  getStats(): { restaurants: number; inspections: number; violations: number; reportsNotOffered: number } {
     return { ...this.stats };
   }
 
@@ -866,12 +874,15 @@ export class SDDOHSource {
    * with a one-time ID+Key — fetching that URL returns the PDF. The grid
    * page itself is left untouched: no navigation, no popups, no downloads.
    */
-  private async fetchPdfViaPostback(buttonId: string): Promise<Buffer | null> {
-    if (!this.page) return null;
-    const b64 = await this.page.evaluate(async (id: string) => {
+  private async fetchPdfViaPostback(buttonId: string): Promise<PdfFetch> {
+    if (!this.page) return { kind: 'failed', reason: 'no browser page' };
+    // The page reports what happened rather than collapsing every outcome to
+    // "nothing": only a normal response with no report link means the portal
+    // is not offering a report; everything else is a failure to read one.
+    const result = await this.page.evaluate(async (id: string) => {
       const el = document.getElementById(id) as HTMLInputElement | null;
       const form = document.forms[0] as HTMLFormElement | undefined;
-      if (!el || !form || !el.name) return null;
+      if (!el || !form || !el.name) return { kind: 'failed' as const, reason: 'report button not found on the page' };
       const params = new URLSearchParams();
       for (const [k, v] of new FormData(form).entries()) params.set(k, String(v));
       params.set(el.name + '.x', '5');
@@ -882,21 +893,26 @@ export class SDDOHSource {
         body: params.toString(),
         credentials: 'same-origin',
       });
+      if (!resp.ok) return { kind: 'failed' as const, reason: 'report request returned HTTP ' + resp.status };
       const html = await resp.text();
       const m = html.match(/['"]([^'"]*ExternalFileViewer\.aspx[^'"]*)['"]/i);
-      if (!m) return null;
+      if (!m) return { kind: 'not-offered' as const };
       const viewerUrl = new URL(m[1].replace(/&amp;/g, '&'), window.location.href).href;
       const pdfResp = await fetch(viewerUrl, { credentials: 'same-origin' });
+      if (!pdfResp.ok) return { kind: 'failed' as const, reason: 'report download returned HTTP ' + pdfResp.status };
       const ct = pdfResp.headers.get('content-type') ?? '';
-      if (!/pdf|octet-stream/i.test(ct)) return null;
+      if (!/pdf|octet-stream/i.test(ct)) {
+        return { kind: 'failed' as const, reason: 'report download was ' + (ct || 'untyped') + ', not a PDF' };
+      }
       const buf = new Uint8Array(await pdfResp.arrayBuffer());
       let s = '';
       for (let i = 0; i < buf.length; i += 0x8000) {
         s += String.fromCharCode.apply(null, Array.from(buf.subarray(i, i + 0x8000)));
       }
-      return btoa(s);
+      return { kind: 'pdf' as const, b64: btoa(s) };
     }, buttonId);
-    return b64 ? Buffer.from(b64, 'base64') : null;
+    if (result.kind !== 'pdf') return result;
+    return { kind: 'pdf', buffer: Buffer.from(result.b64, 'base64') };
   }
 
   /**
@@ -910,14 +926,29 @@ export class SDDOHSource {
     if (!needed || needed.size === 0) return false;
         console.log(`  Backfilling ${establishment.name}: ${needed.size} inspection(s) need scores`);
 
+    // Every target date ends one of three ways: a score is filled, the
+    // portal offers no report (not our failure, just counted), or the report
+    // could not be read (recorded, so the run is partial, not a success).
+    const what = (date: string) => `report PDF for ${date}`;
     const handlePdf = async (buttonId: string, date: string) => {
-      const pdf = await this.fetchPdfViaPostback(buttonId);
-      if (!pdf) {
-        console.warn(`    no PDF for ${date}`);
+      let fetched: PdfFetch;
+      try {
+        fetched = await this.fetchPdfViaPostback(buttonId);
+      } catch (e) {
+        this.recordFailure(establishment.name, what(date), e);
+        return;
+      }
+      if (fetched.kind === 'not-offered') {
+        this.stats.reportsNotOffered++;
+        console.log(`    ${date}: the portal offers no report PDF`);
+        return;
+      }
+      if (fetched.kind === 'failed') {
+        this.recordFailure(establishment.name, what(date), fetched.reason);
         return;
       }
       try {
-        const parsed = await parseInspectionPDF(pdf);
+        const parsed = await parseInspectionPDF(fetched.buffer);
         if (parsed.score !== null) {
           const ref = store.upsertInspection(externalId, {
             date,
@@ -937,10 +968,10 @@ export class SDDOHSource {
           this.stats.inspections++;
           console.log(`    ${date}: score ${parsed.score}, ${parsed.violations?.length ?? 0} violations`);
         } else {
-          console.warn(`    ${date}: PDF parsed but no score found`);
+          this.recordFailure(establishment.name, what(date), 'PDF was read but no score was found in it');
         }
       } catch (e) {
-        console.warn(`    ${date}: PDF parse failed`, String(e).slice(0, 100));
+        this.recordFailure(establishment.name, what(date), 'PDF could not be parsed: ' + String(e).slice(0, 100));
       }
       await randomDelay(THROTTLE.afterViolationModal);
     };

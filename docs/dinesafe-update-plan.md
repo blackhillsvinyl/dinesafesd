@@ -16,7 +16,7 @@ npm test                 # vitest: 33 unit tests (+4 published-data contract tes
 npm run build            # tsc (app) + tsc (scripts) + vite build + prerender
 npx wrangler@4 pages dev dist --port 8788 --compatibility-date 2026-05-01   # Cloudflare Pages emulator
 COUNT_ONLY_ID=sd_doh_al-s-hotwing-sauce-219-se-1st-ave-watertown npm run test:e2e   # in a second shell
-cd ../../services/data-pipeline && npm test    # vitest: 24 pipeline unit tests
+cd ../../services/data-pipeline && npm test    # vitest: 27 pipeline unit tests
 ```
 
 `--compatibility-date` is only needed because the locally installed wrangler (4.90.1) is older
@@ -29,7 +29,8 @@ than today's default date. `npm run test:e2e` writes `apps/web/e2e/results.json`
 | Check | Command | Result |
 |---|---|---|
 | Web unit tests | `npm test` in `apps/web` | 37 passed, 0 failed (33 of mine, 4 of Codex's `published-data.test.ts`) |
-| Pipeline unit tests | `npm test` in `services/data-pipeline` | 24 passed, 0 failed, including a run of the real `syncAll` loop with a stubbed page and a throwaway data directory |
+| Pipeline unit tests | `npm test` in `services/data-pipeline` | 27 passed, 0 failed, including runs of the real `syncAll` loop (daily and backfill modes) with a stubbed page and a throwaway data directory |
+| Live score backfill | `backfill-scores` for Jones County against a temporary copy of the data | 2 real report PDFs fetched and parsed (scores 99 and 100), 0 failures, exit 0; published data not touched |
 | Pipeline type-check | `npx tsc --noEmit -p services/data-pipeline` | passed |
 | Production build | `npm run build` | passed; 4,486 restaurant pages + 7 static pages + 404 + sitemap (4,493 URLs) + robots in about 1.8 s |
 | Browser suite | `npm run test:e2e` | 287 passed, 0 failed; keyboard group rerun twice more, 19 of 19 each time |
@@ -344,6 +345,23 @@ because the page carries no violation markup. That is the inference the owner ch
 Side effect to expect: with item 1, a dev server that returns the app shell for a missing data
 file (Vite does) now shows the outage message for an unknown restaurant instead of "not found".
 The production host returns a real 404.
+
+## Response to Codex's third pass (at `ff0e81cd`)
+
+| Codex item | Status | What changed | Evidence |
+|---|---|---|---|
+| B. Score backfill hides PDF failures (R4) | fixed | `fetchPdfViaPostback` now returns one of three outcomes instead of "PDF or nothing": a PDF; **not offered** (the portal answered normally with no report link); or **failed** (button missing, request or download error, wrong content type). In the backfill, a failed fetch, a thrown request, an unparseable PDF, and a PDF with no readable score are each recorded against that establishment and date, so the run is `partial` and the job exits non-zero. Valid PDFs for other dates still fill. "Not offered" is counted and logged, not a failure. | `doh-run.test.ts`, `score backfill outcome`: three cases through the real `syncAll` → `syncByCounty` → `backfillEstablishmentScores` path; live Jones County backfill on a temporary data copy |
+| C. Native app (R9) | open | Not changed. | none |
+| D. Dependency triage (R10) | open | Not changed since the MapLibre patch. | none |
+
+Limit: "not offered" is decided by a normal response that contains no report link. If the
+portal changed how it links reports, every date would look "not offered" and the run would
+still be a success. The job now prints that count, so a sudden jump is visible, but nothing
+fails on it.
+
+For the owner: 82 restaurants still have 175 past inspections with no score. A manual
+`backfill-scores` run could fill those from the state's PDFs; that is a data change and was
+not done here.
 
 ## Codex review
 

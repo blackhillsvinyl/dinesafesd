@@ -61,7 +61,9 @@ async function main() {
     process.exitCode = 1;
   } finally {
     const { restaurantsWritten } = store.save();
-    console.log(`Scores filled: ${pipeline.getStats().inspections} | files written: ${restaurantsWritten}`);
+    console.log(
+      `Scores filled: ${pipeline.getStats().inspections} | reports the portal does not offer: ${pipeline.getStats().reportsNotOffered} | files written: ${restaurantsWritten}`
+    );
     console.log(`Elapsed: ${Math.round((Date.now() - startedAt.getTime()) / 60000)} min`);
     await pipeline.close();
   }
